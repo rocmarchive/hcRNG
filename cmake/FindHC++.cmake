@@ -21,7 +21,7 @@ set(MCWHCCBUILD $ENV{MCWHCCBUILD})
 if(EXISTS /opt/hcc/bin/clang++)
   find_path(HC++_BIN_DIR clang++
            HINTS /opt/hcc/bin)
-  find_path(HC++_CONFIGURE_DIR clamp-config
+  find_path(HC++_CONFIGURE_DIR hcc-config
            HINTS /opt/hcc/bin)
   include(FindPackageHandleStandardArgs)
   # handle the QUIETLY and REQUIRED arguments and set HC++_FOUND to TRUE
@@ -39,7 +39,7 @@ if(EXISTS /opt/hcc/bin/clang++)
 
   # Build mode
   set (CLANG_AMP "${HC++_BIN_DIR}/clang++")
-  set (HCC_CONFIG "${HC++_CONFIGURE_DIR}/clamp-config")
+  set (HCC_CONFIG "${HC++_CONFIGURE_DIR}/hcc-config")
   execute_process(COMMAND ${HCC_CONFIG} --cxxflags
                   OUTPUT_VARIABLE HCC_CXXFLAGS)
   string(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
@@ -53,7 +53,7 @@ if(EXISTS /opt/hcc/bin/clang++)
 elseif(EXISTS ${MCWHCCBUILD})
   find_path(HC++_BIN_DIR clang++
            HINTS ${MCWHCCBUILD}/compiler/bin)
-  find_path(HC++_CONFIGURE_DIR clamp-config
+  find_path(HC++_CONFIGURE_DIR hcc-config
            HINTS ${MCWHCCBUILD}/build/Release/bin)
   include(FindPackageHandleStandardArgs)
   # handle the QUIETLY and REQUIRED arguments and set HC++_FOUND to TRUE
@@ -71,7 +71,7 @@ elseif(EXISTS ${MCWHCCBUILD})
 
   # Build mode
   set (CLANG_AMP "${HC++_BIN_DIR}/clang++")
-  set (HCC_CONFIG "${HC++_CONFIGURE_DIR}/clamp-config")
+  set (HCC_CONFIG "${HC++_CONFIGURE_DIR}/hcc-config")
   execute_process(COMMAND ${HCC_CONFIG} --build --cxxflags
                   OUTPUT_VARIABLE HCC_CXXFLAGS)
   string(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
