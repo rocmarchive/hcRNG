@@ -159,7 +159,15 @@ HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pMakeSubstreams(hcrngMrg31k3pStream* s
  *  @see hcrngMakeOverSubstreams()
  */
 HCRNGAPI hcrngStatus hcrngMrg31k3pMakeOverSubstreams(hcrngMrg31k3pStream* stream, size_t count, hcrngMrg31k3pStream* substreams);
+
+/*! @copybrief hcrngMrg31k3pCopyOverStreamsFromGlobal()
+ *  @see hcrngMrg31k3pCopyOverStreamsFromGlobal()
+ */
 HCRNGAPI hcrngStatus hcrngMrg31k3pCopyOverStreamsFromGlobal(size_t count, hcrngMrg31k3pStream* destStreams, hcrngMrg31k3pStream* srcStreams);
+
+/*! @copybrief hcrngMrg31k3pCopyOverStreamsToGlobal()
+ *  @see hcrngMrg31k3pCopyOverStreamsToGlobal()
+ */
 HCRNGAPI hcrngStatus hcrngMrg31k3pCopyOverStreamsToGlobal(size_t count, hcrngMrg31k3pStream* destStreams, hcrngMrg31k3pStream* srcStreams);
 
 /*! @copybrief hcrngAdvanceStreams()

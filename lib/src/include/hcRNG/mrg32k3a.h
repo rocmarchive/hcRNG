@@ -160,6 +160,17 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	 */
 	HCRNGAPI hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams);
 
+        /*! @copybrief hcrngMrg32k3aCopyOverStreamsFromGlobal()
+         *  @see hcrngMrg32k3aCopyOverStreamsFromGlobal()
+         */
+        HCRNGAPI hcrngStatus hcrngMrg32k3aCopyOverStreamsFromGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams);
+
+        /*! @copybrief hcrngMrg32k3aCopyOverStreamsToGlobal()
+         *  @see hcrngMrg32k3aCopyOverStreamsToGlobal()
+         */
+        HCRNGAPI hcrngStatus hcrngMrg32k3aCopyOverStreamsToGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams); 
+
+ 
 	/*! @copybrief hcrngAdvanceStreams()
 	*  @see hcrngAdvanceStreams()
 	*/
@@ -177,7 +188,7 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	/** \internal
 	 *  @brief Helper function for hcrngMrg32k3aDeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_(size_t streamCount, hcrngMrg32k3aStream &streams,
+	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_(size_t streamCount,  Concurrency::array_view<hcrngMrg32k3aStream> &streams,
 		size_t numberCount, Concurrency::array_view<float> &outBuffer, bool singlePrecision);
 /** \endinternal
  */
