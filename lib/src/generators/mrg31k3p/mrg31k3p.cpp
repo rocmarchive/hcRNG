@@ -389,7 +389,7 @@ hcrngStatus hcrngMrg31k3pWriteStreamInfo(const hcrngMrg31k3pStream* stream, FILE
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, hcrngMrg31k3pStream &streams,
+hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, Concurrency::array_view<hcrngMrg31k3pStream> &streams,
 	size_t numberCount, Concurrency::array_view<float> &outBuffer, bool singlePrecision)
 {
 	//Check params
@@ -405,15 +405,20 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, hcrngMrg31k3p
         std::vector<Concurrency::accelerator>acc = Concurrency::accelerator::get_all();
         accelerator_view accl_view = (acc[1].create_view());
         hcrngStatus status = HCRNG_SUCCESS;
-        long size = (numberCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        long size = (streamCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
 //        const unsigned int number_count_per_stream = numberCount / streamCount;
         if (singlePrecision) {
 #define HCRNG_SINGLE_PRECISION
            Concurrency::extent<1> grdExt(size);
            Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
-           Concurrency::parallel_for_each(accl_view, t_ext, [ = , &streams ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
+           Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
              int gid = tidx.global[0];
-             outBuffer[gid] = hcrngMrg31k3pRandomU01(&streams);
+             hcrngMrg31k3pStream local_stream;
+             hcrngMrg31k3pCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
+             if(gid < streamCount){
+              for(int i =0; i < numberCount/streamCount; i++)
+                outBuffer[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&local_stream);
+             }
            });
            return status;
 #undef HCRNG_SINGLE_PRECISION
@@ -424,9 +429,14 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, hcrngMrg31k3p
               outBuffer_double[i] = outBuffer[i];
            Concurrency::extent<1> grdExt(size);
            Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
-           Concurrency::parallel_for_each(accl_view, t_ext, [ = , &streams ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
+           Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
              int gid = tidx.global[0];
-             outBuffer_double[gid] = hcrngMrg31k3pRandomU01(&streams);
+             hcrngMrg31k3pStream local_stream;
+             hcrngMrg31k3pCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
+             if(gid < streamCount){
+              for(int i =0; i < numberCount/streamCount; i++)
+                outBuffer_double[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&local_stream);
+              }
            });
            return status;
         }
@@ -440,4 +450,5 @@ hcrngMrg31k3pStream* mrg31k3pGetStreamByIndex(hcrngMrg31k3pStream* stream, unsig
 	return &stream[index];
 
 }
+
 #endif

@@ -159,6 +159,8 @@ HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pMakeSubstreams(hcrngMrg31k3pStream* s
  *  @see hcrngMakeOverSubstreams()
  */
 HCRNGAPI hcrngStatus hcrngMrg31k3pMakeOverSubstreams(hcrngMrg31k3pStream* stream, size_t count, hcrngMrg31k3pStream* substreams);
+HCRNGAPI hcrngStatus hcrngMrg31k3pCopyOverStreamsFromGlobal(size_t count, hcrngMrg31k3pStream* destStreams, hcrngMrg31k3pStream* srcStreams);
+HCRNGAPI hcrngStatus hcrngMrg31k3pCopyOverStreamsToGlobal(size_t count, hcrngMrg31k3pStream* destStreams, hcrngMrg31k3pStream* srcStreams);
 
 /*! @copybrief hcrngAdvanceStreams()
  *  @see hcrngAdvanceStreams()
@@ -177,7 +179,7 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pAdvanceStreams(size_t count, hcrngMrg31k3pStre
 /** \internal
  *  @brief Helper function for hcrngMrg31k3pDeviceRandomU01Array()
  */
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, hcrngMrg31k3pStream &streams,
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, Concurrency::array_view<hcrngMrg31k3pStream> &streams,
 	size_t numberCount, Concurrency::array_view<float> &outBuffer, bool singlePrecision);
 /** \endinternal
  */
