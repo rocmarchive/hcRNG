@@ -291,7 +291,9 @@ hcrngMrg31k3pStream* hcrngMrg31k3pCopyStreams(size_t count, const hcrngMrg31k3pS
 		dest = hcrngMrg31k3pAllocStreams(count, NULL, &err_);
 
 	if (err_ == HCRNG_SUCCESS)
+#define CPU
 		err_ = hcrngMrg31k3pCopyOverStreams(count, dest, streams);
+#undef CPU
 
 	if (err != NULL)
 		*err = err_;

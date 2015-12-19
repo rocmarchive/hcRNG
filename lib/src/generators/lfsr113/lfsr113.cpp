@@ -353,7 +353,7 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(size_t streamCount, Concurre
 }
 
 hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngLfsr113Stream> &streams,
-        size_t numberCount, Concurrency::array_view<double> &outBuffer, bool singlePrecision)
+        size_t numberCount, Concurrency::array_view<double> &outBuffer)
 {
         //Check params
         if (streamCount < 1)

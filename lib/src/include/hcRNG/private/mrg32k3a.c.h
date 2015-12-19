@@ -26,14 +26,16 @@ unsigned long hcrngMrg32k3a_A2p76[3][3] = {
 	{ 3859662829, 4292754251, 3708466080 }
 };
 
-hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) restrict (amp) 
+hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) restrict (amp, cpu) 
 {
-	//Check params
+/*
+#ifdef CPU	//Check params
 	if (!destStreams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): destStreams cannot be NULL", __func__);
 	if (!srcStreams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): srcStreams cannot be NULL", __func__);
-
+#endif
+*/
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -123,9 +125,6 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp)
 {
-	//Check params
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
@@ -136,9 +135,6 @@ hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* stream
 
 hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp)
 {
-	//Check params
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream;
@@ -147,12 +143,14 @@ hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* str
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp)
+hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp, cpu)
 {
-	//Check params
+/*	//Check params
+#ifdef CPU
 	if (!streams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
-
+#endif
+*/
 	for (size_t k = 0; k < count; k++) {
 		modMatVec(hcrngMrg32k3a_A1p76, streams[k].substream.g1, streams[k].substream.g1, Mrg32k3a_M1);
 		modMatVec(hcrngMrg32k3a_A2p76, streams[k].substream.g2, streams[k].substream.g2, Mrg32k3a_M2);
@@ -162,7 +160,7 @@ hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStre
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) restrict (amp)
+hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) restrict (amp, cpu)
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;
@@ -180,16 +178,10 @@ hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t 
 
 hcrngStatus hcrngMrg32k3aCopyOverStreamsFromGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams) restrict (amp)
 {
-        //Check params
-        if (!destStreams)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngMrg32k3aCopyOverStreamsFromGlobal(): destStreams cannot be NULL");
-        if (!srcStreams)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngMrg32k3aCopyOverStreamsFromGlobal(): srcStreams cannot be NULL");
-
         for (size_t i = 0; i < count; i++) {
                 destStreams[i].current = srcStreams[i].current;
                 destStreams[i].initial = srcStreams[i].initial;
-#ifdef CLRNG_ENABLE_SUBSTREAMS
+#ifdef HCRNG_ENABLE_SUBSTREAMS
                 destStreams[i].substream = srcStreams[i].substream;
 #endif
         }
@@ -199,16 +191,10 @@ hcrngStatus hcrngMrg32k3aCopyOverStreamsFromGlobal(size_t count, hcrngMrg32k3aSt
 
 hcrngStatus hcrngMrg32k3aCopyOverStreamsToGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams) restrict (amp)
 {
-    //Check params
-    if (!destStreams)
-        return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngMrg32k3aCopyOverStreamsToGlobal(): destStreams cannot be NULL");
-    if (!srcStreams)
-        return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngMrg32k3aCopyOverStreamsToGlobal(): srcStreams cannot be NULL");
-
     for (size_t i = 0; i < count; i++) {
         destStreams[i].current   = srcStreams[i].current;
         destStreams[i].initial   = srcStreams[i].initial;
-#ifdef CLRNG_ENABLE_SUBSTREAMS
+#ifdef HCRNG_ENABLE_SUBSTREAMS
         destStreams[i].substream = srcStreams[i].substream;
 #endif
     }

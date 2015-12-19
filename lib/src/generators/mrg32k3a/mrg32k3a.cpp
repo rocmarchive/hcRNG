@@ -5,6 +5,12 @@
 #if defined ( WIN32 )
 #define __func__ __FUNCTION__
 #endif
+#define MODULAR_NUMBER_TYPE unsigned long
+#define MODULAR_FIXED_SIZE 3
+#include "../include/hcRNG/private/modular.c.h"
+
+// code that is common to host and device
+#include "../include/hcRNG/private/mrg32k3a.c.h"
 
 struct hcrngMrg32k3aStreamCreator_ {
 	hcrngMrg32k3aStreamState initialState;
@@ -14,15 +20,6 @@ struct hcrngMrg32k3aStreamCreator_ {
 	unsigned long nuA1[3][3];
 	unsigned long nuA2[3][3];
 };
-
-#define MODULAR_NUMBER_TYPE unsigned long
-#define MODULAR_FIXED_SIZE 3
-#include "../include/hcRNG/private/modular.c.h"
-
-// code that is common to host and device
-#include "../include/hcRNG/private/mrg32k3a.c.h"
-
-
 
 /*! @brief Matrices to advance to the next state
 */
@@ -309,7 +306,6 @@ hcrngMrg32k3aStream* hcrngMrg32k3aMakeSubstreams(hcrngMrg32k3aStream* stream, si
 
 	if (err_ == HCRNG_SUCCESS)
 		err_ = hcrngMrg32k3aMakeOverSubstreams(stream, count, substreams);
-
 	if (bufSize != NULL)
 		*bufSize = bufSize_;
 

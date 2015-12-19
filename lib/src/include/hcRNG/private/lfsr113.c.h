@@ -10,14 +10,14 @@
 #define Lfsr113_NORM_float  2.3283063e-10
 
 
-hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) restrict (amp)
+hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) restrict (amp, cpu) 
 {
-	//Check params
+/*	//Check params
 	if (!destStreams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): destStreams cannot be NULL", __func__);
 	if (!srcStreams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): srcStreams cannot be NULL", __func__);
-
+*/
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -96,9 +96,6 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp) 
 {
-	//Check params
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
@@ -107,11 +104,8 @@ hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams)
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp) 
+hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp)
 {
-	//Check params
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream;
@@ -201,12 +195,13 @@ void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) restrict (amp) {
 
 	hcrngLfsr113RewindSubstreams(1, stream);
 }
-hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp) 
+hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu)
 {
+/*
 	//Check params
 	if (!streams)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
-
+*/
 	for (size_t k = 0; k < count; k++) {
 
 		lfsr113ResetNextSubStream(&streams[k]);
@@ -215,7 +210,7 @@ hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t count, hcrngLfsr113Stream* substreams) restrict (amp) 
+hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t count, hcrngLfsr113Stream* substreams) restrict (amp, cpu)
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;
@@ -233,16 +228,10 @@ hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t co
 
 hcrngStatus hcrngLfsr113CopyOverStreamsFromGlobal(size_t count, hcrngLfsr113Stream* destStreams, hcrngLfsr113Stream* srcStreams) restrict (amp)
 {
-        //Check params
-        if (!destStreams)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngLfsr113CopyOverStreamsFromGlobal(): destStreams cannot be NULL");
-        if (!srcStreams)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngLfsr113CopyOverStreamsFromGlobal(): srcStreams cannot be NULL");
-
         for (size_t i = 0; i < count; i++) {
                 destStreams[i].current = srcStreams[i].current;
                 destStreams[i].initial = srcStreams[i].initial;
-#ifdef CLRNG_ENABLE_SUBSTREAMS
+#ifdef HCRNG_ENABLE_SUBSTREAMS
                 destStreams[i].substream = srcStreams[i].substream;
 #endif
         }
@@ -252,16 +241,10 @@ hcrngStatus hcrngLfsr113CopyOverStreamsFromGlobal(size_t count, hcrngLfsr113Stre
 
 hcrngStatus hcrngLfsr113CopyOverStreamsToGlobal(size_t count, hcrngLfsr113Stream* destStreams, hcrngLfsr113Stream* srcStreams) restrict (amp)
 {
-    //Check params
-    if (!destStreams)
-        return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngLfsr113CopyOverStreamsToGlobal(): destStreams cannot be NULL");
-    if (!srcStreams)
-        return hcrngSetErrorString(HCRNG_INVALID_VALUE, "hcrngLfsr113CopyOverStreamsToGlobal(): srcStreams cannot be NULL");
-
     for (size_t i = 0; i < count; i++) {
         destStreams[i].current   = srcStreams[i].current;
         destStreams[i].initial   = srcStreams[i].initial;
-#ifdef CLRNG_ENABLE_SUBSTREAMS
+#ifdef HCRNG_ENABLE_SUBSTREAMS
         destStreams[i].substream = srcStreams[i].substream;
 #endif
     }
