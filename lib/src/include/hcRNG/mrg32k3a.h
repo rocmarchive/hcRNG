@@ -188,8 +188,10 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	/** \internal
 	 *  @brief Helper function for hcrngMrg32k3aDeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_(size_t streamCount,  Concurrency::array_view<hcrngMrg32k3aStream> &streams,
-		size_t numberCount, Concurrency::array_view<float> &outBuffer, bool singlePrecision);
+	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount,  Concurrency::array_view<hcrngMrg32k3aStream> &streams,
+		size_t numberCount, Concurrency::array_view<float> &outBuffer);
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(size_t streamCount,  Concurrency::array_view<hcrngMrg32k3aStream> &streams,
+                size_t numberCount, Concurrency::array_view<double> &outBuffer);
 /** \endinternal
  */
 

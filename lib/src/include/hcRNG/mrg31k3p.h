@@ -187,8 +187,10 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pAdvanceStreams(size_t count, hcrngMrg31k3pStre
 /** \internal
  *  @brief Helper function for hcrngMrg31k3pDeviceRandomU01Array()
  */
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_(size_t streamCount, Concurrency::array_view<hcrngMrg31k3pStream> &streams,
-	size_t numberCount, Concurrency::array_view<float> &outBuffer, bool singlePrecision);
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_single(size_t streamCount, Concurrency::array_view<hcrngMrg31k3pStream> &streams,
+	size_t numberCount, Concurrency::array_view<float> &outBuffer);
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngMrg31k3pStream> &streams,
+        size_t numberCount, Concurrency::array_view<double> &outBuffer);
 /** \endinternal
  */
 
