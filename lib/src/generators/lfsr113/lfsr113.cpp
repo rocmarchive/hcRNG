@@ -345,7 +345,7 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(size_t streamCount, Concurre
            hcrngLfsr113CopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[gid] = hcrngLfsr113RandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngLfsr113RandomU01(&local_stream);
            }
         });
 #undef HCRNG_SINGLE_PRECISION
@@ -372,7 +372,7 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, Concurre
            hcrngLfsr113CopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[gid] = hcrngLfsr113RandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngLfsr113RandomU01(&local_stream);
            }
         });
         return status;

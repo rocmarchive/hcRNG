@@ -104,7 +104,7 @@ hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams)
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp)
+hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu)
 {
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -113,7 +113,7 @@ hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* strea
 
 	return HCRNG_SUCCESS;
 }
-void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) restrict (amp) {
+void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) restrict (amp, cpu) {
 
 	/* The following operations make the jump ahead with
 	2 ^ 55 iterations for every component of the generator.

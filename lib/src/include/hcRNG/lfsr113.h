@@ -184,9 +184,9 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
 	/** \internal
 	 *  @brief Helper function for hcrngLfsr113DeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(size_t streamCount, hcrngLfsr113Stream &streams,
+	HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(size_t streamCount, Concurrency::array_view<hcrngLfsr113Stream> &streams,
 		size_t numberCount, Concurrency::array_view<float> &outBuffer);
-        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, hcrngLfsr113Stream &streams,
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngLfsr113Stream> &streams,
                 size_t numberCount, Concurrency::array_view<double> &outBuffer);
 /** \endinternal
  */

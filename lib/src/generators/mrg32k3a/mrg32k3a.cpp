@@ -401,13 +401,14 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount, Concurr
         long size = (streamCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         Concurrency::extent<1> grdExt(size);
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
+        std::cout << "inside function" << std::endl;
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
-           int gid = tidx.global[0];
-           hcrngMrg32k3aStream local_stream;
-           hcrngMrg32k3aCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
+          int gid = tidx.global[0];
+          hcrngMrg32k3aStream local_stream;
+          hcrngMrg32k3aCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[gid] = hcrngMrg32k3aRandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngMrg32k3aRandomU01(&local_stream);
            }
         });
 #undef HCRNG_SINGLE_PRECISION
@@ -435,7 +436,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(size_t streamCount, Concurr
            hcrngMrg32k3aCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[gid] = hcrngMrg32k3aRandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngMrg32k3aRandomU01(&local_stream);
            }
         });
         return status;

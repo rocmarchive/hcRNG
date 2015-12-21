@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES("include")
 
 
 #Setting a Project name
-SET(PROJECT_NAME "librng")
+SET(PROJECT_NAME "libhcrng")
 PROJECT (${PROJECT_NAME})
 MESSAGE(STATUS "PROJECT NAME    : ${PROJECT_NAME}")
 
