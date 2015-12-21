@@ -14,8 +14,8 @@ int main()
         hcrngStatus status = HCRNG_SUCCESS;
         size_t streamBufferSize;
         size_t NbrStreams = 1;
-        size_t streamCount = 100;
-        size_t numberCount = 10000000;
+        size_t streamCount = 10;
+        size_t numberCount = 100;
         float *Random = (float*) malloc(sizeof(float) * numberCount);
         Concurrency::array_view<float> outBuffer(numberCount, Random);
         std::cout << "DeviceRandomU01Array with Mrg32k3a :" << std::endl;
