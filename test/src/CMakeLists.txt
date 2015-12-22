@@ -12,7 +12,8 @@ FIND_PACKAGE(HC++ 1.0 REQUIRED)
 
 #Setting a variable for source files
 SET (TESTSRCS
-    mrg31k3p_test.cpp  mrg32k3a_test.cpp  lfsr113_test.cpp  philox432_test.cpp
+    mrg31k3pSingle_test.cpp  mrg32k3aSingle_test.cpp  lfsr113Single_test.cpp  philox432Single_test.cpp
+    mrg31k3pDouble_test.cpp  mrg32k3aDouble_test.cpp  lfsr113Double_test.cpp  philox432Double_test.cpp
     )
 
 IF(WIN32)
