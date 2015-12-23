@@ -157,16 +157,6 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
 	 */
 	HCRNGAPI hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t count, hcrngLfsr113Stream* substreams);
 
-        /*! @copybrief hcrngLfsr113CopyOverStreamsFromGlobal()
-         *  @see hcrngLfsr113CopyOverStreamsFromGlobal()
-         */
-        HCRNGAPI hcrngStatus hcrngLfsr113CopyOverStreamsFromGlobal(size_t count, hcrngLfsr113Stream* destStreams, hcrngLfsr113Stream* srcStreams);
-
-        /*! @copybrief hcrngLfsr113CopyOverStreamsToGlobal()
-         *  @see hcrngLfsr113CopyOverStreamsToGlobal()
-         */
-        HCRNGAPI hcrngStatus hcrngLfsr113CopyOverStreamsToGlobal(size_t count, hcrngLfsr113Stream* destStreams, hcrngLfsr113Stream* srcStreams);
-
 	/*! @copybrief hcrngAdvanceStreams()
 	*  @see hcrngAdvanceStreams()
 	*/

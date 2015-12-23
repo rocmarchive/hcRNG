@@ -160,17 +160,6 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	 */
 	HCRNGAPI hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams);
 
-        /*! @copybrief hcrngMrg32k3aCopyOverStreamsFromGlobal()
-         *  @see hcrngMrg32k3aCopyOverStreamsFromGlobal()
-         */
-        HCRNGAPI hcrngStatus hcrngMrg32k3aCopyOverStreamsFromGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams);
-
-        /*! @copybrief hcrngMrg32k3aCopyOverStreamsToGlobal()
-         *  @see hcrngMrg32k3aCopyOverStreamsToGlobal()
-         */
-        HCRNGAPI hcrngStatus hcrngMrg32k3aCopyOverStreamsToGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams); 
-
- 
 	/*! @copybrief hcrngAdvanceStreams()
 	*  @see hcrngAdvanceStreams()
 	*/

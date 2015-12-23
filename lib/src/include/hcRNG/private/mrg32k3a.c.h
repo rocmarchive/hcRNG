@@ -129,12 +129,6 @@ hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* str
 
 hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp, cpu)
 {
-/*	//Check params
-#ifdef CPU
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
-#endif
-*/
 	for (size_t k = 0; k < count; k++) {
 		modMatVec(hcrngMrg32k3a_A1p76, streams[k].substream.g1, streams[k].substream.g1, Mrg32k3a_M1);
 		modMatVec(hcrngMrg32k3a_A2p76, streams[k].substream.g2, streams[k].substream.g2, Mrg32k3a_M2);
@@ -158,32 +152,6 @@ hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t 
 		    return err;
 	}
 	return HCRNG_SUCCESS;
-}
-
-hcrngStatus hcrngMrg32k3aCopyOverStreamsFromGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams) restrict (amp)
-{
-        for (size_t i = 0; i < count; i++) {
-                destStreams[i].current = srcStreams[i].current;
-                destStreams[i].initial = srcStreams[i].initial;
-#ifdef HCRNG_ENABLE_SUBSTREAMS
-                destStreams[i].substream = srcStreams[i].substream;
-#endif
-        }
-
-        return HCRNG_SUCCESS;
-}
-
-hcrngStatus hcrngMrg32k3aCopyOverStreamsToGlobal(size_t count, hcrngMrg32k3aStream* destStreams, hcrngMrg32k3aStream* srcStreams) restrict (amp)
-{
-    for (size_t i = 0; i < count; i++) {
-        destStreams[i].current   = srcStreams[i].current;
-        destStreams[i].initial   = srcStreams[i].initial;
-#ifdef HCRNG_ENABLE_SUBSTREAMS
-        destStreams[i].substream = srcStreams[i].substream;
-#endif
-    }
-
-    return HCRNG_SUCCESS;
 }
 
 #endif // PRIVATE_Mrg32k3a_CH

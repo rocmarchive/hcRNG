@@ -406,11 +406,9 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_single(size_t streamCount, Concurr
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
            int gid = tidx.global[0];
-           hcrngMrg31k3pStream local_stream;
-           hcrngMrg31k3pCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&streams[gid]);
            }
         });
 #undef HCRNG_SINGLE_PRECISION
@@ -433,11 +431,9 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(size_t streamCount, Concurr
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
            int gid = tidx.global[0];
-           hcrngMrg31k3pStream local_stream;
-           hcrngMrg31k3pCopyOverStreamsFromGlobal(1, &local_stream, &streams[gid]);
            if(gid < streamCount){
             for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&local_stream);
+              outBuffer[i * streamCount + gid] = hcrngMrg31k3pRandomU01(&streams[gid]);
            }
         });
         return status;

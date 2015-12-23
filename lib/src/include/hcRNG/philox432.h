@@ -168,16 +168,6 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 	*/
 	HCRNGAPI hcrngStatus hcrngPhilox432MakeOverSubstreams(hcrngPhilox432Stream* stream, size_t count, hcrngPhilox432Stream* substreams);
 
-	/*! @copybrief hcrngPhilox432CopyOverStreamsFromGlobal()
-	 *  @see hcrngPhilox432CopyOverStreamsFromGlobal()
-	 */
-	HCRNGAPI hcrngStatus hcrngPhilox432CopyOverStreamsFromGlobal(size_t count, hcrngPhilox432Stream* destStreams, hcrngPhilox432Stream* srcStreams);
-
-	/*! @copybrief hcrngPhilox432CopyOverStreamsToGlobal()
-	*  @see hcrngPhilox432CopyOverStreamsToGlobal()
-	 */
-	HCRNGAPI hcrngStatus hcrngPhilox432CopyOverStreamsToGlobal(size_t count, hcrngPhilox432Stream* destStreams, hcrngPhilox432Stream* srcStreams);
-
 	/*! @copybrief hcrngAdvanceStreams()
 	*  @see hcrngAdvanceStreams()
 	*/

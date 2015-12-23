@@ -112,10 +112,10 @@
  *
  *  | RNG            | Prefix        | Host Header File | Device Header File |
  *  | -------------- | ------------- | ---------------- | ------------------ |
- *  | MRG31k3p       | `Mrg31k3p`    | mrg31k3p.h       | mrg31k3p.hch       |
- *  | MRG32k3a       | `Mrg32k3a`    | mrg32k3a.h       | mrg32k3a.hch       |
- *  | LFSR113        | `Lfsr113`     | lfsr113.h        | lfsr113.hch        |
- *  | Philox-4×32-10 | `Philox432`   | philox432.h      | philox432.hch      |
+ *  | MRG31k3p       | `Mrg31k3p`    | mrg31k3p.h       | mrg31k3p.c.h       |
+ *  | MRG32k3a       | `Mrg32k3a`    | mrg32k3a.h       | mrg32k3a.c.h       |
+ *  | LFSR113        | `Lfsr113`     | lfsr113.h        | lfsr113.c.h        |
+ *  | Philox-4×32-10 | `Philox432`   | philox432.h      | philox432.c.h      |
  *
  *
  *  ## The MRG31k3p Generator

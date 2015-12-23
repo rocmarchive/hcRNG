@@ -142,7 +142,6 @@ hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* stre
 	return HCRNG_SUCCESS;
 }
 
-
 hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp, cpu)
 {
 	//Reset current state to the subStream initial state
@@ -189,32 +188,5 @@ hcrngStatus hcrngPhilox432MakeOverSubstreams(hcrngPhilox432Stream* stream, size_
 	}
 	return HCRNG_SUCCESS;
 }
-
-hcrngStatus hcrngPhilox432CopyOverStreamsFromGlobal(size_t count, hcrngPhilox432Stream* destStreams, hcrngPhilox432Stream* srcStreams) restrict (amp)
-{
-        for (size_t i = 0; i < count; i++) {
-                destStreams[i].current = srcStreams[i].current;
-                destStreams[i].initial = srcStreams[i].initial;
-#ifdef HCRNG_ENABLE_SUBSTREAMS
-                destStreams[i].substream = srcStreams[i].substream;
-#endif
-        }
-
-        return HCRNG_SUCCESS;
-}
-
-hcrngStatus hcrngPhilox432CopyOverStreamsToGlobal(size_t count, hcrngPhilox432Stream* destStreams, hcrngPhilox432Stream* srcStreams) restrict (amp)
-{
-        for (size_t i = 0; i < count; i++) {
-                destStreams[i].current = srcStreams[i].current;
-                destStreams[i].initial = srcStreams[i].initial;
-#ifdef HCRNG_ENABLE_SUBSTREAMS
-                destStreams[i].substream = srcStreams[i].substream;
-#endif
-        }
-
-        return HCRNG_SUCCESS;
-}
-
 
 #endif // PRIVATE_Philox432_CH
