@@ -401,7 +401,6 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount, Concurr
         long size = (streamCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         Concurrency::extent<1> grdExt(size);
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
-        std::cout << "inside function" << std::endl;
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
           int gid = tidx.global[0];
           hcrngMrg32k3aStream local_stream;

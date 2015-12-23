@@ -12,12 +12,6 @@
 
 hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) restrict (amp, cpu) 
 {
-/*	//Check params
-	if (!destStreams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): destStreams cannot be NULL", __func__);
-	if (!srcStreams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): srcStreams cannot be NULL", __func__);
-*/
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -26,7 +20,7 @@ hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destSt
 
 /*! @brief Advance the rng one step and returns z such that 1 <= z <= lfsr113_M1
 */
-static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState) restrict (amp) {
+static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState) restrict (amp, cpu) {
 
 	unsigned long b;
 
@@ -52,29 +46,21 @@ static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngLfsr113RandomU01_##fptype(hcrngLfsr113Stream* stream) restrict (amp) { \
+	fptype hcrngLfsr113RandomU01_##fptype(hcrngLfsr113Stream* stream) restrict (amp, cpu) { \
 	    return hcrngLfsr113NextState(&stream->current) * Lfsr113_NORM_##fptype; \
 	} \
 	\
-	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) restrict (amp) { \
+	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) restrict (amp, cpu) { \
 	    return i + (int)((j - i + 1) * hcrngLfsr113RandomU01_##fptype(stream)); \
 	} \
 	\
-	hcrngStatus hcrngLfsr113RandomU01Array_##fptype(hcrngLfsr113Stream* stream, size_t count, fptype* buffer) restrict (amp) { \
-		if (!stream) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): stream cannot be NULL", __func__); \
-		if (!buffer) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): buffer cannot be NULL", __func__); \
+	hcrngStatus hcrngLfsr113RandomU01Array_##fptype(hcrngLfsr113Stream* stream, size_t count, fptype* buffer) restrict (amp, cpu) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngLfsr113RandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngLfsr113RandomIntegerArray_##fptype(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp) { \
-		if (!stream) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): stream cannot be NULL", __func__); \
-		if (!buffer) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): buffer cannot be NULL", __func__); \
+	hcrngStatus hcrngLfsr113RandomIntegerArray_##fptype(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp, cpu) { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngLfsr113RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
@@ -94,7 +80,7 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp) 
+hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu) 
 {
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {

@@ -67,7 +67,7 @@ void hcrngPhilox432GenerateDeck(hcrngPhilox432StreamState *currentState) restric
 
 /*! @brief Advance the rng one step
 */
-static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentState) restrict (amp) {
+static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentState) restrict (amp, cpu) {
 
 	if (currentState->deckIndex == 0)
 	{
@@ -98,29 +98,21 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngPhilox432RandomU01_##fptype(hcrngPhilox432Stream* stream) restrict (amp) { \
+	fptype hcrngPhilox432RandomU01_##fptype(hcrngPhilox432Stream* stream) restrict (amp, cpu) { \
 	    return (hcrngPhilox432NextState(&stream->current) + 0.5) * Philox432_NORM_##fptype; \
 	} \
 	\
-	int hcrngPhilox432RandomInteger_##fptype(hcrngPhilox432Stream* stream, int i, int j) restrict (amp) { \
+	int hcrngPhilox432RandomInteger_##fptype(hcrngPhilox432Stream* stream, int i, int j) restrict (amp, cpu) { \
 	    return i + (int)((j - i + 1) * hcrngPhilox432RandomU01_##fptype(stream)); \
 	} \
 	\
-	hcrngStatus hcrngPhilox432RandomU01Array_##fptype(hcrngPhilox432Stream* stream, size_t count, fptype* buffer) restrict (amp) { \
-		if (!stream) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): stream cannot be NULL", __func__); \
-		if (!buffer) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): buffer cannot be NULL", __func__); \
+	hcrngStatus hcrngPhilox432RandomU01Array_##fptype(hcrngPhilox432Stream* stream, size_t count, fptype* buffer) restrict (amp, cpu) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngPhilox432RandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngPhilox432RandomIntegerArray_##fptype(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp) { \
-		if (!stream) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): stream cannot be NULL", __func__); \
-		if (!buffer) \
-			return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): buffer cannot be NULL", __func__); \
+	hcrngStatus hcrngPhilox432RandomIntegerArray_##fptype(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp, cpu) { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngPhilox432RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
@@ -140,11 +132,8 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp)
+hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp, cpu)
 {
-	//Check params
-	if (!streams)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streams cannot be NULL", __func__);
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
