@@ -468,10 +468,10 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concur
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
-              if ((streamlength > 0) && (streamlength != 0)) {
+              if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
                hcrngPhilox432ForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
-              if ((streamlength < 0) && (streamlength != 0 )) {
+              if ((i > 0) && (streamlength < 0) && (i % streamlength == 0)) {
                hcrngPhilox432RewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
               for (int j = 0; j < streams_per_thread; j++)
@@ -501,10 +501,10 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, Concur
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
-              if ((streamlength > 0) && (streamlength != 0)) {
+              if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
                hcrngPhilox432ForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
-              if ((streamlength < 0) && (streamlength != 0 )) {
+              if ((i > 0) && (streamlength < 0) && (i % streamlength == 0)) {
                hcrngPhilox432RewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
               for (int j = 0; j < streams_per_thread; j++)
