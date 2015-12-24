@@ -14,12 +14,14 @@ int main()
         hcrngStatus status = HCRNG_SUCCESS;
         bool ispassed = 1;
         size_t streamBufferSize;
-        size_t NbrStreams = 1;
         size_t streamCount = 10;
         size_t numberCount = 100;
-        double *Random = (double*) malloc(sizeof(double) * numberCount);
-        Concurrency::array_view<double> outBufferDevice(numberCount, Random);
-        Concurrency::array_view<double> outBufferHost(numberCount, Random);
+        int stream_length = -5;
+        size_t streams_per_thread = 2;
+        double *Random1 = (double*) malloc(sizeof(double) * numberCount);
+        double *Random2 = (double*) malloc(sizeof(double) * numberCount);
+        Concurrency::array_view<double> outBufferDevice(numberCount, Random1);
+        Concurrency::array_view<double> outBufferHost(numberCount, Random2);
         hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         Concurrency::array_view<hcrngMrg32k3aStream> streams_buffer(streamCount, streams);
         status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
@@ -36,5 +38,12 @@ int main()
                 continue;
         }
         if(!ispassed) std::cout << "TEST FAILED" << std::endl;
-        return 0;
+        double *Random3 = (double*) malloc(sizeof(double) * numberCount);
+        double *Random4 = (double*) malloc(sizeof(double) * numberCount);
+        Concurrency::array_view<double> outBufferDevice_substream(numberCount, Random3);
+        status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+        if(status) std::cout << "TEST FAILED" << std::endl;
+       /* for( int i =0 ; i < numberCount; i++)
+            std::cout <<" RANDDEVICE[" << i<< "] " << outBufferDevice_substream[i] <<std::endl;
+       */ return 0;
 }

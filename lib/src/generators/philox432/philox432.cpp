@@ -450,7 +450,7 @@ hcrngStatus hcrngPhilox432AdvanceStreams(size_t count, hcrngPhilox432Stream* str
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-	size_t numberCount, Concurrency::array_view<float> &outBuffer)
+	size_t numberCount, Concurrency::array_view<float> &outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
 	//Check params
@@ -461,14 +461,22 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concur
         std::vector<Concurrency::accelerator>acc = Concurrency::accelerator::get_all();
         accelerator_view accl_view = (acc[1].create_view());
         hcrngStatus status = HCRNG_SUCCESS;
-        long size = (streamCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         Concurrency::extent<1> grdExt(size);
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
            int gid = tidx.global[0];
-           if(gid < streamCount){
-            for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[i * streamCount + gid] = hcrngPhilox432RandomU01(&streams[gid]);
+           if(gid < (streamCount/streams_per_thread)) {
+           for(int i =0; i < numberCount/streamCount; i++) {
+              if ((streamlength > 0) && (streamlength != 0)) {
+               hcrngPhilox432ForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              if ((streamlength < 0) && (streamlength != 0 )) {
+               hcrngPhilox432RewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              for (int j = 0; j < streams_per_thread; j++)
+               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomU01(&streams[streams_per_thread * gid + j]);
+              }
            }
         });
 #undef HCRNG_SINGLE_PRECISION
@@ -476,7 +484,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concur
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-        size_t numberCount, Concurrency::array_view<double> &outBuffer)
+        size_t numberCount, Concurrency::array_view<double> &outBuffer, int streamlength, size_t streams_per_thread)
 {
         //Check params
         if (streamCount < 1)
@@ -486,14 +494,22 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, Concur
         std::vector<Concurrency::accelerator>acc = Concurrency::accelerator::get_all();
         accelerator_view accl_view = (acc[1].create_view());
         hcrngStatus status = HCRNG_SUCCESS;
-        long size = (streamCount + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         Concurrency::extent<1> grdExt(size);
         Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
         Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
            int gid = tidx.global[0];
-           if(gid < streamCount){
-            for(int i =0; i < numberCount/streamCount; i++)
-              outBuffer[i * streamCount + gid] = hcrngPhilox432RandomU01(&streams[gid]);
+           if(gid < (streamCount/streams_per_thread)) {
+           for(int i =0; i < numberCount/streamCount; i++) {
+              if ((streamlength > 0) && (streamlength != 0)) {
+               hcrngPhilox432ForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              if ((streamlength < 0) && (streamlength != 0 )) {
+               hcrngPhilox432RewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              for (int j = 0; j < streams_per_thread; j++)
+               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomU01(&streams[streams_per_thread * gid + j]);
+              }
            }
         });
         return status;
