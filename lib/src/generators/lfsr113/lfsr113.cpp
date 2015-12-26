@@ -2,10 +2,6 @@
 #include "hcRNG/hcRNG.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-#if defined ( WIN32 )
-#define __func__ __FUNCTION__
-#endif
-
 
 struct hcrngLfsr113StreamCreator_ {
 	hcrngLfsr113StreamState initialState;
@@ -390,11 +386,3 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, hc::arra
         return status;
 
 }
-#if 0
-hcrngLfsr113Stream* Lfsr113GetStreamByIndex(hcrngLfsr113Stream* stream, unsigned int index)
-{
-
-	return &stream[index];
-
-}
-#endif

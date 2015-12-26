@@ -189,9 +189,4 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	*/
 	HCRNGAPI hcrngStatus hcrngMrg32k3aWriteStreamInfo(const hcrngMrg32k3aStream* stream, FILE *file);
 
-#if 0
-	HCRNGAPI hcrngMrg32k3aStream* hcrngMrg32k3aGetStreamByIndex(hcrngMrg32k3aStream* stream, unsigned int index);
-#endif
-
-
 #endif

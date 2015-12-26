@@ -12,7 +12,6 @@
 #define HCRNG_H
 
 #include <iostream>
-//#include <hc.hpp>
 #include <hc.hpp>
 #include <amp_short_vectors.h>
 
@@ -34,11 +33,7 @@ using namespace std;
 /** \endinternal
  */
 
-#if defined( _WIN32 )
-        #define HCRNGAPI __dehcspec( dllexport )
-#else
-        #define HCRNGAPI
-#endif
+#define HCRNGAPI
 
 
 /*! @brief Error codes

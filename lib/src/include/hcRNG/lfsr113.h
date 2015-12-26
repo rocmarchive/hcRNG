@@ -186,9 +186,4 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
 	*/
 	HCRNGAPI hcrngStatus hcrngLfsr113WriteStreamInfo(const hcrngLfsr113Stream* stream, FILE *file);
 
-
-#if 0
-	HCRNGAPI hcrngLfsr113Stream* hcrngLfsr113GetStreamByIndex(hcrngLfsr113Stream* stream, unsigned int index);
-#endif
-
 #endif

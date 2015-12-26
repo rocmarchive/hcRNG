@@ -2,9 +2,6 @@
 #include "hcRNG/hcRNG.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-#if defined ( WIN32 )
-#define __func__ __FUNCTION__
-#endif
 
 struct hcrngPhilox432StreamCreator_ {
 	hcrngPhilox432StreamState initialState;
@@ -514,12 +511,3 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hc::ar
         });
         return status;
 }
-
-#if 0
-hcrngPhilox432Stream* Philox432GetStreamByIndex(hcrngPhilox432Stream* stream, unsigned int index)
-{
-
-	return &stream[index];
-
-}
-#endif

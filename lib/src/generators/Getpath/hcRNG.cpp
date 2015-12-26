@@ -3,15 +3,10 @@
 * @brief Implementation of functions defined in hcRNG.h
 */
 #include "hcRNG/hcRNG.h"
-//#include "hcRNG/private.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#ifdef _MSC_VER
-#include <io.h>
-#else
 #include <unistd.h>
-#endif
 #define CASE_ERR_(code,msg) case code: base = msg; break
 #define CASE_ERR(code)      CASE_ERR_(HCRNG_ ## code, MSG_ ## code)
 
@@ -44,11 +39,7 @@ const char* hcrngGetLibraryRoot()
 	if (lib_path == NULL) {
 		// check if lib_path_default1_check exists
 		if (
-#ifdef _MSC_VER
-		_access(lib_path_default1_check, 0) != -1
-#else
 		access(lib_path_default1_check, F_OK) != -1
-#endif
 		)
 			return lib_path_default1;
 		// last resort
@@ -67,21 +58,13 @@ const char* hcrngGetLibraryDeviceIncludes(int* err)
 		*err = HCRNG_SUCCESS;
 
 	int nbytes;
-#ifdef _MSC_VER
-	nbytes = sprintf_s(
-#else
 	nbytes = snprintf(
-#endif
 		lib_includes,
 		sizeof(lib_includes),
 		"-I\"%s/include\"",
 		hcrngGetLibraryRoot());
 
-#ifdef _MSC_VER
-	if (nbytes < 0) {
-#else
 	if (nbytes >= sizeof(lib_includes)) {
-#endif
 		if (err)
 			*err = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "value of HCRNG_PATH too long (max = %u)", sizeof(lib_includes) - 16);
 		return NULL;

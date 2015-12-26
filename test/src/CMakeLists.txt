@@ -16,33 +16,6 @@ SET (TESTSRCS
     mrg31k3pDouble_test.cpp  mrg32k3aDouble_test.cpp  lfsr113Double_test.cpp  philox432Double_test.cpp
     )
 
-IF(WIN32)
-  #include the additional libraries 
-  #settings->c/c++->general->additional directories 
-  SET(TESTSRCS ${TESTSRCS})
-  ADD_DEFINITIONS(-D__LITTLE_ENDIAN__)
-  ADD_DEFINITIONS(-DTARGET_OS_WIN32=1)
-    
-  IF(MSVC)
-    ADD_DEFINITIONS(/W3)
-    SET (DEBUG_PATH "../../Build/vc11-x86_64/Debug/")
-    SET (RELEASE_PATH "../../Build/vc11-x86_64/Release/")
-    include_directories( ../../source/)
-    SET(CMAKE_CXX_STANDARD_LIBRARIES ${CMAKE_CXX_STANDARD_LIBRARIES} libhcblas.lib)
-    IF(EXISTS "${DEBUG_PATH}/libhcrng.lib")
-     LINK_DIRECTORIES (${DEBUG_PATH})
-    ELSE(EXISTS "${DEBUG_PATH}/libhcrng.lib")
-     LINK_DIRECTORIES (${RELEASE_PATH})
-    ENDIF(EXISTS "${DEBUG_PATH}/libhcrng.lib")
-    FOREACH(test_file ${TESTSRCS})
-      STRING( REPLACE ".cpp" "" testname ${test_file} )
-      ADD_EXECUTABLE( ${testname} ${test_file})
-    ENDFOREACH()
-  ELSE(MSVC)
-    MESSAGE(FATAL_ERROR "TARGET IDE ISNT VISUAL STUDIO 11/12.... EXITING")
-  ENDIF(MSVC)
-ELSE(WIN32)
-
   # Choice to take compilation flags from source or package
   ADD_DEFINITIONS(-DLINUX)
   option(PROFILE "HCRNG profiling" OFF)
@@ -73,5 +46,3 @@ ELSE(WIN32)
     ADD_EXECUTABLE( bin/${testname} ${test_file} )
     SET_PROPERTY(TARGET bin/${testname} APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ${LINK}")
   ENDFOREACH()
-
-ENDIF(WIN32)

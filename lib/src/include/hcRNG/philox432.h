@@ -195,9 +195,4 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 	*/
 	HCRNGAPI hcrngStatus hcrngPhilox432WriteStreamInfo(const hcrngPhilox432Stream* stream, FILE *file);
 
-
-#if 0
-	HCRNGAPI hcrngPhilox432Stream* hcrngPhilox432GetStreamByIndex(hcrngPhilox432Stream* stream, unsigned int index);
-#endif
-
 #endif

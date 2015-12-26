@@ -2,9 +2,6 @@
 #include "hcRNG/hcRNG.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-#if defined ( WIN32 )
-#define __func__ __FUNCTION__
-#endif
 #define MODULAR_NUMBER_TYPE unsigned long
 #define MODULAR_FIXED_SIZE 3
 #include "../include/hcRNG/private/modular.c.h"
@@ -452,12 +449,3 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(size_t streamCount, hc::arr
         });
         return status;
 }
-
-#if 0
-hcrngMrg32k3aStream* Mrg32k3aGetStreamByIndex(hcrngMrg32k3aStream* stream, unsigned int index)
-{
-
-	return &stream[index];
-
-}
-#endif

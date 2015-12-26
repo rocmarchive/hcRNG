@@ -189,9 +189,4 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(size_t streamCount
  */
 HCRNGAPI hcrngStatus hcrngMrg31k3pWriteStreamInfo(const hcrngMrg31k3pStream* stream, FILE *file);
 
-
-#if 0
-HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pGetStreamByIndex(hcrngMrg31k3pStream* stream, unsigned int index);
-#endif
-
 #endif
