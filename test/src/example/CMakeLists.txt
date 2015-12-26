@@ -1,0 +1,3 @@
+FILE(GLOB SRC *.cpp)
+SET(example ${SRC} PARENT_SCOPE)
+
