@@ -50,9 +50,9 @@ static MODULAR_NUMBER_TYPE modMult(MODULAR_NUMBER_TYPE a, MODULAR_NUMBER_TYPE s,
 //  @details Also works if v = s.
 //  @return v = A*s % m
 #ifdef MODULAR_FIXED_SIZE
-static void modMatVec (MODULAR_NUMBER_TYPE A[N][N], MODULAR_NUMBER_TYPE s[N], MODULAR_NUMBER_TYPE v[N], MODULAR_NUMBER_TYPE m) restrict (amp, cpu) 
+static void modMatVec (MODULAR_NUMBER_TYPE A[N][N], MODULAR_NUMBER_TYPE s[N], MODULAR_NUMBER_TYPE v[N], MODULAR_NUMBER_TYPE m) __attribute__((hc, cpu)) 
 #else
-void modMatVec (size_t N, MODULAR_NUMBER_TYPE* A, MODULAR_NUMBER_TYPE* s, MODULAR_NUMBER_TYPE* v, MODULAR_NUMBER_TYPE m) restrict (amp, cpu)
+void modMatVec (size_t N, MODULAR_NUMBER_TYPE* A, MODULAR_NUMBER_TYPE* s, MODULAR_NUMBER_TYPE* v, MODULAR_NUMBER_TYPE m) __attribute__((hc, cpu))
 #endif
 {
     MODULAR_NUMBER_TYPE x[MODULAR_FIXED_SIZE];     // Necessary if v = s

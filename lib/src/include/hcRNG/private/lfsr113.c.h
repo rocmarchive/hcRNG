@@ -10,7 +10,7 @@
 #define Lfsr113_NORM_float  2.3283063e-10
 
 
-hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) restrict (amp, cpu) 
+hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) __attribute__((hc, cpu)) 
 {
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
@@ -20,7 +20,7 @@ hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destSt
 
 /*! @brief Advance the rng one step and returns z such that 1 <= z <= lfsr113_M1
 */
-static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState) restrict (amp, cpu) {
+static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState) __attribute__((hc, cpu)) {
 
 	unsigned long b;
 
@@ -46,21 +46,21 @@ static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngLfsr113RandomU01_##fptype(hcrngLfsr113Stream* stream) restrict (amp, cpu) { \
+	fptype hcrngLfsr113RandomU01_##fptype(hcrngLfsr113Stream* stream) __attribute__((hc, cpu)) { \
 	    return hcrngLfsr113NextState(&stream->current) * Lfsr113_NORM_##fptype; \
 	} \
 	\
-	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) restrict (amp, cpu) { \
+	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) __attribute__((hc, cpu)) { \
 	    return i + (int)((j - i + 1) * hcrngLfsr113RandomU01_##fptype(stream)); \
 	} \
 	\
-	hcrngStatus hcrngLfsr113RandomU01Array_##fptype(hcrngLfsr113Stream* stream, size_t count, fptype* buffer) restrict (amp, cpu) { \
+	hcrngStatus hcrngLfsr113RandomU01Array_##fptype(hcrngLfsr113Stream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngLfsr113RandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngLfsr113RandomIntegerArray_##fptype(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp, cpu) { \
+	hcrngStatus hcrngLfsr113RandomIntegerArray_##fptype(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer) __attribute__((hc, cpu)) { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngLfsr113RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
@@ -80,7 +80,7 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu) 
+hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -90,7 +90,7 @@ hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams)
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu)
+hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -99,7 +99,7 @@ hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* strea
 
 	return HCRNG_SUCCESS;
 }
-void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) restrict (amp, cpu) {
+void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) __attribute__((hc, cpu)) {
 
 	/* The following operations make the jump ahead with
 	2 ^ 55 iterations for every component of the generator.
@@ -181,7 +181,7 @@ void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) restrict (amp, cpu) {
 
 	hcrngLfsr113RewindSubstreams(1, stream);
 }
-hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream* streams) restrict (amp, cpu)
+hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
 	for (size_t k = 0; k < count; k++) {
 
@@ -191,7 +191,7 @@ hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t count, hcrngLfsr113Stream* substreams) restrict (amp, cpu)
+hcrngStatus hcrngLfsr113MakeOverSubstreams(hcrngLfsr113Stream* stream, size_t count, hcrngLfsr113Stream* substreams) __attribute__((hc, cpu))
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;

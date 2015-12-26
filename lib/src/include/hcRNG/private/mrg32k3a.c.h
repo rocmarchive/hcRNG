@@ -26,7 +26,7 @@ unsigned long hcrngMrg32k3a_A2p76[3][3] = {
 	{ 3859662829, 4292754251, 3708466080 }
 };
 
-hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) restrict (amp, cpu) 
+hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) __attribute__((hc, cpu)) 
 {
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
@@ -36,7 +36,7 @@ hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* dest
 
 /*! @brief Advance the rng one step and returns z such that 1 <= z <= Mrg32k3a_M1
 */
-static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentState) restrict (amp, cpu)
+static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentState) __attribute__((hc, cpu))
 {
 
 	unsigned long* g1 = currentState->g1;
@@ -73,21 +73,21 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngMrg32k3aRandomU01_##fptype(hcrngMrg32k3aStream* stream) restrict (amp, cpu){ \
+	fptype hcrngMrg32k3aRandomU01_##fptype(hcrngMrg32k3aStream* stream) __attribute__((hc, cpu)) { \
 	    return hcrngMrg32k3aNextState(&stream->current) * Mrg32k3a_NORM_##fptype; \
 	} \
 	\
-	int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream, int i, int j) restrict (amp, cpu){ \
+	int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream, int i, int j) __attribute__((hc, cpu)) { \
 	    return i + (int)((j - i + 1) * hcrngMrg32k3aRandomU01_##fptype(stream)); \
 	} \
 	\
-	hcrngStatus hcrngMrg32k3aRandomU01Array_##fptype(hcrngMrg32k3aStream* stream, size_t count, fptype* buffer) restrict (amp, cpu){ \
+	hcrngStatus hcrngMrg32k3aRandomU01Array_##fptype(hcrngMrg32k3aStream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngMrg32k3aRandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngMrg32k3aRandomIntegerArray_##fptype(hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer) restrict (amp, cpu){ \
+	hcrngStatus hcrngMrg32k3aRandomIntegerArray_##fptype(hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer) __attribute__((hc, cpu)) { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngMrg32k3aRandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
@@ -107,7 +107,7 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp, cpu)
+hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -117,7 +117,7 @@ hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* stream
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp, cpu)
+hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -127,7 +127,7 @@ hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* str
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) restrict (amp, cpu)
+hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
 {
 	for (size_t k = 0; k < count; k++) {
 		modMatVec(hcrngMrg32k3a_A1p76, streams[k].substream.g1, streams[k].substream.g1, Mrg32k3a_M1);
@@ -138,7 +138,7 @@ hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStre
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) restrict (amp, cpu)
+hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) __attribute__((hc, cpu))
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;

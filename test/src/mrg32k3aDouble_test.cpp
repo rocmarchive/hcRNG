@@ -5,8 +5,8 @@
 #include <assert.h>
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/hcRNG.h>
-#include <amp.h>
-using namespace Concurrency;
+#include <hc.hpp>
+using namespace hc;
 
 void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substream_length, hcrngMrg32k3aStream* streams, double* out_)
 {
@@ -37,10 +37,10 @@ int main()
         size_t streams_per_thread = 2;
         double *Random1 = (double*) malloc(sizeof(double) * numberCount);
         double *Random2 = (double*) malloc(sizeof(double) * numberCount);
-        Concurrency::array_view<double> outBufferDevice(numberCount, Random1);
-        Concurrency::array_view<double> outBufferHost(numberCount, Random2);
+        hc::array_view<double> outBufferDevice(numberCount, Random1);
+        hc::array_view<double> outBufferHost(numberCount, Random2);
         hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
-        Concurrency::array_view<hcrngMrg32k3aStream> streams_buffer(streamCount, streams);
+        hc::array_view<hcrngMrg32k3aStream> streams_buffer(streamCount, streams);
         status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
         if(status) std::cout << "TEST FAILED" << std::endl;
         for (size_t i = 0; i < numberCount; i++)
@@ -57,7 +57,7 @@ int main()
         if(!ispassed1) std::cout << "TEST FAILED" << std::endl;
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
-        Concurrency::array_view<double> outBufferDevice_substream(numberCount, Random3);
+        hc::array_view<double> outBufferDevice_substream(numberCount, Random3);
         status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
         if(status) std::cout << "TEST FAILED" << std::endl;
         multistream_fill_array(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);

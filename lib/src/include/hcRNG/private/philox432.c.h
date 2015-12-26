@@ -11,7 +11,7 @@
 #define Philox432_NORM_double    1.0 / 0x100000000L   // 1.0 /2^32 
 #define Philox432_NORM_float     2.32830644e-010; 
 
-hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432Counter b) restrict (amp, cpu)
+hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432Counter b) __attribute__((hc, cpu))
 {
 	hcrngPhilox432Counter c;
 
@@ -24,7 +24,7 @@ hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432C
 	return c;
 }
 
-hcrngPhilox432Counter hcrngPhilox432Substract(hcrngPhilox432Counter a, hcrngPhilox432Counter b) restrict (amp, cpu) 
+hcrngPhilox432Counter hcrngPhilox432Substract(hcrngPhilox432Counter a, hcrngPhilox432Counter b) __attribute__((hc, cpu)) 
 {
 	hcrngPhilox432Counter c;
 
@@ -37,7 +37,7 @@ hcrngPhilox432Counter hcrngPhilox432Substract(hcrngPhilox432Counter a, hcrngPhil
 	return c;
 }
 
-hcrngStatus hcrngPhilox432CopyOverStreams(size_t count, hcrngPhilox432Stream* destStreams, const hcrngPhilox432Stream* srcStreams) restrict (amp, cpu)
+hcrngStatus hcrngPhilox432CopyOverStreams(size_t count, hcrngPhilox432Stream* destStreams, const hcrngPhilox432Stream* srcStreams) __attribute__((hc, cpu))
 {
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
@@ -45,7 +45,7 @@ hcrngStatus hcrngPhilox432CopyOverStreams(size_t count, hcrngPhilox432Stream* de
 	return HCRNG_SUCCESS;
 }
 
-void hcrngPhilox432GenerateDeck(hcrngPhilox432StreamState *currentState) restrict (amp, cpu) 
+void hcrngPhilox432GenerateDeck(hcrngPhilox432StreamState *currentState) __attribute__((hc, cpu))
 {
 	//Default key
 	philox4x32_key_t k = { { 0, 0 } };
@@ -67,7 +67,7 @@ void hcrngPhilox432GenerateDeck(hcrngPhilox432StreamState *currentState) restric
 
 /*! @brief Advance the rng one step
 */
-static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentState) restrict (amp, cpu) {
+static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentState) __attribute__((hc, cpu)) {
 
 	if (currentState->deckIndex == 0)
 	{
@@ -98,21 +98,21 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngPhilox432RandomU01_##fptype(hcrngPhilox432Stream* stream) restrict (amp, cpu) { \
+	fptype hcrngPhilox432RandomU01_##fptype(hcrngPhilox432Stream* stream) __attribute__((hc, cpu)) { \
 	    return (hcrngPhilox432NextState(&stream->current) + 0.5) * Philox432_NORM_##fptype; \
 	} \
 	\
-	int hcrngPhilox432RandomInteger_##fptype(hcrngPhilox432Stream* stream, int i, int j) restrict (amp, cpu) { \
+	int hcrngPhilox432RandomInteger_##fptype(hcrngPhilox432Stream* stream, int i, int j) __attribute__((hc, cpu)) { \
 	    return i + (int)((j - i + 1) * hcrngPhilox432RandomU01_##fptype(stream)); \
 	} \
 	\
-	hcrngStatus hcrngPhilox432RandomU01Array_##fptype(hcrngPhilox432Stream* stream, size_t count, fptype* buffer) restrict (amp, cpu) { \
+	hcrngStatus hcrngPhilox432RandomU01Array_##fptype(hcrngPhilox432Stream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngPhilox432RandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngPhilox432RandomIntegerArray_##fptype(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer) restrict (amp, cpu) { \
+	hcrngStatus hcrngPhilox432RandomIntegerArray_##fptype(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer) __attribute__((hc, cpu)) { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngPhilox432RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
@@ -132,7 +132,7 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp, cpu)
+hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -142,7 +142,7 @@ hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* stre
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp, cpu)
+hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
@@ -152,7 +152,7 @@ hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* s
 	return HCRNG_SUCCESS;
 }
 
-void Philox432ResetNextSubStream(hcrngPhilox432Stream* stream)restrict (amp, cpu) {
+void Philox432ResetNextSubStream(hcrngPhilox432Stream* stream) __attribute__((hc, cpu)) {
 
 	//2^64 states
 	hcrngPhilox432Counter steps = { { 0, 1 }, { 0, 0 } };
@@ -163,7 +163,7 @@ void Philox432ResetNextSubStream(hcrngPhilox432Stream* stream)restrict (amp, cpu
 	hcrngPhilox432RewindSubstreams(1, stream);
 }
 
-hcrngStatus hcrngPhilox432ForwardToNextSubstreams(size_t count, hcrngPhilox432Stream* streams) restrict (amp, cpu) 
+hcrngStatus hcrngPhilox432ForwardToNextSubstreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
 	for (size_t k = 0; k < count; k++) {
 
@@ -173,7 +173,7 @@ hcrngStatus hcrngPhilox432ForwardToNextSubstreams(size_t count, hcrngPhilox432St
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngPhilox432MakeOverSubstreams(hcrngPhilox432Stream* stream, size_t count, hcrngPhilox432Stream* substreams) restrict (amp, cpu)
+hcrngStatus hcrngPhilox432MakeOverSubstreams(hcrngPhilox432Stream* stream, size_t count, hcrngPhilox432Stream* substreams) __attribute__((hc, cpu))
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;

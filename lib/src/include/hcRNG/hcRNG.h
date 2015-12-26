@@ -13,11 +13,11 @@
 
 #include <iostream>
 //#include <hc.hpp>
-#include <amp.h>
+#include <hc.hpp>
 #include <amp_short_vectors.h>
 
 //using namespace hc;
-using namespace Concurrency;
+using namespace hc;
 using namespace Concurrency::graphics;
 using namespace std;
 

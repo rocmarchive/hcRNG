@@ -185,10 +185,10 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 	/** \internal
 	 *  @brief Helper function for hcrngPhilox432DeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-		size_t numberCount, Concurrency::array_view<float> &outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-                size_t numberCount, Concurrency::array_view<double> &outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+	HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hc::array_view<hcrngPhilox432Stream> &streams,
+		size_t numberCount, hc::array_view<float> &outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hc::array_view<hcrngPhilox432Stream> &streams,
+                size_t numberCount, hc::array_view<double> &outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()

@@ -449,8 +449,8 @@ hcrngStatus hcrngPhilox432AdvanceStreams(size_t count, hcrngPhilox432Stream* str
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-	size_t numberCount, Concurrency::array_view<float> &outBuffer, int streamlength, size_t streams_per_thread)
+hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hc::array_view<hcrngPhilox432Stream> &streams,
+	size_t numberCount, hc::array_view<float> &outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
 	//Check params
@@ -458,13 +458,13 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concur
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
 	if (numberCount < 1)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        std::vector<Concurrency::accelerator>acc = Concurrency::accelerator::get_all();
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
         accelerator_view accl_view = (acc[1].create_view());
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
-        Concurrency::extent<1> grdExt(size);
-        Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
-        Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
@@ -483,21 +483,21 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, Concur
         return status;
 }
 
-hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, Concurrency::array_view<hcrngPhilox432Stream> &streams,
-        size_t numberCount, Concurrency::array_view<double> &outBuffer, int streamlength, size_t streams_per_thread)
+hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hc::array_view<hcrngPhilox432Stream> &streams,
+        size_t numberCount, hc::array_view<double> &outBuffer, int streamlength, size_t streams_per_thread)
 {
         //Check params
         if (streamCount < 1)
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
         if (numberCount < 1)
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        std::vector<Concurrency::accelerator>acc = Concurrency::accelerator::get_all();
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
         accelerator_view accl_view = (acc[1].create_view());
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
-        Concurrency::extent<1> grdExt(size);
-        Concurrency::tiled_extent<BLOCK_SIZE> t_ext(grdExt);
-        Concurrency::parallel_for_each(accl_view, t_ext, [ = ] (Concurrency::tiled_index<BLOCK_SIZE> tidx) restrict(amp) {
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
