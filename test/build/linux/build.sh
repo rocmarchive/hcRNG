@@ -1,2 +1,3 @@
-mkdir bin
-cmake ../../src -DCMAKE_CXX_FLAGS=-fPIC  
+cmake ../../ -DCMAKE_CXX_FLAGS=-fPIC  
+cd src
+mkdir bin/
