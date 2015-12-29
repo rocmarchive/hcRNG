@@ -28,9 +28,9 @@ set (HCC_CXXFLAGS "${HCC_CXXFLAGS}")
 set (HCC_LDFLAGS "${HCC_LDFLAGS}")
 
 SET_PROPERTY(SOURCE ${SRCS} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} -DGTEST_HAS_TR1_TUPLE=0 ")
-ADD_EXECUTABLE(test_Destroy_Stream_Creator ${SRCS})
-SET_PROPERTY(TARGET test_Destroy_Stream_Creator APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS}")
+ADD_EXECUTABLE(test_Streams ${SRCS})
+SET_PROPERTY(TARGET test_Streams APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ")
 
-TARGET_LINK_LIBRARIES(test_Destroy_Stream_Creator hcrng)
+TARGET_LINK_LIBRARIES(test_Streams hcrng)
 
-add_test(NAME testDestroyStreamCreator COMMAND test_Destroy_Stream_Creator)
+add_test(NAME testStreams COMMAND test_Streams)

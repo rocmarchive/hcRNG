@@ -1,4 +1,4 @@
 cmake_minimum_required(VERSION 2.8)
 
-add_subdirectory(hcrng_DestroyStreamCreator)
-#add_subdirectory(hcrng_CreateStreams)
+add_subdirectory(hcrng_StreamCreator)
+add_subdirectory(hcrng_Streams)
