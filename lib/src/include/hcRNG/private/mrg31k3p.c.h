@@ -34,6 +34,10 @@ unsigned int hcrngMrg31k3p_A2p72[3][3] = {
 
 hcrngStatus hcrngMrg31k3pCopyOverStreams(size_t count, hcrngMrg31k3pStream* destStreams, const hcrngMrg31k3pStream* srcStreams) __attribute__((hc, cpu))
 {
+    if (!destStreams)
+        return HCRNG_INVALID_VALUE;
+    if (!srcStreams)
+        return HCRNG_INVALID_VALUE;
     for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -128,6 +132,8 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 hcrngStatus hcrngMrg31k3pRewindStreams(size_t count, hcrngMrg31k3pStream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
@@ -139,6 +145,8 @@ hcrngStatus hcrngMrg31k3pRewindStreams(size_t count, hcrngMrg31k3pStream* stream
 hcrngStatus hcrngMrg31k3pRewindSubstreams(size_t count, hcrngMrg31k3pStream* streams) __attribute__((hc, cpu))
 {
 
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream;
@@ -149,6 +157,9 @@ hcrngStatus hcrngMrg31k3pRewindSubstreams(size_t count, hcrngMrg31k3pStream* str
 
 hcrngStatus hcrngMrg31k3pForwardToNextSubstreams(size_t count, hcrngMrg31k3pStream* streams) __attribute__((hc, cpu))
 {
+
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
 	
 	for (size_t k = 0; k < count; k++) {
 		modMatVec (hcrngMrg31k3p_A1p72, streams[k].substream.g1, streams[k].substream.g1, mrg31k3p_M1);

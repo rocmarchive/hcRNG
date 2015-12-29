@@ -12,6 +12,11 @@
 
 hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) __attribute__((hc, cpu)) 
 {
+        if (!destStreams)
+                return HCRNG_INVALID_VALUE;
+        if (!srcStreams)
+                return HCRNG_INVALID_VALUE;
+
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -82,6 +87,9 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
+
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
@@ -92,6 +100,9 @@ hcrngStatus hcrngLfsr113RewindStreams(size_t count, hcrngLfsr113Stream* streams)
 
 hcrngStatus hcrngLfsr113RewindSubstreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
+
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream;
@@ -183,6 +194,9 @@ void lfsr113ResetNextSubStream(hcrngLfsr113Stream* stream) __attribute__((hc, cp
 }
 hcrngStatus hcrngLfsr113ForwardToNextSubstreams(size_t count, hcrngLfsr113Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
+
 	for (size_t k = 0; k < count; k++) {
 
 		lfsr113ResetNextSubStream(&streams[k]);

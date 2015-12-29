@@ -39,6 +39,11 @@ hcrngPhilox432Counter hcrngPhilox432Substract(hcrngPhilox432Counter a, hcrngPhil
 
 hcrngStatus hcrngPhilox432CopyOverStreams(size_t count, hcrngPhilox432Stream* destStreams, const hcrngPhilox432Stream* srcStreams) __attribute__((hc, cpu))
 {
+        if (!destStreams)
+                return HCRNG_INVALID_VALUE;
+        if (!srcStreams)
+                return HCRNG_INVALID_VALUE;
+
 	for (size_t i = 0; i < count; i++)
 		destStreams[i] = srcStreams[i];
 
@@ -134,6 +139,8 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
 	//Reset current state to the stream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream = streams[j].initial;
@@ -144,6 +151,8 @@ hcrngStatus hcrngPhilox432RewindStreams(size_t count, hcrngPhilox432Stream* stre
 
 hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
 	//Reset current state to the subStream initial state
 	for (size_t j = 0; j < count; j++) {
 		streams[j].current = streams[j].substream;
@@ -165,6 +174,9 @@ void Philox432ResetNextSubStream(hcrngPhilox432Stream* stream) __attribute__((hc
 
 hcrngStatus hcrngPhilox432ForwardToNextSubstreams(size_t count, hcrngPhilox432Stream* streams) __attribute__((hc, cpu))
 {
+        if (!streams)
+                return HCRNG_INVALID_VALUE;
+
 	for (size_t k = 0; k < count; k++) {
 
 		Philox432ResetNextSubStream(&streams[k]);
