@@ -2,13 +2,9 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8.8) 
 MESSAGE(STATUS "CMAKE VERSION ${CMAKE_VERSION}")
 
-#Setting a Project name
-SET(PROJECT_NAME "libhcrngtest")
-PROJECT (${PROJECT_NAME})
-MESSAGE(STATUS "PROJECT NAME    : ${PROJECT_NAME}")
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# Find HCC compiler
 FIND_PACKAGE(HC++ 1.0 REQUIRED)
-
 
 #Setting a variable for source files
 SET (TESTSRCS
@@ -17,21 +13,15 @@ SET (TESTSRCS
     )
 
   # Choice to take compilation flags from source or package
-  ADD_DEFINITIONS(-DLINUX)
-  option(PROFILE "HCRNG profiling" OFF)
-  IF(PROFILE)
-   ADD_DEFINITIONS(-DPROFILE)
-  ENDIF(PROFILE)
-
   if(EXISTS ${MCWHCCBUILD})
     execute_process(COMMAND ${HCC_CONFIG} --build --cxxflags
                             OUTPUT_VARIABLE HCC_CXXFLAGS)
     execute_process(COMMAND ${HCC_CONFIG} --build --ldflags 
                             OUTPUT_VARIABLE HCC_LDFLAGS)
   else(EXISTS ${MCWHCCBUILD})
-    execute_process(COMMAND ${HCC_CONFIG} --cxxflags
+    execute_process(COMMAND ${HCC_CONFIG} --install --cxxflags
                             OUTPUT_VARIABLE HCC_CXXFLAGS)
-    execute_process(COMMAND ${HCC_CONFIG} --ldflags 
+    execute_process(COMMAND ${HCC_CONFIG} --install --ldflags 
                             OUTPUT_VARIABLE HCC_LDFLAGS)
   endif(EXISTS ${MCWHCCBUILD})
 
@@ -45,4 +35,5 @@ SET (TESTSRCS
     STRING( REPLACE "_test.cpp" "" testname ${test_file} )
     ADD_EXECUTABLE( bin/${testname} ${test_file} )
     SET_PROPERTY(TARGET bin/${testname} APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ${LINK}")
+#    TARGET_LINK_LIBRARIES(src/bin/${testname} hcrng)
   ENDFOREACH()

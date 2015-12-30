@@ -1,30 +1,16 @@
 # This script is invoked to uninstall the hcRNG library and test sources
 # Preliminary version
 
+# This script is invoked to uninstall the hcfft library and test sources
+# Preliminary version
+
 # CURRENT_WORK_DIRECTORY
 current_work_dir=$PWD
 
-#Move to library build
-cd $current_work_dir/lib/build/linux
+# Remove system wide installed lib and headers
+sudo xargs rm < $current_work_dir/build/lib/install_manifest.txt
 
-#Invoke clean script
-sh clean.sh
-
-#Move to test build
-cd $current_work_dir/test/build/linux
-
-#Invoke clean script
-sh clean.sh
-
-#Remove installed libraries and headers
-sudo rm /usr/lib/libhcrng.so
-sudo rm -rf /usr/local/include/hcRNG
-
-#Remove CMake progress folders
-DIRECTORY=$CURRENTDIR/lib/build/linux/CMakeFiles
-if [ -d "$DIRECTORY" ]; then
-  cd $CURRENTDIR/lib/build/linux/
-  sudo rm -rf CMakeFiles
-fi
+# Remove build
+sudo rm -rf $current_work_dir/build
 
 # TODO: ADD More options
