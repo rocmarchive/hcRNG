@@ -8,8 +8,7 @@ FIND_PACKAGE(HC++ 1.0 REQUIRED)
 
 #Setting a variable for source files
 SET (TESTSRCS
-    mrg31k3pSingle_test.cpp  mrg32k3aSingle_test.cpp  lfsr113Single_test.cpp  philox432Single_test.cpp
-    mrg31k3pDouble_test.cpp  mrg32k3aDouble_test.cpp  lfsr113Double_test.cpp  philox432Double_test.cpp
+    Host_only.cpp  Multistream.cpp  Randomarray.cpp
     )
 
   # Choice to take compilation flags from source or package
@@ -31,7 +30,7 @@ SET (TESTSRCS
   set (HCC_LDFLAGS "${HCC_LDFLAGS}")
   FOREACH(test_file ${TESTSRCS})
     SET_PROPERTY(SOURCE ${test_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS}")
-    STRING( REPLACE "_test.cpp" "" testname ${test_file} )
+    STRING( REPLACE ".cpp" "" testname ${test_file} )
     ADD_EXECUTABLE( bin/${testname} ${test_file} )
     SET_PROPERTY(TARGET bin/${testname} APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS}")
     TARGET_LINK_LIBRARIES(bin/${testname} hcrng)

@@ -51,6 +51,7 @@ sudo make install
 # Build Tests
 cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/ 
 mkdir $current_work_dir/build/test/src/bin/
+mkdir $current_work_dir/build/test/example/bin/
 make
 
 # Simple test to confirm installation
