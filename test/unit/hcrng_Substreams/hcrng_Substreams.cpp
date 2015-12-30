@@ -48,6 +48,12 @@ TEST(hcrng_Substreams, func_correct_Substreams_Mrg31k3p ) {
     status = hcrngMrg31k3pForwardToNextSubstreams(STREAM_COUNT, stream2);
     EXPECT_EQ(status, HCRNG_SUCCESS);
 
+    /* Rewind substream with NULL substream and allocated substream */
+    status = hcrngMrg31k3pRewindSubstreams(STREAM_COUNT, stream1);
+    EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+    status = hcrngMrg31k3pRewindSubstreams(STREAM_COUNT, stream2);
+    EXPECT_EQ(status, HCRNG_SUCCESS);
+ 
     /* Make over substreams */
     hcrngMrg31k3pStream* substreams = hcrngMrg31k3pAllocStreams(STREAM_COUNT, &streamBufferSize, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
@@ -103,6 +109,12 @@ TEST(hcrng_Substreams, func_correct_Substreams_Mrg32k3a ) {
     status = hcrngMrg32k3aForwardToNextSubstreams(STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
     status = hcrngMrg32k3aForwardToNextSubstreams(STREAM_COUNT, stream2);
+    EXPECT_EQ(status, HCRNG_SUCCESS);
+
+    /* Rewind substream with NULL substream and allocated substream */
+    status = hcrngMrg32k3aRewindSubstreams(STREAM_COUNT, stream1);
+    EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+    status = hcrngMrg32k3aRewindSubstreams(STREAM_COUNT, stream2);
     EXPECT_EQ(status, HCRNG_SUCCESS);
 
     /* Make over substreams */
@@ -162,6 +174,12 @@ TEST(hcrng_Substreams, func_correct_Substreams_Lfsr113 ) {
     status = hcrngLfsr113ForwardToNextSubstreams(STREAM_COUNT, stream2);
     EXPECT_EQ(status, HCRNG_SUCCESS);
 
+    /* Rewind substream with NULL substream and allocated substream */
+    status = hcrngLfsr113RewindSubstreams(STREAM_COUNT, stream1);
+    EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+    status = hcrngLfsr113RewindSubstreams(STREAM_COUNT, stream2);
+    EXPECT_EQ(status, HCRNG_SUCCESS);
+
     /* Make over substreams */
     hcrngLfsr113Stream* substreams = hcrngLfsr113AllocStreams(STREAM_COUNT, &streamBufferSize, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
@@ -217,6 +235,12 @@ TEST(hcrng_Substreams, func_correct_Substreams_Philox432 ) {
     status = hcrngPhilox432ForwardToNextSubstreams(STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
     status = hcrngPhilox432ForwardToNextSubstreams(STREAM_COUNT, stream2);
+    EXPECT_EQ(status, HCRNG_SUCCESS);
+
+    /* Rewind substream with NULL substream and allocated substream */
+    status = hcrngPhilox432RewindSubstreams(STREAM_COUNT, stream1);
+    EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+    status = hcrngPhilox432RewindSubstreams(STREAM_COUNT, stream2);
     EXPECT_EQ(status, HCRNG_SUCCESS);
 
     /* Make over substreams */

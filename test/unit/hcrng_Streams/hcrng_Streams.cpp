@@ -14,6 +14,10 @@ TEST(hcrng_Streams, func_correct_Streams_Mrg31k3p ) {
     status = hcrngMrg31k3pCreateOverStreams(NULL, STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE); 
 
+    /* Copy streams with NULL buffer */
+    hcrngMrg31k3pStream* stream = hcrngMrg31k3pCopyStreams(STREAM_COUNT, stream1, &err);
+    EXPECT_EQ(err, HCRNG_INVALID_VALUE);
+
    /* Destroy NULL stream */
     status = hcrngMrg31k3pDestroyStreams(stream1);
     EXPECT_EQ(status, HCRNG_SUCCESS);
@@ -54,6 +58,10 @@ TEST(hcrng_Streams, func_correct_Streams_Mrg31k3p ) {
     hcrngMrg31k3pStream *stream5 = hcrngMrg31k3pCreateStreams(creator2, STREAM_COUNT, &streamBufferSize, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
 
+    /* Copy streams with allocated buffer */
+    hcrngMrg31k3pStream* stream6 = hcrngMrg31k3pCopyStreams(STREAM_COUNT, stream5, &err);
+    EXPECT_EQ(err, HCRNG_SUCCESS); 
+
     /* Destroy streams */
     status = hcrngMrg31k3pDestroyStreams(stream4);
     EXPECT_EQ(status, HCRNG_SUCCESS);
@@ -68,6 +76,11 @@ TEST(hcrng_Streams, func_correct_Streams_Mrg32k3a ) {
     /* Create Over streams when passing NULL stream */
     status = hcrngMrg32k3aCreateOverStreams(NULL, STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+
+    /* Copy streams with NULL buffer */
+    hcrngMrg32k3aStream* stream = hcrngMrg32k3aCopyStreams(STREAM_COUNT, stream1, &err);
+    EXPECT_EQ(err, HCRNG_INVALID_VALUE);
+
 
     /* Destroy NULL stream */
     status = hcrngMrg32k3aDestroyStreams(stream1);
@@ -108,6 +121,10 @@ TEST(hcrng_Streams, func_correct_Streams_Mrg32k3a ) {
     /* Create streams with allocated creator */
     hcrngMrg32k3aStream *stream5 = hcrngMrg32k3aCreateStreams(creator2, STREAM_COUNT, &streamBufferSize, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
+   
+    /* Copy streams with allocated buffer */
+    hcrngMrg32k3aStream* stream6 = hcrngMrg32k3aCopyStreams(STREAM_COUNT, stream5, &err);
+    EXPECT_EQ(err, HCRNG_SUCCESS);
 
     /* Destroy streams of streamBufferSize */
     status = hcrngMrg32k3aDestroyStreams(stream4);
@@ -124,6 +141,10 @@ TEST(hcrng_Streams, func_correct_Streams_Lfsr113 ) {
     status = hcrngLfsr113CreateOverStreams(NULL, STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
+    /* Copy streams with NULL buffer */
+    hcrngLfsr113Stream* stream = hcrngLfsr113CopyStreams(STREAM_COUNT, stream1, &err);
+    EXPECT_EQ(err, HCRNG_INVALID_VALUE);
+  
     /* Destroy NULL stream */
     status = hcrngLfsr113DestroyStreams(stream1);
     EXPECT_EQ(status, HCRNG_SUCCESS);
@@ -164,6 +185,10 @@ TEST(hcrng_Streams, func_correct_Streams_Lfsr113 ) {
     hcrngLfsr113Stream *stream5 = hcrngLfsr113CreateStreams(creator2, STREAM_COUNT, &streamBufferSize, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
 
+    /* Copy streams with allocated buffer */
+    hcrngLfsr113Stream* stream6 = hcrngLfsr113CopyStreams(STREAM_COUNT, stream5, &err);
+    EXPECT_EQ(err, HCRNG_SUCCESS);
+
     /* Destroy streams of streamBufferSize */
     status = hcrngLfsr113DestroyStreams(stream4);
     EXPECT_EQ(status, HCRNG_SUCCESS);
@@ -179,6 +204,11 @@ TEST(hcrng_Streams, func_correct_Streams_Philox432 ) {
     status = hcrngPhilox432CreateOverStreams(NULL, STREAM_COUNT, stream1);
     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
+    /* Copy streams with NULL buffer */
+    hcrngPhilox432Stream* stream = hcrngPhilox432CopyStreams(STREAM_COUNT, stream1, &err);
+    EXPECT_EQ(err, HCRNG_INVALID_VALUE);
+
+ 
     /* Destroy NULL stream */
     status = hcrngPhilox432DestroyStreams(stream1);
     EXPECT_EQ(status, HCRNG_SUCCESS);
@@ -217,6 +247,10 @@ TEST(hcrng_Streams, func_correct_Streams_Philox432 ) {
 
     /* Create streams with allocated creator */
     hcrngPhilox432Stream *stream5 = hcrngPhilox432CreateStreams(creator2, STREAM_COUNT, &streamBufferSize, &err);
+    EXPECT_EQ(err, HCRNG_SUCCESS);
+
+    /* Copy streams with allocated buffer */
+    hcrngPhilox432Stream* stream6 = hcrngPhilox432CopyStreams(STREAM_COUNT, stream5, &err);
     EXPECT_EQ(err, HCRNG_SUCCESS);
 
     /* Destroy streams of streamBufferSize */
