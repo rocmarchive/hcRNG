@@ -28,9 +28,9 @@ set (HCC_CXXFLAGS "${HCC_CXXFLAGS}")
 set (HCC_LDFLAGS "${HCC_LDFLAGS}")
 
 SET_PROPERTY(SOURCE ${SRCS} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} -DGTEST_HAS_TR1_TUPLE=0 ")
-ADD_EXECUTABLE(test_Substreams ${SRCS})
-SET_PROPERTY(TARGET test_Substreams APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ")
+ADD_EXECUTABLE(../bin/test_Substreams ${SRCS})
+SET_PROPERTY(TARGET ../bin/test_Substreams APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ")
 
-TARGET_LINK_LIBRARIES(test_Substreams hcrng)
+TARGET_LINK_LIBRARIES(../bin/test_Substreams hcrng)
 
-add_test(NAME testSubstreams COMMAND test_Substreams)
+add_test(NAME testSubstreams COMMAND ../bin/test_Substreams)
