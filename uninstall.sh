@@ -2,9 +2,6 @@
 # This script is invoked to uninstall the hcRNG library and test sources
 # Preliminary version
 
-# This script is invoked to uninstall the hcfft library and test sources
-# Preliminary version
-
 # CURRENT_WORK_DIRECTORY
 current_work_dir=$PWD
 

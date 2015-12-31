@@ -43,11 +43,36 @@ This repository hosts the HCC implementation of uniform random number generators
 
 ### B. HCRNG Installation 
 
-(i) Clone MCW HCRNG source codes
+Clone MCW HCRNG source codes
 
        * cd ~/
 
        * git clone https://bitbucket.org/multicoreware/hcrng.git
 
        * cd ~/hcrng
+
+       * ./install.sh test=ON/OFF 
+       Where
+       test=OFF    - Build library and tests
+       test=ON     - Build library, tests and run test.sh (do functionality check and gtest)
+
+### C. Unit testing
+
+### Testing:
+
+     * cd ~/hcrng/test/
+
+     * ./test.sh
+
+### Manual testing: 
+
+(i)   Functionality check
+
+     * cd ~/hcrng/build/test/src/bin/
+       Run all executables (stream and substream device kernel outputs are compared with host outputs).
+
+(ii)  Google testing (GTEST)
+
+     * cd ~/hcrng/build/test/unit/bin/
+       All functions are tested against google test.
 

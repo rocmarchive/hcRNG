@@ -45,7 +45,7 @@ build_dir=$current_work_dir/build
 # change to library build
 cd $build_dir
 
-# Cmake and make libhcfft: Install hcFFT
+# Cmake and make libhcRNG: Install hcRNG
 cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
 sudo make install
 
@@ -72,4 +72,4 @@ fi
 echo "HCRNG Installation Completed!"
 
 
-# TODO: ADD More options to perform benchmark and testing
+# TODO: ADD More options to perform benchmark
