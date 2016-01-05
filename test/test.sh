@@ -45,13 +45,16 @@ runcmd8="$path2philox432double >> testlog.txt"
 eval $runcmd8
 
 echo "TEST PASSED" >> testlog.txt
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
 DIFF=$(diff testlog.txt testlog_temp.txt)
 if [ "$DIFF" != "" ]
 then
-    echo "Functionality Check ---- [ FAILED ]"
+    echo "${red}Functionality Check ---- [ FAILED ]${reset}"
     rm testlog_temp.txt
 else
-    echo "Functionality Check ---- [ PASSED ]"
+    echo "${green}Functionality Check ---- [ PASSED ]${reset}"
     rm testlog*
 fi
 
@@ -80,8 +83,8 @@ eval $runcmd4
 Log_file="$working_dir1/gtestlog.txt"
 if grep -q FAILED "$Log_file"; 
 then
-    echo "GTEST               ---- [ FAILED ]"   
+    echo "${red}GTEST               ---- [ FAILED ]${reset}"   
 else
-    echo "GTEST               ---- [ PASSED ]"
+    echo "${green}GTEST               ---- [ PASSED ]${reset}"
+    rm $working_dir1/gtestlog.txt
 fi
-rm $working_dir1/gtestlog.txt

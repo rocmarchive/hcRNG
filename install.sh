@@ -38,7 +38,9 @@ set +e
 mkdir $current_work_dir/build
 mkdir $current_work_dir/build/test
 set -e
-
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
 # SET BUILD DIR
 build_dir=$current_work_dir/build
 
@@ -68,8 +70,8 @@ if [ "$var1" = "test=on" ]; then
 #Invoke test script
   ./test.sh
 
+else
+  echo "${green}HCRNG Installation Completed!${reset}"
 fi
-echo "HCRNG Installation Completed!"
-
 
 # TODO: ADD More options to perform benchmark
