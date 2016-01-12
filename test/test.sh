@@ -63,22 +63,11 @@ working_dir1="$current_work_dir/../build/test/unit/bin/"
 cd $working_dir1
 
 #Gtest functions
-path2StreamCreator="$working_dir1/test_Stream_Creator"
-path2Streams="$working_dir1/test_Streams"
-path2Substreams="$working_dir1/test_Substreams"
-path2Randomarray="$working_dir1/test_Randomarray"
+unittest="$working_dir1/unittest"
 
-runcmd1="$path2StreamCreator >> gtestlog.txt"
+runcmd1="$unittest >> gtestlog.txt"
 eval $runcmd1
 
-runcmd2="$path2Streams >> gtestlog.txt"
-eval $runcmd2
-
-runcmd3="$path2Substreams >> gtestlog.txt"
-eval $runcmd3
-
-runcmd4="$path2Randomarray >> gtestlog.txt"
-eval $runcmd4
 
 Log_file="$working_dir1/gtestlog.txt"
 if grep -q FAILED "$Log_file"; 
