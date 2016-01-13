@@ -6,6 +6,7 @@
 #include <hcRNG/lfsr113.h>
 #include <hcRNG/hcRNG.h>
 #include <hc.hpp>
+#include "gtest/gtest.h"
 using namespace hc;
 
 void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substream_length, hcrngLfsr113Stream* streams, double* out_)
@@ -25,7 +26,7 @@ void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substre
   }
 }
 
-int main()
+TEST(lfsr113Double_test, Functional_check_lfsr113Double)
 {
         hcrngLfsr113Stream* stream = NULL;
         hcrngStatus status = HCRNG_SUCCESS;
@@ -42,34 +43,24 @@ int main()
         hcrngLfsr113Stream *streams = hcrngLfsr113CreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hc::array_view<hcrngLfsr113Stream> streams_buffer(streamCount, streams);
         status = hcrngLfsr113DeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
-        if(status) std::cout << "TEST FAILED" << std::endl;
+        EXPECT_EQ(status, 0);
+
         for (size_t i = 0; i < numberCount; i++)
             outBufferHost[i] = hcrngLfsr113RandomU01(&streams[i % streamCount]);   
+
         for(int i =0; i < numberCount; i++) {
-           if (outBufferDevice[i] != outBufferHost[i]) {
-                ispassed1 = 0;
-                std::cout <<" RANDDEVICE[" << i<< "] " << outBufferDevice[i] << "and RANDHOST[" << i <<"] mismatches"<< outBufferHost[i] << std::endl;
-                break;
-            }
-            else
-                continue;
+           EXPECT_EQ(outBufferDevice[i], outBufferHost[i]);
         }
-        if(!ispassed1) std::cout << "TEST FAILED" << std::endl;
+
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
         hc::array_view<double> outBufferDevice_substream(numberCount, Random3);
         status = hcrngLfsr113DeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
-        if(status) std::cout << "TEST FAILED" << std::endl;
+        EXPECT_EQ(status, 0);
+        
         multistream_fill_array(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
+
         for(int i =0; i < numberCount; i++) {
-           if (outBufferDevice_substream[i] != Random4[i]) {
-                ispassed2 = 0;
-                std::cout <<" RANDDEVICE_SUBSTREAM[" << i<< "] " << outBufferDevice_substream[i] << "and RANDHOST_SUBSTREAM[" << i <<"] mismatches"<< Random4[i] << std::endl;
-                break;
-            }
-            else
-                continue;
+           EXPECT_EQ(outBufferDevice_substream[i], Random4[i]);
         }
-        if(!ispassed2) std::cout << "TEST FAILED" << std::endl;
-        return 0;
 }

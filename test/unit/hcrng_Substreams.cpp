@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 #define STREAM_COUNT 10
 
-TEST(hcrng_Substreams, func_correct_Substreams_Mrg31k3p ) {
+TEST(hcrng_Substreams, Return_Check_Substreams_Mrg31k3p ) {
     hcrngMrg31k3pStream* stream1 = NULL;
     hcrngStatus status, err;
     hcrngMrg31k3pStreamCreator* creator1 = NULL;
@@ -69,7 +69,7 @@ TEST(hcrng_Substreams, func_correct_Substreams_Mrg31k3p ) {
     EXPECT_EQ(err, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Substreams, func_correct_Substreams_Mrg32k3a ) {
+TEST(hcrng_Substreams, Return_Check_Substreams_Mrg32k3a ) {
     hcrngMrg32k3aStream* stream1 = NULL;
     hcrngStatus status, err;
     hcrngMrg32k3aStreamCreator* creator1 = NULL;
@@ -132,7 +132,7 @@ TEST(hcrng_Substreams, func_correct_Substreams_Mrg32k3a ) {
     EXPECT_EQ(err, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Substreams, func_correct_Substreams_Lfsr113 ) {
+TEST(hcrng_Substreams, Return_Check_Substreams_Lfsr113 ) {
     hcrngLfsr113Stream* stream1 = NULL;
     hcrngStatus status, err;
     hcrngLfsr113StreamCreator* creator1 = NULL;
@@ -195,7 +195,7 @@ TEST(hcrng_Substreams, func_correct_Substreams_Lfsr113 ) {
     EXPECT_EQ(err, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Substreams, func_correct_Substreams_Philox432 ) {
+TEST(hcrng_Substreams, Return_Check_Substreams_Philox432 ) {
     hcrngPhilox432Stream* stream1 = NULL;
     hcrngStatus status, err;
     hcrngPhilox432StreamCreator* creator1 = NULL;

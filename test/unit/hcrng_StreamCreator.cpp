@@ -6,7 +6,7 @@
 #include "gtest/gtest.h"
 
   
-TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Mrg31k3p ) {
+TEST(hcrng_Stream_Creator, Return_Check_Stream_Creator_Mrg31k3p ) {
     hcrngMrg31k3pStreamCreator* creator1 = NULL;
     hcrngStatus status, err;
 
@@ -29,7 +29,7 @@ TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Mrg31k3p ) {
     EXPECT_EQ(status, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Mrg32k3a ) {
+TEST(hcrng_Stream_Creator, Return_Check_Stream_Creator_Mrg32k3a ) {
     hcrngMrg32k3aStreamCreator* creator1 = NULL;
     hcrngStatus status, err;
 
@@ -52,7 +52,7 @@ TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Mrg32k3a ) {
     EXPECT_EQ(status, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Lfsr113 ) {
+TEST(hcrng_Stream_Creator, Return_Check_Stream_Creator_Lfsr113 ) {
     hcrngLfsr113StreamCreator* creator1 = NULL;
     hcrngStatus status, err;
 
@@ -75,7 +75,7 @@ TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Lfsr113 ) {
     EXPECT_EQ(status, HCRNG_SUCCESS);
 }
 
-TEST(hcrng_Stream_Creator, func_correct_Stream_Creator_Philox432 ) {
+TEST(hcrng_Stream_Creator, Return_Check_Stream_Creator_Philox432 ) {
     hcrngPhilox432StreamCreator* creator1 = NULL;
     hcrngStatus status, err;
 

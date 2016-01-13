@@ -12,7 +12,7 @@
 #define STREAMS_PER_THREAD 2
 typedef double fp_type;
 
-TEST(hcrng_Randomarray, func_correct_Randomarray_double_Mrg31k3p ) {
+TEST(hcrng_Randomarray, Return_Check_Randomarray_double_Mrg31k3p ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
      //Allocate Host pointers
@@ -54,7 +54,7 @@ TEST(hcrng_Randomarray, func_correct_Randomarray_double_Mrg31k3p ) {
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
 
-TEST(hcrng_Randomarray, func_correct_Randomarray_double_Mrg32k3a ) {
+TEST(hcrng_Randomarray, Return_Check_Randomarray_double_Mrg32k3a ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
      //Allocate Host pointers
@@ -96,7 +96,7 @@ TEST(hcrng_Randomarray, func_correct_Randomarray_double_Mrg32k3a ) {
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
 
-TEST(hcrng_Randomarray, func_correct_Randomarray_double_Lfsr113 ) { 
+TEST(hcrng_Randomarray, Return_Check_Randomarray_double_Lfsr113 ) { 
      hcrngStatus status, err;
      size_t streamBufferSize;
      //Allocate Host pointers
@@ -138,7 +138,7 @@ TEST(hcrng_Randomarray, func_correct_Randomarray_double_Lfsr113 ) {
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
 
-TEST(hcrng_Randomarray, func_correct_Randomarray_double_Philox432 ) {
+TEST(hcrng_Randomarray, Return_Check_Randomarray_double_Philox432 ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
      //Allocate Host pointers
