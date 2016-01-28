@@ -27,7 +27,7 @@ void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substre
   }
 }
 
-TEST(mrg31k3Double_test, Functional_check_mrg31k3Double)
+TEST(mrg31k3pDouble_test, Functional_check_mrg31k3pDouble)
 {
         hcrngMrg31k3pStream* stream = NULL;
         hcrngStatus status = HCRNG_SUCCESS;
