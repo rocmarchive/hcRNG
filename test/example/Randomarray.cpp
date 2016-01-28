@@ -8,6 +8,8 @@
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/hcRNG.h>
 #include <hc.hpp>
+#include <hc_am.hpp>
+
 using namespace hc;
 
 #define HCRNG_SINGLE_PRECISION
@@ -29,33 +31,38 @@ int main()
         //numberCount must be a multiple of streamCount
         size_t numberCount = 100; 
 
+        //Enumerate the list of accelerators
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].create_view());
+
         //Allocate memory for host pointers
         fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
         fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
-        hc::array_view<fp_type> outBufferDevice(numberCount, Random1);
-        hc::array_view<fp_type> outBufferHost(numberCount, Random2);
+        fp_type *outBufferDevice = hc::am_alloc(sizeof(fp_type) * numberCount, acc[1], 0);
   
         //Create streams
         hcrngMrg31k3pStream *streams = hcrngMrg31k3pCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
-        hc::array_view<hcrngMrg31k3pStream> streams_buffer(streamCount, streams);
+        hcrngMrg31k3pStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * streamCount, acc[1], 0);
+        hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngMrg31k3pStream));
 
         //Invoke random number generators in device (here strean_length and streams_per_thread arguments are default) 
 #ifdef HCRNG_SINGLE_PRECISION
-        status = hcrngMrg31k3pDeviceRandomU01Array_single(streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
 #else
-        status = hcrngMrg31k3pDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
 #endif
         if(status) std::cout << "TEST FAILED" << std::endl;
+        hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(fp_type));
 
         //Invoke random number generators in host
         for (size_t i = 0; i < numberCount; i++)
-            outBufferHost[i] = hcrngMrg31k3pRandomU01(&streams[i % streamCount]);   
+            Random2[i] = hcrngMrg31k3pRandomU01(&streams[i % streamCount]);   
 
         // Compare host and device outputs
         for(int i =0; i < numberCount; i++) {
-           if (outBufferDevice[i] != outBufferHost[i]) {
+           if (outBufferDevice[i] != Random2[i]) {
                 ispassed = 0;
-                std::cout <<" RANDDEVICE[" << i<< "] " << outBufferDevice[i] << "and RANDHOST[" << i <<"] mismatches"<< outBufferHost[i] << std::endl;
+                std::cout <<" RANDDEVICE[" << i<< "] " << outBufferDevice[i] << "and RANDHOST[" << i <<"] mismatches"<< Random2[i] << std::endl;
                 break;
             }
             else
@@ -64,3 +71,4 @@ int main()
         if(!ispassed) std::cout << "TEST FAILED" << std::endl;
         return 0;
 }
+

@@ -7,6 +7,8 @@
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/hcRNG.h>
 #include <hc.hpp>
+#include <hc_am.hpp>
+
 using namespace hc;
 
 #define HCRNG_SINGLE_PRECISION
@@ -54,32 +56,38 @@ int main()
         //Substream_length       = < 0  // restart substream after Substream_length values
         int stream_length = 5; 
         size_t streams_per_thread = 2;
-        
+       
+        //Enumerate the list of accelerators
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].create_view());
+ 
         //Allocate Host pointers 
         fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
         fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
         //Allocate buffer for Device output
-        hc::array_view<fp_type> outBufferDevice_substream(numberCount, Random1);
+        fp_type *outBufferDevice_substream = hc::am_alloc(sizeof(fp_type) * numberCount, acc[1], 0);
         hcrngMrg31k3pStream *streams = hcrngMrg31k3pCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
-        hc::array_view<hcrngMrg31k3pStream> streams_buffer(streamCount, streams);        
+        hcrngMrg31k3pStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * streamCount, acc[1], 0);
+        hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngMrg31k3pStream));
 
         //Invoke Random number generator function in Device
 #ifdef HCRNG_SINGLE_PRECISION        	
-        status = hcrngMrg31k3pDeviceRandomU01Array_single(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
 #else
-      	status = hcrngMrg31k3pDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+      	status = hcrngMrg31k3pDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
 #endif       	
         //Status check
         if(status) std::cout << "TEST FAILED" << std::endl;
-        
+        hc::am_copy(Random1, outBufferDevice_substream, numberCount * sizeof(fp_type));       
+ 
         //Invoke random number generator from Host
         multistream_fill_array(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random2);
         
         //Compare Host and device outputs
         for(int i =0; i < numberCount; i++) {
-           if (outBufferDevice_substream[i] != Random2[i]) {
+           if (Random1[i] != Random2[i]) {
                 ispassed = 0;
-                std::cout <<" RANDDEVICE_SUBSTREAM[" << i<< "] " << outBufferDevice_substream[i] << "and RANDHOST_SUBSTREAM[" << i <<"] mismatches"<< Random2[i] << std::endl;
+                std::cout <<" RANDDEVICE_SUBSTREAM[" << i<< "] " << Random1[i] << "and RANDHOST_SUBSTREAM[" << i <<"] mismatches"<< Random2[i] << std::endl;
                 break;
             }
             else
@@ -88,3 +96,4 @@ int main()
         if(!ispassed) std::cout << "TEST FAILED" << std::endl;
         return 0;     
 }
+

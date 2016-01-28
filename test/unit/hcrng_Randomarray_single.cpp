@@ -1,3 +1,4 @@
+#if 0
 #include <hcRNG/hcRNG.h>
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/mrg32k3a.h>
@@ -179,4 +180,4 @@ TEST(hcrng_Randomarray, Return_Check_Randomarray_single_Philox432 ) {
      status = hcrngPhilox432DeviceRandomU01Array_single( STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
-
+#endif

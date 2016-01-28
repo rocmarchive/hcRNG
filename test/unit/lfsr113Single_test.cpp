@@ -39,15 +39,14 @@ TEST(lfsr113Single_test, Functional_check_lfsr113Single)
         float *Random1 = (float*) malloc(sizeof(float) * numberCount);    
         float *Random2 = (float*) malloc(sizeof(float) * numberCount);
         hc::array_view<float> outBufferDevice(numberCount, Random1);
-        hc::array_view<float> outBufferHost(numberCount, Random2);
         hcrngLfsr113Stream *streams = hcrngLfsr113CreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hc::array_view<hcrngLfsr113Stream> streams_buffer(streamCount, streams);
         status = hcrngLfsr113DeviceRandomU01Array_single(streamCount, streams_buffer, numberCount, outBufferDevice);
         EXPECT_EQ(status, 0);
         for (size_t i = 0; i < numberCount; i++)
-            outBufferHost[i] = hcrngLfsr113RandomU01(&streams[i % streamCount]);   
+            Random2[i] = hcrngLfsr113RandomU01(&streams[i % streamCount]);   
         for(int i =0; i < numberCount; i++) {
-           EXPECT_EQ(outBufferDevice[i], outBufferHost[i]);
+           EXPECT_EQ(outBufferDevice[i], Random2[i]);
         }
         
         float *Random3 = (float*) malloc(sizeof(float) * numberCount);

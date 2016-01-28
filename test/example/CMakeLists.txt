@@ -33,5 +33,5 @@ SET (TESTSRCS
     STRING( REPLACE ".cpp" "" testname ${test_file} )
     ADD_EXECUTABLE( bin/${testname} ${test_file} )
     SET_PROPERTY(TARGET bin/${testname} APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS}")
-    TARGET_LINK_LIBRARIES(bin/${testname} hcrng)
+    TARGET_LINK_LIBRARIES(bin/${testname} hcrng hc_am)
   ENDFOREACH()

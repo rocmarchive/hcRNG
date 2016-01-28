@@ -5,6 +5,10 @@
 # CURRENT_WORK_DIRECTORY
 current_work_dir=$PWD
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+
 # Move to gtest bin
 working_dir1="$current_work_dir/../build/test/unit/bin/"
 cd $working_dir1
