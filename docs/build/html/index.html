@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>hcRNG documentation &mdash; hcRNG   documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     ' ',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="hcRNG   documentation" href="#" />
+    <link rel="next" title="Bibliography" href="bibliography.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="bibliography.html" title="Bibliography"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">hcRNG   documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hcrng-documentation">
+<h1>hcRNG documentation<a class="headerlink" href="#hcrng-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<p>The hcRNG library is an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime. The computational resources of underlying AMD heterogenous compute gets exposed and exploited through the HCC C++ frontend. Refer <a class="reference external" href="https://bitbucket.org/multicoreware/hcc/wiki/Home">here</a> for more details on HCC compiler.</p>
+<p>The following list enumerates the current set of RNG generators that are supported so far.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>MRG31k3p <a class="reference external" href="bibliography.html">[4]</a></li>
+<li>MRG32k3a <a class="reference external" href="bibliography.html">[7]</a></li>
+<li>LFSR113  <a class="reference external" href="bibliography.html">[8]</a></li>
+<li>Philox-4x32-10 <a class="reference external" href="bibliography.html">[11]</a></li>
+</ol>
+</div></blockquote>
+<p>Library provides multiple streams that are created on the host computer and used to generate random numbers either on the host or on computing devices by work items. Such multiple streams are essential for parallel simulation <a class="reference external" href="bibliography.html">[6]</a> and are often useful as well for simulation on a single processing element (or within a single work item), for example when comparing similar systems via simulation with common random numbers <a class="reference external" href="bibliography.html">[1]</a>, <a class="reference external" href="bibliography.html">[9]</a>, <a class="reference external" href="bibliography.html">[10]</a>, <a class="reference external" href="bibliography.html">[5]</a> . Streams can also be divided into segments of equal length called substreams, as in <a class="reference external" href="bibliography.html">[2]</a>, <a class="reference external" href="bibliography.html">[5]</a>, <a class="reference external" href="bibliography.html">[10]</a> .</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>2. Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<p>This section lists the known set of hardware and software requirements to build this library</p>
+<div class="section" id="hardware">
+<h3>2.1. Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>CPU: mainstream brand, Better if with &gt;=4 Cores Intel Haswell based CPU</li>
+<li>System Memory &gt;= 4GB (Better if &gt;10GB for NN application over multiple GPUs)</li>
+<li>Hard Drive &gt; 200GB (Better if SSD or NVMe driver  for NN application over multiple GPUs)</li>
+<li>Minimum GPU Memory (Global) &gt; 2GB</li>
+</ul>
+</div>
+<div class="section" id="gpu-cards-supported">
+<h3>2.2. GPU cards supported<a class="headerlink" href="#gpu-cards-supported" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>dGPU: AMD R9 Fury X, R9 Fury, R9 Nano</li>
+<li>APU: AMD Kaveri or Carrizo</li>
+</ul>
+</div>
+<div class="section" id="amd-driver-and-runtime">
+<h3>2.3 AMD Driver and Runtime<a class="headerlink" href="#amd-driver-and-runtime" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Radeon Open Compute Kernel (ROCK) driver : <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver">https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver</a></li>
+<li>HSA runtime API and runtime for Boltzmann:  <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCR-Runtime">https://github.com/RadeonOpenCompute/ROCR-Runtime</a></li>
+</ul>
+</div>
+<div class="section" id="system-software">
+<h3>2.4. System software<a class="headerlink" href="#system-software" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Ubuntu 14.04 trusty</li>
+<li>GCC 4.6 and later</li>
+<li>CPP 4.6 and later (come with GCC package)</li>
+<li>python 2.7 and later</li>
+<li>HCC 0.9 from <a class="reference external" href="https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb">here</a></li>
+</ul>
+</div>
+<div class="section" id="tools-and-misc">
+<h3>2.5. Tools and Misc<a class="headerlink" href="#tools-and-misc" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>git 1.9 and later</li>
+<li>cmake 2.6 and later (2.6 and 2.8 are tested)</li>
+<li>firewall off</li>
+<li>root privilege or user account in sudo group</li>
+</ul>
+</div>
+<div class="section" id="ubuntu-packages">
+<h3>2.6. Ubuntu Packages<a class="headerlink" href="#ubuntu-packages" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>libc6-dev-i386</li>
+<li>liblapack-dev</li>
+<li>graphicsmagick</li>
+</ul>
+</div>
+</div>
+<div class="section" id="tested-environments">
+<h2>3. Tested Environments<a class="headerlink" href="#tested-environments" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<p>This sections enumerates the list of tested combinations of Hardware and system softwares.</p>
+<div class="section" id="driver-versions">
+<h3>3.1. Driver versions<a class="headerlink" href="#driver-versions" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Boltzmann Early Release Driver + dGPU</p>
+<blockquote>
+<div><ul class="simple">
+<li>Radeon Open Compute Kernel (ROCK) driver : <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver">https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver</a></li>
+<li>HSA runtime API and runtime for Boltzmann:  <a class="reference external" href="https://github.com/RadeonOpenCompute/ROCR-Runtime">https://github.com/RadeonOpenCompute/ROCR-Runtime</a></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Traditional HSA driver + APU (Kaveri)</p>
+</li>
+</ul>
+</div>
+<div class="section" id="gpu-cards">
+<h3>3.2. GPU Cards<a class="headerlink" href="#gpu-cards" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Radeon R9 Nano</li>
+<li>Radeon R9 FuryX</li>
+<li>Radeon R9 Fury</li>
+<li>Kaveri and Carizo APU</li>
+</ul>
+</div>
+<div class="section" id="desktop-system">
+<h3>3.3. Desktop System<a class="headerlink" href="#desktop-system" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Supermicro SYS-7048GR-TR  Tower 4 W9100 GPU</li>
+<li>ASUS X99-E WS motherboard with 4 AMD FirePro W9100</li>
+<li>Gigabyte GA-X79S 2 AMD FirePro W9100 GPU’s</li>
+</ul>
+</div>
+<div class="section" id="server-system">
+<h3>3.4. Server System<a class="headerlink" href="#server-system" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Supermicro SYS 2028GR-THT  6 R9 NANO</li>
+<li>Supermicro SYS-1028GQ-TRT 4 R9 NANO</li>
+<li>Supermicro SYS-7048GR-TR Tower 4 R9 NANO</li>
+</ul>
+</div>
+</div>
+<div class="section" id="installation-steps">
+<h2>4. Installation steps<a class="headerlink" href="#installation-steps" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<p>The following are the steps to use the library</p>
+<blockquote>
+<div><ul class="simple">
+<li>Boltzmann Driver and Runtime installation (if not done until now)</li>
+<li>Compiler installation.</li>
+<li>Library installation.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="boltzmann-driver-and-runtime-installation">
+<h3>4.1 Boltzmann Driver and Runtime Installation<a class="headerlink" href="#boltzmann-driver-and-runtime-installation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p class="first">Downloading the kernel binaries from the repo</p>
+<p><code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver.git</span></code></p>
+</li>
+<li><p class="first">Go to the top of the repo</p>
+<p><code class="docutils literal"><span class="pre">cd</span> <span class="pre">ROCK-Kernel-Driver</span></code></p>
+</li>
+<li><p class="first">Configure udev to allow any user to access /dev/kfd.
+As root, use a text editor to create /etc/udev/rules.d/kfd.rules
+containing one line: KERNEL==&#8221;kfd&#8221;, MODE=&#8221;0666&#8221;, Or you could use the following command</p>
+<p><code class="docutils literal"><span class="pre">echo</span> <span class="pre">&quot;KERNEL==\&quot;kfd\&quot;,</span> <span class="pre">MODE=\&quot;0666\&quot;&quot;</span> <span class="pre">|</span> <span class="pre">sudo</span> <span class="pre">tee</span> <span class="pre">/etc/udev/rules.d/kfd.rules</span></code></p>
+</li>
+<li><p class="first">For Ubuntu, install the kernel and libhsakmt packages using:</p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">dpkg</span> <span class="pre">-i</span> <span class="pre">packages/ubuntu/*.deb</span></code></p>
+</li>
+<li><p class="first">Reboot the system to install the new kernel and enable the HSA kernel driver</p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">reboot</span></code></p>
+</li>
+<li><p class="first">Once done with reboot, one could proceed with runtime installation</p>
+<p><code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/RadeonOpenCompute/ROCR-Runtime</span></code></p>
+<p><code class="docutils literal"><span class="pre">cd</span> <span class="pre">ROCR-Runtime/packages/ubuntu</span></code></p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">dpkg</span> <span class="pre">-i</span> <span class="pre">hsa-runtime-dev-1.0.0-amd64.deb</span></code></p>
+<p>The contents get installed by default under /opt/hsa path</p>
+</li>
+</ol>
+<ol class="loweralpha" start="5">
+<li><p class="first">Create a file called hsa.conf in /etc/ld.so.conf.d/ and write &#8220;/opt/hsa/lib&#8221; in it,
+then run &#8220;sudo ldconfig -v&#8221; or you could use the following command</p>
+<p><code class="docutils literal"><span class="pre">echo</span> <span class="pre">&quot;/opt/hsa/lib&quot;</span> <span class="pre">|</span> <span class="pre">sudo</span> <span class="pre">tee</span> <span class="pre">/etc/ld.so.conf.d/hsa.conf</span></code></p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">ldconfig</span> <span class="pre">-v</span></code></p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="compiler-installation">
+<h3>4.2 Compiler Installation<a class="headerlink" href="#compiler-installation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p class="first">Install pre-dependency packages</p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">cmake</span> <span class="pre">git</span> <span class="pre">subversion</span> <span class="pre">g++</span> <span class="pre">libstdc++-4.8-dev</span> <span class="pre">libdwarf-dev</span> <span class="pre">libelf-dev</span> <span class="pre">libtinfo-dev</span> <span class="pre">libc6-dev-i386</span> <span class="pre">gcc-multilib</span> <span class="pre">llvm</span> <span class="pre">llvm-dev</span> <span class="pre">llvm-runtime</span> <span class="pre">libc++1</span> <span class="pre">libc++-dev</span> <span class="pre">libc++abi1</span> <span class="pre">libc++abi-dev</span> <span class="pre">re2c</span> <span class="pre">libncurses5-dev</span></code></p>
+</li>
+<li><p class="first">Download Compiler</p>
+<p>Click <a class="reference external" href="https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb">here</a></p>
+<blockquote>
+<div><p>(or)</p>
+</div></blockquote>
+<p>wget <a class="reference external" href="https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb">https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb</a></p>
+</li>
+<li><p class="first">Install the compiler</p>
+<p><code class="docutils literal"><span class="pre">sudo</span> <span class="pre">dpkg</span> <span class="pre">-i</span> <span class="pre">hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb</span></code></p>
+</li>
+</ol>
+</div></blockquote>
+<p>Once done with the above steps the compiler headers, binaries and libraries gets installed under /opt system path as <code class="docutils literal"><span class="pre">/opt/hcc</span></code> .</p>
+</div>
+<div class="section" id="library-installation">
+<h3>4.3 Library Installation<a class="headerlink" href="#library-installation" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p class="first">Clone the repo</p>
+<p><code class="docutils literal"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://bitbucket.org/multicoreware/hcrng.git</span> <span class="pre">&amp;&amp;</span> <span class="pre">cd</span> <span class="pre">hcrng</span></code></p>
+</li>
+<li><p class="first">Modify scripts mode to binary</p>
+<p><code class="docutils literal"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">install.sh</span></code></p>
+</li>
+<li><p class="first">Install library</p>
+<p><code class="docutils literal"><span class="pre">./install.sh</span></code></p>
+</li>
+<li><p class="first">Additionally to run the unit test along with installation invoke the following command</p>
+<p><code class="docutils literal"><span class="pre">./install.sh</span> <span class="pre">test=ON</span></code></p>
+</li>
+</ol>
+</div></blockquote>
+<p>Once done with the above steps the libhcblas.so and associated headers gets installed under system path.</p>
+<p>To uninstall the library, invoke the following series of commands</p>
+<blockquote>
+<div><p><code class="docutils literal"><span class="pre">chmod</span> <span class="pre">+x</span> <span class="pre">uninstall.sh</span></code></p>
+<p><code class="docutils literal"><span class="pre">./uninstall.sh</span></code></p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="generators-and-prefixes">
+<h2>5. Generators and prefixes<a class="headerlink" href="#generators-and-prefixes" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
+<p>The API is, in large part, the same for every generator, with only the prefix of the type and function names that changes across generators. For example, to use the MRG31k3p generator, one needs to include the corresponding header file (which is normally the lowercase name of the generator with a .h extension on the host or the device) and use type and function names that start with hcrngMrg31k3p:</p>
+<div class="highlight-python"><div class="highlight"><pre>#include &lt;hcRNG/mrg31k3p.h&gt;
+double foo(hcrngMrg31k3pStream* stream) {
+return hcrngMrg31k3pRandomU01(stream);
+}
+</pre></div>
+</div>
+<p>The above function just returns a number uniformly distributed in (0,1) generated using the stream passed as its argument. To use the LFSR113 generator instead of MRG31k3p, one must change the include directive and use type and function names that start with hcrngLfsr113:</p>
+<div class="highlight-python"><div class="highlight"><pre>#include &lt;hcRNG/lfsr113.h&gt;
+double foo(hcrngLfsr113Stream* stream) {
+return hcrngLfsr113RandomU01(stream);
+}
+</pre></div>
+</div>
+<p>In the generator API reference (given in hcRNG_template.h), the generator-specific part of the prefix is not shown. The hcRNG.h header file declares common function across different generators and also utility library functions. Future versions of the library will support more generic interfaces that work across generators.</p>
+<div class="section" id="small-examples">
+<h3>5.1 Small examples<a class="headerlink" href="#small-examples" title="Permalink to this headline">¶</a></h3>
+<p>In the examples given below, we use the MRG31k3p from <a class="reference external" href="bibliography.html">[4]</a>. In general, a stream object contains three states: the initial state of the stream (or seed), the initial state of the current substream (by default it is equal to the seed), and the current state. With MRG31k3p, each state is comprised of six 31-bit integers. Each time a random number is generated, the current state advances by one position. There are also functions to reset the state to the initial one, or to the beginning of the current substream, or to the start of the next substream. Streams can be created and manipulated in arrays of arbitrary sizes. For a single stream, one uses an array of size 1. One can separately declare and allocate memory for an array of streams, create (initialize) the streams, clone them, copy them to preallocated space, etc.</p>
+</div>
+<div class="section" id="using-streams-on-the-host">
+<h3>5.2 Using streams on the host<a class="headerlink" href="#using-streams-on-the-host" title="Permalink to this headline">¶</a></h3>
+<p>We start with a small example in which we just create a few streams, then use them to generate numbers on the host computer and compute some quantity. This could be done as well by using only a single stream, but we use more just for the purpose of illustration.</p>
+<p>The code includes the header for the MRG31k3p RNG.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1">#include &lt;hcRNG/mrg31k3p.h&gt;</span>
+</pre></div>
+</div>
+<p>We create an array of two streams named streams and a single stream named single.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">streams</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pCreateStreams</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+<span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">single</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pCreateStreams</span><span class="p">(</span><span class="n">NULL</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Then we repeat the following 100 times: we generate a uniform random number in (0,1) and an integer in {1,…,6}, and compute the indicator that the product is less than 2.</p>
+<div class="highlight-python"><div class="highlight"><pre>int count = 0;
+for (int i = 0; i &lt; 100; i++) {
+  double u = hcrngMrg31k3pRandomU01(&amp;streams[i % 2]);
+  int x = hcrngMrg31k3pRandomInteger(single, 1, 6);
+  if (x * u &lt; 2) count++;
+}
+</pre></div>
+</div>
+<p>The uniform random numbers over (0,1) are generated by alternating the two streams from the array. We then print the average of those indicators.</p>
+<div class="highlight-python"><div class="highlight"><pre>printf(&quot;Average of indicators = %f\n&quot;, (double)count / 100.0);
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-streams-in-work-items">
+<h3>5.3 Using streams in work items<a class="headerlink" href="#using-streams-in-work-items" title="Permalink to this headline">¶</a></h3>
+<p>In our second example, we create an array of streams and use them in work items that execute in parallel on a GPU device, one distinct stream per work item. Note that it is also possible (and sometimes useful) to use more than one stream per work item. We show only fragments of the code, to illustrate what we do with the streams. This code is only for illustration; the program does no useful computation.</p>
+<p>In the host code, we first include the hcRNG header for the MRG31k3p RNG:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1">#include &lt;hcRNG/mrg31k3p.h&gt;</span>
+</pre></div>
+</div>
+<p>Now suppose we have an integer variable numWorkItems that indicates the number of work items we want to use. We create an array of numWorkItems streams (and allocate memory for both the array and the stream objects). The creator returns in the variable streamBufferSize the size of the buffer that this array occupies (it depends on how much space is required to store the stream states), and an error code.</p>
+<div class="highlight-python"><div class="highlight"><pre>size_t streamBufferSize;
+hcrngMrg31k3pStream* streams = hcrngMrg31k3pCreateStreams(NULL, numWorkItems, &amp;streamBufferSize, (hcrngStatus *)&amp;err);
+</pre></div>
+</div>
+<p>Then we create an HCC buffer of size streamBufferSize and fill it with a copy of the array of streams, to pass to the device. We also create and pass a buffer that will be used by the device to return an array of numWorkItems values of type double.</p>
+<p>Create buffer to transfer streams to the device.</p>
+<div class="highlight-python"><div class="highlight"><pre>hcrngMrg31k3pStream* buf_in = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * numWorkItems, acc[1], 0);
+hc::am_copy(streams_buffer, streams, numWorkItems * sizeof(hcrngMrg31k3pStream));
+</pre></div>
+</div>
+<p>Create buffer to transfer output back from the device.</p>
+<div class="highlight-python"><div class="highlight"><pre>float* buf_out = hc::am_alloc(sizeof(float) * numberCount, acc[1], 0);
+</pre></div>
+</div>
+<p>Then depending on the type of arguments, we call the kernel,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hcrngMrg31k3pDeviceRandomU01Array_single</span><span class="p">(</span><span class="n">accl_view</span><span class="p">,</span> <span class="n">numWorkItems</span><span class="p">,</span> <span class="n">buf_in</span><span class="p">,</span> <span class="n">numberCount</span><span class="p">,</span> <span class="n">buf_out</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The host can then recover the array of size numWorkItems that contains these outputs(numberCount).
+RNG-Specific API&#8217;s</p>
+<div class="highlight-python"><div class="highlight"><pre>hc::am_copy(RandomOutput, buf_out, numberCount * sizeof(float));
+</pre></div>
+</div>
+<p>hcRNG_template.h describes the random streams API as it is intended to be implemented using different types of RNG&#8217;s or even using quasi-Monte Carlo (QMC) point sets.</p>
+<p>In the description of this API, every data type and function name is assigned the prefix hcrng. It is understood that, in the implementation for each RNG type, the prefix hcrng is to be expanded with another prefix that indicates the type of RNG (or other method) used.</p>
+<p>As this API is not polymorphic, replacing an RNG type with another one in client code requires changing the code to match hcRNG function names and data types to match those of the replacement RNG. We also intend to propose a generic (in the polymorphic sense) interface to the hcRNG library.</p>
+</div>
+<div class="section" id="stream-objects-and-stream-states">
+<h3>5.4 Stream Objects and Stream States<a class="headerlink" href="#stream-objects-and-stream-states" title="Permalink to this headline">¶</a></h3>
+<p>The library defines, among others, two closely related types of structures: stream objects (hcrngStream) and stream states (hcrngStreamState). The definitions of both structures depend on the specific type of RNG that they pertain to. Stream states correspond to the seeds of conventional RNG&#8217;s, to counter values in counter-based RNG&#8217;s, or to point and coordinate indices in QMC methods. Normally, the client should not deal with stream states directly, but use instead the higher-level stream objects. Stream objects are intended to store several stream states: the current and initial stream states, but also current substream state when support for substreams is available. Stream objects may also store other properties of the RNG, such as encryption keys for cryptography-based RNG&#8217;s.</p>
+</div>
+<div class="section" id="arrays-of-stream-objects">
+<h3>5.5 Arrays of Stream Objects<a class="headerlink" href="#arrays-of-stream-objects" title="Permalink to this headline">¶</a></h3>
+<p>Many functions are defined only for arrays of stream objects and not for single stream objects. It is always possible to use these functions for single stream objects by specifying a unit array size.</p>
+</div>
+<div class="section" id="defining-preprocessors">
+<h3>5.6 Defining Preprocessors<a class="headerlink" href="#defining-preprocessors" title="Permalink to this headline">¶</a></h3>
+<p>When a kernel is called, the stream states it needs are normally passed by the host and stored in global memory. If default settings are not suitable for the user&#8217;s needs, optional library behavior can be selected by defining specific preprocessor macros before including the hcRNG header. For example, to enable substreams support on the device while using the MRG31k3p generator, use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c1">#define HCRNG_ENABLE_SUBSTREAMS</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+</ul>
+</div>
+<span class="target" id="index-0"></span></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">hcRNG documentation</a><ul>
+<li><a class="reference internal" href="#introduction">1. Introduction</a></li>
+<li><a class="reference internal" href="#prerequisites">2. Prerequisites</a><ul>
+<li><a class="reference internal" href="#hardware">2.1. Hardware</a></li>
+<li><a class="reference internal" href="#gpu-cards-supported">2.2. GPU cards supported</a></li>
+<li><a class="reference internal" href="#amd-driver-and-runtime">2.3 AMD Driver and Runtime</a></li>
+<li><a class="reference internal" href="#system-software">2.4. System software</a></li>
+<li><a class="reference internal" href="#tools-and-misc">2.5. Tools and Misc</a></li>
+<li><a class="reference internal" href="#ubuntu-packages">2.6. Ubuntu Packages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tested-environments">3. Tested Environments</a><ul>
+<li><a class="reference internal" href="#driver-versions">3.1. Driver versions</a></li>
+<li><a class="reference internal" href="#gpu-cards">3.2. GPU Cards</a></li>
+<li><a class="reference internal" href="#desktop-system">3.3. Desktop System</a></li>
+<li><a class="reference internal" href="#server-system">3.4. Server System</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-steps">4. Installation steps</a><ul>
+<li><a class="reference internal" href="#boltzmann-driver-and-runtime-installation">4.1 Boltzmann Driver and Runtime Installation</a></li>
+<li><a class="reference internal" href="#compiler-installation">4.2 Compiler Installation</a></li>
+<li><a class="reference internal" href="#library-installation">4.3 Library Installation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#generators-and-prefixes">5. Generators and prefixes</a><ul>
+<li><a class="reference internal" href="#small-examples">5.1 Small examples</a></li>
+<li><a class="reference internal" href="#using-streams-on-the-host">5.2 Using streams on the host</a></li>
+<li><a class="reference internal" href="#using-streams-in-work-items">5.3 Using streams in work items</a></li>
+<li><a class="reference internal" href="#stream-objects-and-stream-states">5.4 Stream Objects and Stream States</a></li>
+<li><a class="reference internal" href="#arrays-of-stream-objects">5.5 Arrays of Stream Objects</a></li>
+<li><a class="reference internal" href="#defining-preprocessors">5.6 Defining Preprocessors</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bibliography.html"
+                        title="next chapter">Bibliography</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="bibliography.html" title="Bibliography"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">hcRNG   documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, MulticoreWare.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+    </div>
+  </body>
+</html>
