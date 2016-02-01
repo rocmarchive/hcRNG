@@ -1,4 +1,3 @@
-
 /*
 *
 *  FILENAME : hcRNG.h
@@ -13,11 +12,11 @@
 
 #include <iostream>
 #include <hc.hpp>
-#include <amp_short_vectors.h>
+#include "hc_short_vector.hpp"
 
 //using namespace hc;
 using namespace hc;
-using namespace Concurrency::graphics;
+using namespace hc::short_vector;
 using namespace std;
 
 /** \internal

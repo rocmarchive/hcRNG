@@ -44,14 +44,6 @@
  *  
  *  When a kernel is called, one should pass a copy of the streams from the host 
  *  to the global memory of the device.
- *  Another copy of the stream state must be stored
- *  in the private memory of the work item that uses it in the kernel code to generate random numbers. 
- *  In the current implementation, to avoid wasting (scarce) private memory,
- *  without the option \c HCRNG_ENABLE_SUBSTREAMS (see below),
- *  only the current state of the stream is stored explicitly in the work-item's private memory.
- *  The work item also keeps in private memory a pointer to the initial state 
- *  of the stream, but this initial state is not copied into private memory,
- *  and the work item does not keep track of the initial state of the current substream.
  *  With the option  \c HCRNG_ENABLE_SUBSTREAMS,
  *  the initial state of the current substream is also stored into private memory.
  *  This permits one to rewind the current state to it or move forward to the next substream.
@@ -60,7 +52,7 @@
  *  user must include the hcRNG header file corresponding to the desired RNG
  *  via an \c include directive.
  *  Other specific preprocessor macros can be placed *before*
- *  inhcuding the header file
+ *  including the header file
  *  to change settings of the library when the default values are not suitable for the user.
  *  The following options are currently available:
  *
@@ -86,7 +78,7 @@
  *  \code{c}
  *      #define  HCRNG_ENABLE_SUBSTREAMS
  *      #define  HCRNG_SINGLE_PRECISION
- *      #include <hcRNG/mrg31k3p.hch>
+ *      #include <hcRNG/mrg31k3p.h>
  *  \endcode
  *
  *  To generate single-precision floating point numbers also on the host, still
@@ -123,7 +115,7 @@
  *  The MRG31k3p generator is defined in \cite rLEC00b .
  *  In its specific implementation, the function and type names start with \c hcrngMrg31k3p.
  *  For this RNG, a *state* is a vector of six 31-bit integers, 
- *  represented internally as \c hc_uint.
+ *  represented internally as \c unsigned int.
  *  The entire period length of approximately \f$2^{185}\f$ is divided into 
  *  approximately \f$2^{51}\f$ non-overlapping streams of length \f$Z=2^{134}\f$.
  *  Each stream is further partitioned into substreams of length \f$W=2^{72}\f$.
@@ -141,7 +133,7 @@
  *  and each stream is subdivided in \f$2^{51}\f$ substreams of length \f$W = 2^{76}\f$.
  *  These are the same numbers as in \cite rLEC02a .
  *  The state of a stream at any given step is a six-dimensional vector of 32-bit integers, 
- *  but those integers are stored as \c hc_ulong (64-bit integers) in the present implementation 
+ *  but those integers are stored as \c unsigned long (64-bit integers) in the present implementation 
  *  (so they use twice the space).
  *  The generator has 32 bits of resolution.
  *  Note that in the original version proposed in \cite rLEC99b and \cite rLEC02a, 
@@ -157,7 +149,7 @@
  *  The LFSR113 generator is defined in \cite rLEC99a .
  *  In its implementation, the function and type names start with \c hcrngLfsr113.
  *  For this RNG, a *state* vector of four 31-bit integers, 
- *  represented internally as \c hc_uint.
+ *  represented internally as \c unsigned int.
  *  The period length of approximately \f$2^{113}\f$ is divided into 
  *  approximately \f$2^{23}\f$ non-overlapping streams of length \f$Z=2^{90}\f$.
  *  Each stream is further partitioned into \f$2^{35}\f$ substreams of length \f$W=2^{55}\f$.
@@ -177,8 +169,8 @@
  *  For this RNG, a *state* is a 128-bit counter with a 64-bit key, 
  *  and a 2-bit index used to iterate over the four 32-bit outputs generated for 
  *  each counter value.
- *  The counter is represented internally as a vector of four 32-bit \c hc_uint
- *  values and the index, as a single \c hc_uint value.
+ *  The counter is represented internally as a vector of four 32-bit \c unsigned int
+ *  values and the index, as a single \c unsigned int value.
  *  In the current hcRNG version, the key is the same for all streams, so it 
  *  is not stored in each stream object but rather hardcoded in the implementation.
  *  The period length of \f$2^{130}\f$ is divided into \f$2^{28}\f$ non-overlapping streams 
@@ -212,7 +204,7 @@ typedef struct { /* ... */ } hcrngStreamState;
  *  and the initial state of the current substream.
  *
  *  @note The device API offers a variant of this struct definition called
- *  \c hcrngHostStream to receive stream objects from the host.  Stream objects,
+ *  \c hcrngStream to receive stream objects from the host.  Stream objects,
  *  as defined on the device, do not store as much information as stream
  *  objects on the host, but keep pointers to relevant information from the
  *  host stream object.
@@ -228,7 +220,7 @@ typedef struct { /* ... */ } hcrngStream;
  *  Variant of hcrngStream that represents stream objects received from the host by the
  *  device.  These are normally stored in global memory.
  */
-typedef struct { /* ... */ } hcrngHostStream;
+typedef struct { /* ... */ } hcrngStream;
 
 
 /*! @brief Stream creator object
@@ -458,35 +450,6 @@ hcrngStream* hcrngCopyStreams(size_t count, const hcrngStream* streams, hcrngSta
  *  (non-constant) hcrngHostStream objects in global memory.
  */
 hcrngStatus hcrngCopyOverStreams(size_t count, hcrngStream* destStreams, const hcrngStream* srcStreams);
-
-
-/*! @brief Copy RNG host stream objects from global memory into private memory [**device-only**]
- *
- *  Copy the host stream objects \c srcStreams from global memory as device
- *  stream objects into the buffer \c destStreams in private memory.
- *
- *  @param[in]  count			Number of stream objects to copy (use 1 for a single
- *								stream object).
- *  @param[out] destStreams		Destination buffer into which to copy (its
- *								content will be overwritten).
- *  @param[in]  srcStreams		Host stream object or array of host stream objects to be copied.
- *
- *  @return     Error status
- */
-hcrngStatus hcrngCopyOverStreamsFromGlobal(size_t count, hcrngStream* destStreams, const hcrngHostStream* srcStreams);
-
-
-/*! @brief Copy RNG device stream objects from private memory into global memory [**device-only**]
- *
- *  @param[in]  count			Number of stream objects to copy (use 1 for a single
- *								stream object).
- *  @param[out] destStreams		Destination buffer into which to copy (its
- *								content will be overwritten).
- *  @param[in]  srcStreams		Device stream object or array of device stream objects to be copied.
- *
- *  @return     Error status
- */
-hcrngStatus hcrngCopyOverStreamsToGlobal(size_t count, hcrngHostStream* destStreams, const hcrngStream* srcStreams);
 
 
 /*! @} */
@@ -756,8 +719,8 @@ hcrngStatus hcrngAdvanceStreams(size_t count, hcrngStream* streams, int e, int c
  *  \snippet RandomArray/randomarray.c random array read
  *  The complete code for this example can be found in RandomArray/randomarray.c.
  */
-hcrngStatus hcrngDeviceRandomU01Array(size_t streamCount, Concurrency::array_view<float> streams,
-	size_t numberCount, Concurrency::array_view<float> outBuffer);
+hcrngStatus hcrngDeviceRandomU01Array(size_t streamCount,float* streams,
+	size_t numberCount, float* outBuffer);
 
 
 /*! @} */
