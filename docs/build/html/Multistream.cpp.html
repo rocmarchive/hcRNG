@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Multistream usage Code example &mdash; hcRNG   documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="hcRNG   documentation" href="index.html"/>
+        <link rel="up" title="Examples" href="examples.html"/>
+        <link rel="next" title="Bibliography" href="bibliography.html"/>
+        <link rel="prev" title="Random-array generation Code example" href="Randomarray.cpp.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hcRNG
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                 
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hcRNG_template.html">hcRNG_template.h File Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Host_only.cpp.html">Host-only Code Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Randomarray.cpp.html">Random-array generation Code example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Multistream usage Code example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">hcRNG</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="examples.html">Examples</a> &raquo;</li>
+      
+    <li>Multistream usage Code example</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Multistream.cpp.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="multistream-usage-code-example">
+<h1>Multistream usage Code example<a class="headerlink" href="#multistream-usage-code-example" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">//Example on Multistream random number generation with Mrg31k3p generator</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;assert.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;hcRNG/mrg31k3p.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;hcRNG/hcRNG.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;hc.hpp&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;hc_am.hpp&gt;</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">hc</span><span class="p">;</span>
+
+<span class="cp">#define HCRNG_SINGLE_PRECISION</span>
+<span class="cp">#ifdef HCRNG_SINGLE_PRECISION</span>
+<span class="k">typedef</span> <span class="kt">float</span> <span class="n">fp_type</span><span class="p">;</span>
+<span class="cp">#else</span>
+<span class="k">typedef</span> <span class="kt">double</span> <span class="n">fp_type</span><span class="p">;</span>
+<span class="cp">#endif</span>
+
+<span class="c1">//Multistream generation with host</span>
+<span class="kt">void</span> <span class="nf">multistream_fill_array</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">spwi</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">gsize</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">quota</span><span class="p">,</span> <span class="kt">int</span> <span class="n">substream_length</span><span class="p">,</span> <span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">streams</span><span class="p">,</span> <span class="n">fp_type</span><span class="o">*</span> <span class="n">out_</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">quota</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">gid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">gid</span> <span class="o">&lt;</span> <span class="n">gsize</span><span class="p">;</span> <span class="n">gid</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//Create streams</span>
+        <span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">s</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">streams</span><span class="p">[</span><span class="n">spwi</span> <span class="o">*</span> <span class="n">gid</span><span class="p">];</span>
+        <span class="n">fp_type</span><span class="o">*</span> <span class="n">out</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">out_</span><span class="p">[</span><span class="n">spwi</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">gsize</span> <span class="o">+</span> <span class="n">gid</span><span class="p">)];</span>
+        <span class="c1">//Do nothing when subtsream_length is equal to 0</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">substream_length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">substream_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="c1">//Forward to next substream when substream_length is greater than 0</span>
+            <span class="n">hcrngMrg31k3pForwardToNextSubstreams</span><span class="p">(</span><span class="n">spwi</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">substream_length</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="p">(</span><span class="o">-</span><span class="n">substream_length</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="c1">//Rewind substreams when substream_length is smaller than 0</span>
+            <span class="n">hcrngMrg31k3pRewindSubstreams</span><span class="p">(</span><span class="n">spwi</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+        <span class="c1">//Generate Random Numbers</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">sid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">sid</span> <span class="o">&lt;</span> <span class="n">spwi</span><span class="p">;</span> <span class="n">sid</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pRandomU01</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">[</span><span class="n">sid</span><span class="p">]);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+      <span class="n">hcrngStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">HCRNG_SUCCESS</span><span class="p">;</span>
+      <span class="kt">bool</span> <span class="n">ispassed</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="kt">size_t</span> <span class="n">streamBufferSize</span><span class="p">;</span>
+      <span class="c1">//Number of streams</span>
+      <span class="kt">size_t</span> <span class="n">streamCount</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+      <span class="c1">//Number of Random numbers to be generated (numberCount should be a multiple of streamCount)</span>
+      <span class="kt">size_t</span> <span class="n">numberCount</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+      <span class="c1">//Substream length</span>
+      <span class="c1">//Substream_length       = 0   // do not use substreams</span>
+      <span class="c1">//Substream_length       = &gt; 0   // go to next substreams after Substream_length values</span>
+      <span class="c1">//Substream_length       = &lt; 0  // restart substream after Substream_length values</span>
+      <span class="kt">int</span> <span class="n">stream_length</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+      <span class="kt">size_t</span> <span class="n">streams_per_thread</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+      <span class="c1">//Enumerate the list of accelerators</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">hc</span><span class="o">::</span><span class="n">accelerator</span><span class="o">&gt;</span><span class="n">acc</span> <span class="o">=</span> <span class="n">hc</span><span class="o">::</span><span class="n">accelerator</span><span class="o">::</span><span class="n">get_all</span><span class="p">();</span>
+      <span class="n">accelerator_view</span> <span class="n">accl_view</span> <span class="o">=</span> <span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">create_view</span><span class="p">());</span>
+
+      <span class="c1">//Allocate Host pointers</span>
+      <span class="n">fp_type</span><span class="o">*</span> <span class="n">Random1</span> <span class="o">=</span> <span class="p">(</span><span class="n">fp_type</span><span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">fp_type</span><span class="p">)</span> <span class="o">*</span> <span class="n">numberCount</span><span class="p">);</span>
+      <span class="n">fp_type</span><span class="o">*</span> <span class="n">Random2</span> <span class="o">=</span> <span class="p">(</span><span class="n">fp_type</span><span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">fp_type</span><span class="p">)</span> <span class="o">*</span> <span class="n">numberCount</span><span class="p">);</span>
+      <span class="c1">//Allocate buffer for Device output</span>
+      <span class="n">fp_type</span><span class="o">*</span> <span class="n">outBufferDevice_substream</span> <span class="o">=</span> <span class="n">hc</span><span class="o">::</span><span class="n">am_alloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">fp_type</span><span class="p">)</span> <span class="o">*</span> <span class="n">numberCount</span><span class="p">,</span> <span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">streams</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pCreateStreams</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">streamCount</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">streamBufferSize</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+      <span class="n">hcrngMrg31k3pStream</span><span class="o">*</span> <span class="n">streams_buffer</span> <span class="o">=</span> <span class="n">hc</span><span class="o">::</span><span class="n">am_alloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">hcrngMrg31k3pStream</span><span class="p">)</span> <span class="o">*</span> <span class="n">streamCount</span><span class="p">,</span> <span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="n">hc</span><span class="o">::</span><span class="n">am_copy</span><span class="p">(</span><span class="n">streams_buffer</span><span class="p">,</span> <span class="n">streams</span><span class="p">,</span> <span class="n">streamCount</span><span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">hcrngMrg31k3pStream</span><span class="p">));</span>
+
+      <span class="c1">//Invoke Random number generator function in Device</span>
+<span class="cp">#ifdef HCRNG_SINGLE_PRECISION</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pDeviceRandomU01Array_single</span><span class="p">(</span><span class="n">accl_view</span><span class="p">,</span> <span class="n">streamCount</span><span class="p">,</span> <span class="n">streams_buffer</span><span class="p">,</span> <span class="n">numberCount</span><span class="p">,</span> <span class="n">outBufferDevice_substream</span><span class="p">,</span> <span class="n">stream_length</span><span class="p">,</span> <span class="n">streams_per_thread</span><span class="p">);</span>
+<span class="cp">#else</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="n">hcrngMrg31k3pDeviceRandomU01Array_double</span><span class="p">(</span><span class="n">accl_view</span><span class="p">,</span> <span class="n">streamCount</span><span class="p">,</span> <span class="n">streams_buffer</span><span class="p">,</span> <span class="n">numberCount</span><span class="p">,</span> <span class="n">outBufferDevice_substream</span><span class="p">,</span> <span class="n">stream_length</span><span class="p">,</span> <span class="n">streams_per_thread</span><span class="p">);</span>
+<span class="cp">#endif</span>
+      <span class="c1">//Status check</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TEST FAILED&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+      <span class="n">hc</span><span class="o">::</span><span class="n">am_copy</span><span class="p">(</span><span class="n">Random1</span><span class="p">,</span> <span class="n">outBufferDevice_substream</span><span class="p">,</span> <span class="n">numberCount</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">fp_type</span><span class="p">));</span>
+
+      <span class="c1">//Invoke random number generator from Host</span>
+      <span class="n">multistream_fill_array</span><span class="p">(</span><span class="n">streams_per_thread</span><span class="p">,</span> <span class="n">streamCount</span><span class="o">/</span><span class="n">streams_per_thread</span><span class="p">,</span> <span class="n">numberCount</span><span class="o">/</span><span class="n">streamCount</span><span class="p">,</span> <span class="n">stream_length</span><span class="p">,</span> <span class="n">streams</span><span class="p">,</span> <span class="n">Random2</span><span class="p">);</span>
+
+      <span class="c1">//Compare Host and device outputs</span>
+      <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numberCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span><span class="n">Random1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Random2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">{</span>
+              <span class="n">ispassed</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+              <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span><span class="s">&quot; RANDDEVICE_SUBSTREAM[&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="o">&lt;&lt;</span> <span class="s">&quot;] &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">Random1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;and RANDHOST_SUBSTREAM[&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span><span class="s">&quot;] mismatches&quot;</span><span class="o">&lt;&lt;</span> <span class="n">Random2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+              <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">else</span>
+              <span class="k">continue</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ispassed</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TEST FAILED&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="bibliography.html" class="btn btn-neutral float-right" title="Bibliography" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Randomarray.cpp.html" class="btn btn-neutral" title="Random-array generation Code example" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, MulticoreWare.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:' ',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

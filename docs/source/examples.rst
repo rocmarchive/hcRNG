@@ -1,0 +1,9 @@
+Examples
+========
+
+.. toctree::
+   :maxdepth: 3
+
+   Host_only.cpp 
+   Randomarray.cpp 
+   Multistream.cpp  

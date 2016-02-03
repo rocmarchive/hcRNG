@@ -42,12 +42,6 @@
  *  Many functions are defined only for arrays of streams; 
  *  for a single stream, it suffices to specify an array of size 1.
  *  
- *  When a kernel is called, one should pass a copy of the streams from the host 
- *  to the global memory of the device.
- *  With the option  \c HCRNG_ENABLE_SUBSTREAMS,
- *  the initial state of the current substream is also stored into private memory.
- *  This permits one to rewind the current state to it or move forward to the next substream.
- *  
  *  To use the hcRNG library from within a user-defined kernel, the
  *  user must include the hcRNG header file corresponding to the desired RNG
  *  via an \c include directive.
@@ -62,24 +56,6 @@
  *    \c float instead of \c double (the default setting).
  *    This option can be activated on the device and the host separately (i.e., on
  *    either one or on both), and affects all implemented RNGs.
- *  - \c HCRNG_ENABLE_SUBSTREAMS:
- *    With this option, the current state of a stream can be reset on the device to the initial state of the
- *    current or next substream. This is made possible by storing in private memory
- *    the initial substream state.
- *    Without this option, by default, this is not possible and only the current
- *    state of the stream and a pointer to its initial state (left in global memory)
- *    are kept in private memory and is accessible, in a work item.
- *    **This option applies only to the device; operations on substreams are 
- *    always available on the host.**
- *
- *  For example, to enable substreams support, generate single-precision floating point numbers 
- *  on the device, and use the MRG31k3p generator, one would have, in the device
- *  code:
- *  \code{c}
- *      #define  HCRNG_ENABLE_SUBSTREAMS
- *      #define  HCRNG_SINGLE_PRECISION
- *      #include <hcRNG/mrg31k3p.h>
- *  \endcode
  *
  *  To generate single-precision floating point numbers also on the host, still
  *  using the MRG31k3p generator, the host code should contain:
@@ -188,7 +164,7 @@
 
 
 
-/*! @brief Stream state [**device**]
+/*! @brief Stream state [*host/*device**]
  *
  *  Contains the state of a random stream.
  *  The definition of a state depends on the type of generator.
@@ -196,7 +172,7 @@
 typedef struct { /* ... */ } hcrngStreamState;
 
 
-/*! @brief Stream object [**device**]
+/*! @brief Stream object [**host/device**]
  *
  *  A structure that contains the current information on a stream object.  
  *  It generally depends on the type of generator.
@@ -208,20 +184,8 @@ typedef struct { /* ... */ } hcrngStreamState;
  *  as defined on the device, do not store as much information as stream
  *  objects on the host, but keep pointers to relevant information from the
  *  host stream object.
- *  The definition of the hcrngStream type on the device also 
- *  depends on whether substreams support is required by the user (with the 
- *  \c HCRNG_ENABLE_SUBSTREAMS option).
  */
 typedef struct { /* ... */ } hcrngStream;
-
-
-/*! @brief Host stream object [**device-only**]
- *
- *  Variant of hcrngStream that represents stream objects received from the host by the
- *  device.  These are normally stored in global memory.
- */
-typedef struct { /* ... */ } hcrngStream;
-
 
 /*! @brief Stream creator object
  *
@@ -563,8 +527,6 @@ hcrngStatus hcrngRewindStreams(size_t count, hcrngStream* streams);
  *                              reset to the beginning of the current substream(s).
  *  @return     Error status
  *
- *  @warning This function is available on the device only if the preprocessor
- *  symbol \c HCRNG_ENABLE_SUBSTREAMS is defined.
  */
 hcrngStatus hcrngRewindSubstreams(size_t count, hcrngStream* streams);
 
@@ -580,8 +542,6 @@ hcrngStatus hcrngRewindSubstreams(size_t count, hcrngStream* streams);
  *                              advanced to the next substream(s).
  *  @return     Error status
  *
- *  @warning This function is available on the device only if the preprocessor
- *  symbol HCRNG_ENABLE_SUBSTREAMS is defined.
  */
 hcrngStatus hcrngForwardToNextSubstreams(size_t count, hcrngStream* streams);
 
