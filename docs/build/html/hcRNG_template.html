@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>hcRNG_template.h File Reference &mdash; hcRNG   documentation</title>
+  <title>2.1. hcRNG_template File Reference &mdash; hcRNG   documentation</title>
   
 
   
@@ -31,8 +31,9 @@
 
   
     <link rel="top" title="hcRNG   documentation" href="index.html"/>
-        <link rel="next" title="Examples" href="examples.html"/>
-        <link rel="prev" title="hcRNG Documentation" href="index.html"/> 
+        <link rel="up" title="2. hcRNG API Reference" href="API_reference.html"/>
+        <link rel="next" title="2.2. Data Structures" href="DataStructures.html"/>
+        <link rel="prev" title="2. hcRNG API Reference" href="API_reference.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -81,55 +82,62 @@
           
             
             
-                <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">hcRNG_template.h File Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#data-structures">1. Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#functions">2. Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#stream-creators">2.1 Stream Creators</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#stream-allocation-destruction-and-initialization">2.2 Stream Allocation, Destruction and Initialization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#stream-output">2.3 Stream Output</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#stream-navigation">2.4 Stream Navigation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#work-functions">2.5 Work Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#miscellaneous-functions">2.6 Miscellaneous Functions</a></li>
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="Getting_Started.html">1. Getting Started</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="API_reference.html">2. hcRNG API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">2.1. hcRNG_template File Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-structures">2.1.1. Data Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">2.1.2. Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#stream-creators">2.1.2.1. Stream Creators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stream-allocation-destruction-and-initialization">2.1.2.2. Stream Allocation, Destruction and Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stream-output">2.1.2.3. Stream Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stream-navigation">2.1.2.4. Stream Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#work-functions">2.1.2.5. Work Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#miscellaneous-functions">2.1.2.6 Miscellaneous Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#detailed-description">3. Detailed Description</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-mrg31k3p-generator">3.1 The MRG31k3p Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-mrg32k3a-generator">3.2 The MRG32k3a Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-lfsr113-generator">3.3 The LFSR113 Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-philox-432-10-generator">3.4 The Philox-4×32-10 Generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detailed-description">2.1.3. Detailed Description</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-mrg31k3p-generator">2.1.3.1. The MRG31k3p Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-mrg32k3a-generator">2.1.3.2. The MRG32k3a Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-lfsr113-generator">2.1.3.3. The LFSR113 Generator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-philox-432-10-generator">2.1.3.4. The Philox-4×32-10 Generator</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#function-documentation">4. Function Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngcopystreamcreator">hcrngCopyStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngdestroystreamcreator">hcrngDestroyStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrewindstreamcreator">hcrngRewindStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngsetbasecreatorstate">hcrngSetBaseCreatorState()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngchangestreamsspacing">hcrngChangeStreamsSpacing()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngallocstreams">hcrngAllocStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngdestroystreams">hcrngDestroyStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngcreatestreams">hcrngCreateStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngcreateoverstreams">hcrngCreateOverStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngcopystreams">hcrngCopyStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngcopyoverstreams">hcrngCopyOverStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrandomu01">hcrngRandomU01()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrandominteger">hcrngRandomInteger()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrandomu01array">hcrngRandomU01Array()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrandomintegerarray">hcrngRandomIntegerArray()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrewindstreams">hcrngRewindStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngrewindsubstreams">hcrngRewindSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngforwardtonextsubstreams">hcrngForwardToNextSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngmakesubstreams">hcrngMakeSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngmakeoversubstreams">hcrngMakeOverSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngadvancestreams">hcrngAdvanceStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngdevicerandomu01array">hcrngDeviceRandomU01Array()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngwritestreaminfo">hcrngWriteStreamInfo()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#function-documentation">2.1.4. Function Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngcopystreamcreator">2.1.4.1. hcrngCopyStreamCreator()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngdestroystreamcreator">2.1.4.2. hcrngDestroyStreamCreator()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrewindstreamcreator">2.1.4.3. hcrngRewindStreamCreator()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngsetbasecreatorstate">2.1.4.4. hcrngSetBaseCreatorState()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngchangestreamsspacing">2.1.4.5. hcrngChangeStreamsSpacing()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngallocstreams">2.1.4.6. hcrngAllocStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngdestroystreams">2.1.4.7. hcrngDestroyStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngcreatestreams">2.1.4.8. hcrngCreateStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngcreateoverstreams">2.1.4.9. hcrngCreateOverStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngcopystreams">2.1.4.10. hcrngCopyStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngcopyoverstreams">2.1.4.11. hcrngCopyOverStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrandomu01">2.1.4.12. hcrngRandomU01()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrandominteger">2.1.4.13. hcrngRandomInteger()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrandomu01array">2.1.4.14. hcrngRandomU01Array()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrandomintegerarray">2.1.4.15. hcrngRandomIntegerArray()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrewindstreams">2.1.4.16. hcrngRewindStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngrewindsubstreams">2.1.4.17. hcrngRewindSubstreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngforwardtonextsubstreams">2.1.4.18. hcrngForwardToNextSubstreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngmakesubstreams">2.1.4.19. hcrngMakeSubstreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngmakeoversubstreams">2.1.4.20. hcrngMakeOverSubstreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngadvancestreams">2.1.4.21. hcrngAdvanceStreams()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngdevicerandomu01array">2.1.4.22. hcrngDeviceRandomU01Array()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngwritestreaminfo">2.1.4.23. hcrngWriteStreamInfo()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html">2.2. Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">2.3. Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bibliography.html">2.4. Bibliography</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -160,7 +168,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
-    <li>hcRNG_template.h File Reference</li>
+          <li><a href="API_reference.html">2. hcRNG API Reference</a> &raquo;</li>
+      
+    <li>2.1. hcRNG_template File Reference</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -174,40 +184,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="hcrng-template-h-file-reference">
-<h1>hcRNG_template.h File Reference<a class="headerlink" href="#hcrng-template-h-file-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="hcrng-template-file-reference">
+<h1>2.1. hcRNG_template File Reference<a class="headerlink" href="#hcrng-template-file-reference" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
 <div class="line-block">
-<div class="line">Template of the specialized interface for specific generators (not to be included as is!) <a class="reference external" href="hcRNG_template.html#detailed-description">More...</a></div>
+<div class="line">Template of the specialized interface for specific generators  <a class="reference external" href="hcRNG_template.html#detailed-description">More...</a></div>
 <div class="line"><br /></div>
 <div class="line">#include &lt;hcRNG.h&gt;</div>
 <div class="line">#include &lt;stdio.h&gt;</div>
 <div class="line"><br /></div>
 </div>
 <div class="section" id="data-structures">
-<h2>1. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.1. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <ul class="simple">
 <li>struct <strong>hcrngStreamState</strong></li>
 </ul>
 <blockquote>
-<div>Stream state [host/device]. More...</div></blockquote>
+<div>Stream state [host/device]. <a class="reference external" href="DataStructures.html#hcrngstreamstate">More...</a></div></blockquote>
 <ul class="simple">
 <li>struct <strong>hcrngStream</strong></li>
 </ul>
 <blockquote>
-<div>Stream object [host/device]. More...</div></blockquote>
+<div>Stream object [host/device]. <a class="reference external" href="DataStructures.html#hcrngstream">More...</a></div></blockquote>
 <ul class="simple">
 <li>struct <strong>hcrngStreamCreator</strong></li>
 </ul>
 <blockquote>
-<div>Stream creator object. More...</div></blockquote>
+<div>Stream creator object. <a class="reference external" href="DataStructures.html#hcrngstreamcreator">More...</a></div></blockquote>
 </div>
 <div class="section" id="functions">
-<h2>2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="stream-creators">
-<h3>2.1 Stream Creators<a class="headerlink" href="#stream-creators" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.1. Stream Creators<a class="headerlink" href="#stream-creators" title="Permalink to this headline">¶</a></h3>
 <p>Functions to create, destroy and modify stream creator objects (factory pattern).</p>
 <ul class="simple">
 <li>hcrngStreamCreator*  <strong>hcrngCopyStreamCreator</strong> (const hcrngStreamCreator* creator, hcrngStatus* err)</li>
@@ -236,7 +246,7 @@
 <div>Change the spacing between successive streams. <a class="reference external" href="hcRNG_template.html#hcrngchangestreamsspacing">More...</a></div></blockquote>
 </div>
 <div class="section" id="stream-allocation-destruction-and-initialization">
-<h3>2.2 Stream Allocation, Destruction and Initialization<a class="headerlink" href="#stream-allocation-destruction-and-initialization" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.2. Stream Allocation, Destruction and Initialization<a class="headerlink" href="#stream-allocation-destruction-and-initialization" title="Permalink to this headline">¶</a></h3>
 <p>Functions to create or destroy random streams and arrays of random streams.</p>
 <ul class="simple">
 <li>hcrngStream* <strong>hcrngAllocStreams</strong> (size_t count, size_t* bufSize, hcrngStatus* err)</li>
@@ -270,7 +280,7 @@
 <div>Copy RNG stream objects in already allocated memory [device]. <a class="reference external" href="hcRNG_template.html#hcrngcopyoverstreams">More...</a></div></blockquote>
 </div>
 <div class="section" id="stream-output">
-<h3>2.3 Stream Output<a class="headerlink" href="#stream-output" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.3. Stream Output<a class="headerlink" href="#stream-output" title="Permalink to this headline">¶</a></h3>
 <p>Functions to read successive values from a random stream.</p>
 <ul class="simple">
 <li>double <strong>hcrngRandomU01</strong> (hcrngStream* stream)</li>
@@ -294,7 +304,7 @@
 <div>Fill an array with successive random integer values [device]. <a class="reference external" href="hcRNG_template.html#hcrngrandomintegerarray">More...</a></div></blockquote>
 </div>
 <div class="section" id="stream-navigation">
-<h3>2.4 Stream Navigation<a class="headerlink" href="#stream-navigation" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.4. Stream Navigation<a class="headerlink" href="#stream-navigation" title="Permalink to this headline">¶</a></h3>
 <p>Functions to roll back or advance streams by many steps.</p>
 <ul class="simple">
 <li>hcrngStatus  <strong>hcrngRewindStreams</strong> (size_t count, hcrngStream* streams)</li>
@@ -328,26 +338,16 @@
 <div>Advance the state of streams by many steps. <a class="reference external" href="hcRNG_template.html#hcrngadvancestreams">More...</a></div></blockquote>
 </div>
 <div class="section" id="work-functions">
-<h3>2.5 Work Functions<a class="headerlink" href="#work-functions" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.5. Work Functions<a class="headerlink" href="#work-functions" title="Permalink to this headline">¶</a></h3>
 <p>Kernel functions to generate Random numbers.</p>
-<ul>
-<li><dl class="first docutils">
-<dt>hcrngStatus <strong>hcrngDeviceRandomU01Array_single</strong> (hc::accelerator_view &amp;accl_view, size_t streamCount, hcrngStream* streams,</dt>
-<dd><p class="first last">size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>hcrngStatus <strong>hcrngDeviceRandomU01Array_double</strong> (hc::accelerator_view &amp;accl_view, size_t streamCount, hcrngStream* streams,</dt>
-<dd><p class="first last">size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li>hcrngStatus <strong>hcrngDeviceRandomU01Array_single</strong> (hc::accelerator_view &amp;accl_view, size_t streamCount, hcrngStream* streams, size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)</li>
+<li>hcrngStatus <strong>hcrngDeviceRandomU01Array_double</strong> (hc::accelerator_view &amp;accl_view, size_t streamCount, hcrngStream* streams, size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)</li>
 </ul>
 <p>The last two arguments are default arguments and can be used in case of multistream usage. <a class="reference external" href="hcRNG_template.html#hcrngdevicerandomu01array">More...</a></p>
 </div>
 <div class="section" id="miscellaneous-functions">
-<h3>2.6 Miscellaneous Functions<a class="headerlink" href="#miscellaneous-functions" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.2.6 Miscellaneous Functions<a class="headerlink" href="#miscellaneous-functions" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><blockquote>
 <div>hcrngStatus <strong>hcrngWriteStreamInfo</strong> (const hcrngStream* stream, FILE* file)</div></blockquote>
@@ -356,9 +356,9 @@
 </div>
 </div>
 <div class="section" id="detailed-description">
-<h2>3. Detailed Description<a class="headerlink" href="#detailed-description" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.3. Detailed Description<a class="headerlink" href="#detailed-description" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
-<p>Template of the specialized interface for specific generators (not to be included as is!)</p>
+<p>Template of the specialized interface for specific generators.</p>
 <p>The function and type names in this API all start with hcrng. In each specific implementation, this prefix is expanded to a specific prefix; e.g., hcrngMrg31k3p for the MRG31k3p generator.</p>
 <p>In the standard case, streams and substreams are defined as in <a class="reference external" href="bibliography.html">[10]</a>, <a class="reference external" href="bibliography.html">[2]</a>, <a class="reference external" href="bibliography.html">[5]</a> . The sequence of successive states of the base RNG over its entire period of length ρ is divided into streams whose starting points are Z steps apart. The sequence for each stream (of length Z) is further divided into substreams of length W. The integers Z and W have default values that have been carefully selected to avoid detectable dependence between successive streams and substreams, and are large enough to make sure that streams and substreams will not be exhausted in practice. It is strongly recommended to never change these values (even if the software allows it). The initial state of the first stream (the seed of the library) has a default value. It can be changed by invoking hcrngSetBaseCreatorState() before creating a first stream.</p>
 <p>A stream object is a structure that contains the current state of the stream, its initial state (at the beginning of the stream), and the initial state of the current substream. Whenever the user creates a new stream, the software automatically jumps ahead by Z steps to find its initial state, and the three states in the stream object are set to it. The form of the state depends on the type of RNG.</p>
@@ -366,6 +366,7 @@
 <p>To use the hcRNG library from within a user-defined kernel, the user must include the hcRNG header file corresponding to the desired RNG via an include directive. Other specific preprocessor macros can be placed before including the header file to change settings of the library when the default values are not suitable for the user. The following options are currently available:</p>
 <div class="line-block">
 <div class="line"><strong>HCRNG_SINGLE_PRECISION</strong> : With this option, all the random numbers returned by hcrngRandomU01() and hcrngRandomU01Array(), and generated by hcrngDeviceRandomU01Array(), will be of type float instead of double (the default setting). This option can be activated and affects all implemented RNGs.</div>
+<div class="line"><br /></div>
 </div>
 <p>To generate single-precision floating point numbers also on the host, still using the MRG31k3p generator, the host code should contain:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c1">#define HCRNG_SINGLE_PRECISION</span>
@@ -407,27 +408,27 @@ Implemented RNG&#8217;s</p>
 </tbody>
 </table>
 <div class="section" id="the-mrg31k3p-generator">
-<h3>3.1 The MRG31k3p Generator<a class="headerlink" href="#the-mrg31k3p-generator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.3.1. The MRG31k3p Generator<a class="headerlink" href="#the-mrg31k3p-generator" title="Permalink to this headline">¶</a></h3>
 <p>The MRG31k3p generator is defined in <a class="reference external" href="bibliography.html">[4]</a> . In its specific implementation, the function and type names start with hcrngMrg31k3p. For this RNG, a state is a vector of six 31-bit integers, represented internally as unsigned int. The entire period length of approximately 2^185 is divided into approximately 2^51 non-overlapping streams of length Z=2^134. Each stream is further partitioned into substreams of length W=2^72. The state (and seed) of each stream is a vector of six 31-bit integers. This size of state is appropriate for having streams running in work items on GPU cards, for example, while providing a sufficient period length for most applications.</p>
 </div>
 <div class="section" id="the-mrg32k3a-generator">
-<h3>3.2 The MRG32k3a Generator<a class="headerlink" href="#the-mrg32k3a-generator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.3.2. The MRG32k3a Generator<a class="headerlink" href="#the-mrg32k3a-generator" title="Permalink to this headline">¶</a></h3>
 <p>MRG32k3a is a combined multiple recursive generator (MRG) proposed by L&#8217;Ecuyer <a class="reference external" href="bibliography.html">[7]</a>, implemented here in 64-bit integer arithmetic. This RNG has a period length of approximately 2^191, and is divided into approximately 2^64 non-overlapping streams of length Z=2^127, and each stream is subdivided in 2^51 substreams of length W=2^76. These are the same numbers as in <a class="reference external" href="bibliography.html">[5]</a> . The state of a stream at any given step is a six-dimensional vector of 32-bit integers, but those integers are stored as unsigned long (64-bit integers) in the present implementation (so they use twice the space). The generator has 32 bits of resolution. Note that in the original version proposed in <a class="reference external" href="bibliography.html">[7]</a> and <a class="reference external" href="bibliography.html">[5]</a>, the recurrences are implemented in double instead, and the state is stored in six 32-bit integers. The change in implementation is to avoid using double&#8217;s, which are not available on many GPU devices, and also because the 64-bit implementation is much faster than that in double when 64-bit integer arithmetic is available on the hardware.</p>
 </div>
 <div class="section" id="the-lfsr113-generator">
-<h3>3.3 The LFSR113 Generator<a class="headerlink" href="#the-lfsr113-generator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.3.3. The LFSR113 Generator<a class="headerlink" href="#the-lfsr113-generator" title="Permalink to this headline">¶</a></h3>
 <p>The LFSR113 generator is defined in <a class="reference external" href="bibliography.html">[8]</a>. In its implementation, the function and type names start with hcrngLfsr113. For this RNG, a state vector of four 31-bit integers, represented internally as unsigned int. The period length of approximately 2^113 is divided into approximately 2^23 non-overlapping streams of length Z=2^90. Each stream is further partitioned into 2^35 substreams of length W=2^55. Note that the functions hcrngLfsr113ChangeStreamsSpacing() and hcrngLfsr113AdvancedStreams() are not implemented in the current version.</p>
 </div>
 <div class="section" id="the-philox-432-10-generator">
-<h3>3.4 The Philox-4×32-10 Generator<a class="headerlink" href="#the-philox-432-10-generator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.3.4. The Philox-4×32-10 Generator<a class="headerlink" href="#the-philox-432-10-generator" title="Permalink to this headline">¶</a></h3>
 <p>The counter-based Philox-4×32-10 generator is defined in <a class="reference external" href="bibliography.html">[11]</a>. Unlike the previous three generators, its design is not supported by a theoretical analysis of equidistribution. It has only been subjected to empirical testing with the TestU01 software <a class="reference external" href="bibliography.html">[3]</a> (the other three generators also have). In its implementation, the function and type names start with hcrngPhilox432. For this RNG, a state is a 128-bit counter with a 64-bit key, and a 2-bit index used to iterate over the four 32-bit outputs generated for each counter value. The counter is represented internally as a vector of four 32-bit unsigned int values and the index, as a single unsigned int value. In the current hcRNG version, the key is the same for all streams, so it is not stored in each stream object but rather hardcoded in the implementation. The period length of 2^130 is divided into 2^28 non-overlapping streams of length Z=2^102. Each stream is further partitioned into 2^36 substreams of length W=2^66. The key (all bits to 0), initial counter and order in which the four outputs per counter value are returned are chosen to generate the same values, in the same order, as Random123&#8217;s Engine module <a class="reference external" href="bibliography.html">[11]</a>, designed for use with the standard C++11 random library. Note that the function hcrngPhilox432ChangeStreamsSpacing() supports only values of c that are multiples of 4, with either e=0 or e ≥ 2.</p>
 </div>
 </div>
 <div class="section" id="function-documentation">
-<h2>4. Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
+<h2>2.1.4. Function Documentation<a class="headerlink" href="#function-documentation" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="hcrngcopystreamcreator">
-<h3>hcrngCopyStreamCreator()<a class="headerlink" href="#hcrngcopystreamcreator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.1. hcrngCopyStreamCreator()<a class="headerlink" href="#hcrngcopystreamcreator" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStreamCreator* hcrngCopyStreamCreator ( const hcrngStreamCreator *        creator,
                                              hcrngStatus *     err
                                            )
@@ -459,12 +460,13 @@ the default stream creator.</td>
 </tr>
 </tbody>
 </table>
-<p>Returns,</p>
-<blockquote>
-<div>The newly created stream creator object.</div></blockquote>
+<dl class="docutils">
+<dt>Returns,</dt>
+<dd>The newly created stream creator object.</dd>
+</dl>
 </div>
 <div class="section" id="hcrngdestroystreamcreator">
-<h3>hcrngDestroyStreamCreator()<a class="headerlink" href="#hcrngdestroystreamcreator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.2. hcrngDestroyStreamCreator()<a class="headerlink" href="#hcrngdestroystreamcreator" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngDestroyStreamCreator ( hcrngStreamCreator *   creator )
 </pre></div>
 </div>
@@ -494,7 +496,7 @@ the default stream creator.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrewindstreamcreator">
-<h3>hcrngRewindStreamCreator()<a class="headerlink" href="#hcrngrewindstreamcreator" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.3. hcrngRewindStreamCreator()<a class="headerlink" href="#hcrngrewindstreamcreator" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngRewindStreamCreator ( hcrngStreamCreator *    creator )
 </pre></div>
 </div>
@@ -524,7 +526,7 @@ the default stream creator.</td>
 </dl>
 </div>
 <div class="section" id="hcrngsetbasecreatorstate">
-<h3>hcrngSetBaseCreatorState()<a class="headerlink" href="#hcrngsetbasecreatorstate" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.4. hcrngSetBaseCreatorState()<a class="headerlink" href="#hcrngsetbasecreatorstate" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngSetBaseCreatorState ( hcrngStreamCreator *    creator,
                                        const hcrngStreamState *        baseState
                                      )
@@ -566,7 +568,7 @@ to use the library default.</td>
 </div>
 </div>
 <div class="section" id="hcrngchangestreamsspacing">
-<h3>hcrngChangeStreamsSpacing()<a class="headerlink" href="#hcrngchangestreamsspacing" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.5. hcrngChangeStreamsSpacing()<a class="headerlink" href="#hcrngchangestreamsspacing" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngChangeStreamsSpacing ( hcrngStreamCreator *   creator,
                                          int   e,
                                          int   c
@@ -612,7 +614,7 @@ to use the library default.</td>
 </div>
 </div>
 <div class="section" id="hcrngallocstreams">
-<h3>hcrngAllocStreams()<a class="headerlink" href="#hcrngallocstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.6. hcrngAllocStreams()<a class="headerlink" href="#hcrngallocstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStream* hcrngAllocStreams ( size_t        count,
                                  size_t *      bufSize,
                                  hcrngStatus *         err
@@ -653,7 +655,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngdestroystreams">
-<h3>hcrngDestroyStreams()<a class="headerlink" href="#hcrngdestroystreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.7. hcrngDestroyStreams()<a class="headerlink" href="#hcrngdestroystreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngDestroyStreams ( hcrngStream*  streams )
 </pre></div>
 </div>
@@ -685,7 +687,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngcreatestreams">
-<h3>hcrngCreateStreams()<a class="headerlink" href="#hcrngcreatestreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.8. hcrngCreateStreams()<a class="headerlink" href="#hcrngcreatestreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStream* hcrngCreateStreams ( hcrngStreamCreator *         creator,
                                   size_t       count,
                                   size_t *     bufSize,
@@ -734,7 +736,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngcreateoverstreams">
-<h3>hcrngCreateOverStreams()<a class="headerlink" href="#hcrngcreateoverstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.9. hcrngCreateOverStreams()<a class="headerlink" href="#hcrngcreateoverstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngCreateOverStreams ( hcrngStreamCreator *      creator,
                                      size_t    count,
                                      hcrngStream *     streams
@@ -742,7 +744,7 @@ to use the library default.</td>
 </pre></div>
 </div>
 <p>Create new RNG stream objects in already allocated memory.</p>
-<p>This function is similar to hcrngCreateStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated streams buffer, which could have been reserved earlier via either hcrngAllocStreams() or hcrngCreateStreams(). It permits the hcient to reuse memory that was previously allocated for other streams.</p>
+<p>This function is similar to hcrngCreateStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated streams buffer, which could have been reserved earlier via either hcrngAllocStreams() or hcrngCreateStreams(). It permits the client to reuse memory that was previously allocated for other streams.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="13%" />
@@ -776,7 +778,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngcopystreams">
-<h3>hcrngCopyStreams()<a class="headerlink" href="#hcrngcopystreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.10. hcrngCopyStreams()<a class="headerlink" href="#hcrngcopystreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStream* hcrngCopyStreams ( size_t         count,
                                 const hcrngStream *    streams,
                                 hcrngStatus *          err
@@ -817,7 +819,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngcopyoverstreams">
-<h3>hcrngCopyOverStreams()<a class="headerlink" href="#hcrngcopyoverstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.11. hcrngCopyOverStreams()<a class="headerlink" href="#hcrngcopyoverstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngCopyOverStreams ( size_t      count,
                                    hcrngStream *       destStreams,
                                    const hcrngStream *         srcStreams
@@ -858,7 +860,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrandomu01">
-<h3>hcrngRandomU01()<a class="headerlink" href="#hcrngrandomu01" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.12. hcrngRandomU01()<a class="headerlink" href="#hcrngrandomu01" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>double hcrngRandomU01 ( hcrngStream *  stream  )
 </pre></div>
 </div>
@@ -890,7 +892,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrandominteger">
-<h3>hcrngRandomInteger()<a class="headerlink" href="#hcrngrandominteger" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.13. hcrngRandomInteger()<a class="headerlink" href="#hcrngrandominteger" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>int hcrngRandomInteger ( hcrngStream *         stream,
                          int   i,
                          int   j
@@ -931,7 +933,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrandomu01array">
-<h3>hcrngRandomU01Array()<a class="headerlink" href="#hcrngrandomu01array" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.14. hcrngRandomU01Array()<a class="headerlink" href="#hcrngrandomu01array" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngRandomU01Array ( hcrngStream *        stream,
                                   size_t       count,
                                   double *     buffer
@@ -972,7 +974,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrandomintegerarray">
-<h3>hcrngRandomIntegerArray()<a class="headerlink" href="#hcrngrandomintegerarray" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.15. hcrngRandomIntegerArray()<a class="headerlink" href="#hcrngrandomintegerarray" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngRandomIntegerArray ( hcrngStream *    stream,
                                       int      i,
                                       int      j,
@@ -1023,7 +1025,7 @@ to use the library default.</td>
 </dl>
 </div>
 <div class="section" id="hcrngrewindstreams">
-<h3>hcrngRewindStreams()<a class="headerlink" href="#hcrngrewindstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.16. hcrngRewindStreams()<a class="headerlink" href="#hcrngrewindstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngRewindStreams ( size_t        count,
                                  hcrngStream *         streams
                                )
@@ -1064,7 +1066,7 @@ start of the stream(s).</td>
 </div>
 </div>
 <div class="section" id="hcrngrewindsubstreams">
-<h3>hcrngRewindSubstreams()<a class="headerlink" href="#hcrngrewindsubstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.17. hcrngRewindSubstreams()<a class="headerlink" href="#hcrngrewindsubstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngRewindSubstreams ( size_t     count,
                                     hcrngStream *      streams
                                    )
@@ -1103,7 +1105,7 @@ of the current substream(s).</td>
 </dl>
 </div>
 <div class="section" id="hcrngforwardtonextsubstreams">
-<h3>hcrngForwardToNextSubstreams()<a class="headerlink" href="#hcrngforwardtonextsubstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.18. hcrngForwardToNextSubstreams()<a class="headerlink" href="#hcrngforwardtonextsubstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngForwardToNextSubstreams ( size_t      count,
                                            hcrngStream *       streams
                                          )
@@ -1141,7 +1143,7 @@ of the current substream(s).</td>
 </dl>
 </div>
 <div class="section" id="hcrngmakesubstreams">
-<h3>hcrngMakeSubstreams()<a class="headerlink" href="#hcrngmakesubstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.19. hcrngMakeSubstreams()<a class="headerlink" href="#hcrngmakesubstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStream* hcrngMakeSubstreams ( hcrngStream *       stream,
                                    size_t      count,
                                    size_t *    bufSize,
@@ -1153,7 +1155,7 @@ of the current substream(s).</td>
 <p>Make and return an array of count copies of stream, whose current (and initial substream) states are the initial states of count successive substreams of stream. The first substream in the returned array is simply a copy of stream. This function also reserves the memory space required for the structures and initializes the stream states. It returns in bufSize the size of the allocated buffer, in bytes. To create a single stream, just set count to 1. When this function is invoked, the substream state and initial state of stream are advanced by count substreams.</p>
 </div>
 <div class="section" id="hcrngmakeoversubstreams">
-<h3>hcrngMakeOverSubstreams()<a class="headerlink" href="#hcrngmakeoversubstreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.20. hcrngMakeOverSubstreams()<a class="headerlink" href="#hcrngmakeoversubstreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngMakeOverSubstreams ( hcrngStream *    stream,
                                       size_t   count,
                                       hcrngStream *    substreams
@@ -1161,10 +1163,10 @@ of the current substream(s).</td>
 </pre></div>
 </div>
 <p>Make an array of substreams of a stream.</p>
-<p>This function is similar to hcrngMakeStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated substreams buffer, which could have been reserved earlier via either hcrngAllocStreams(), hcrngMakeSubstreams() or hcrngCreateStreams(). It permits the hcient to reuse memory that was previously allocated for other streams.</p>
+<p>This function is similar to hcrngMakeStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated substreams buffer, which could have been reserved earlier via either hcrngAllocStreams(), hcrngMakeSubstreams() or hcrngCreateStreams(). It permits the client to reuse memory that was previously allocated for other streams.</p>
 </div>
 <div class="section" id="hcrngadvancestreams">
-<h3>hcrngAdvanceStreams()<a class="headerlink" href="#hcrngadvancestreams" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.21. hcrngAdvanceStreams()<a class="headerlink" href="#hcrngadvancestreams" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngAdvanceStreams ( size_t       count,
                                   hcrngStream *        streams,
                                   int          e,
@@ -1215,7 +1217,7 @@ of the current substream(s).</td>
 </div>
 </div>
 <div class="section" id="hcrngdevicerandomu01array">
-<h3>hcrngDeviceRandomU01Array()<a class="headerlink" href="#hcrngdevicerandomu01array" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.22. hcrngDeviceRandomU01Array()<a class="headerlink" href="#hcrngdevicerandomu01array" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngDeviceRandomU01Array_single ( hc::accelerator_view &amp;accl_view,
                                                size_t              streamCount,
                                                hcrngStream*         streams,
@@ -1233,7 +1235,7 @@ hcrngStatus hcrngDeviceRandomU01Array_double ( hc::accelerator_view &amp;accl_vi
 </pre></div>
 </div>
 <p>Fill a buffer of random numbers.</p>
-<p>Fill the buffer pointed to by outBuffer with numberCount uniform random numbers of type double (or of type float if HCRNG_SINGLE_PRECISION is defined), using streamCount work items. In the current implementation, numberCount must be a multiple of streamCount. See hcEnqueueNDRangeKernel() from the OpenHC API documentation for a description of the numWaitEvents and waitEvents arguments.</p>
+<p>Fill the buffer pointed to by outBuffer with numberCount uniform random numbers of type double (or of type float if HCRNG_SINGLE_PRECISION is defined), using streamCount work items. In the current implementation, numberCount must be a multiple of streamCount. It is adviced to call the kernel depending on the type of output buffer. Kernels of type float and double has suffixes &#8220;_single&#8221; and &#8220;_double&#8221; respectively.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
@@ -1293,7 +1295,7 @@ of streamCount.</td>
 </div>
 </div>
 <div class="section" id="hcrngwritestreaminfo">
-<h3>hcrngWriteStreamInfo()<a class="headerlink" href="#hcrngwritestreaminfo" title="Permalink to this headline">¶</a></h3>
+<h3>2.1.4.23. hcrngWriteStreamInfo()<a class="headerlink" href="#hcrngwritestreaminfo" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>hcrngStatus hcrngWriteStreamInfo ( const hcrngStream *         stream,
                                    FILE *      file
                                  )
@@ -1339,10 +1341,10 @@ for standard output and error.</td>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="DataStructures.html" class="btn btn-neutral float-right" title="2.2. Data Structures" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="hcRNG Documentation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="API_reference.html" class="btn btn-neutral" title="2. hcRNG API Reference" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

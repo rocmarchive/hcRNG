@@ -1,6 +1,5 @@
 /*  @file Mrg32k3a.h
 *  @brief Specific interface for the Mrg32k3a generator
-*  @see hcRNG_template.h
 */
 
 #pragma once

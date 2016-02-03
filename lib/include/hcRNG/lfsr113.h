@@ -1,6 +1,5 @@
 /*  @file Lfsr113.h
 *  @brief Specific interface for the Lfsr113 generator
-*  @see hcRNG_template.h
 */
 
 #pragma once

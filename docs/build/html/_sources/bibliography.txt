@@ -1,6 +1,6 @@
-============
-Bibliography
-============
+*****************
+2.4. Bibliography
+*****************
 
 [1] A. M. Law. Simulation Modeling and Analysis. McGraw-Hill, New York, fifth edition, 2014.
 

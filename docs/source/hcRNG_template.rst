@@ -1,43 +1,41 @@
-===============================
-hcRNG_template.h File Reference
-===============================
+==================================
+2.1. hcRNG_template File Reference
+==================================
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-| Template of the specialized interface for specific generators (not to be included as is!) `More... <hcRNG_template.html#detailed-description>`_
+| Template of the specialized interface for specific generators  `More... <hcRNG_template.html#detailed-description>`_
 |
 | #include <hcRNG.h>
 | #include <stdio.h>
 |
 
-******************
-1. Data Structures
-******************
+**********************
+2.1.1. Data Structures
+**********************
 --------------------------------------------------------------------------------------------------------------------------------------------
 
 
 *  struct **hcrngStreamState**
 
-  Stream state [host/device]. More...
-
+  Stream state [host/device]. `More... <DataStructures.html#hcrngstreamstate>`_
 
 *  struct **hcrngStream**
 
-  Stream object [host/device]. More...
+  Stream object [host/device]. `More... <DataStructures.html#hcrngstream>`_
 
 *  struct **hcrngStreamCreator**
 
-  Stream creator object. More...
+  Stream creator object. `More... <DataStructures.html#hcrngstreamcreator>`_
  
-************
-2. Functions
-************
+****************
+2.1.2. Functions
+****************
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-2.1 Stream Creators
-^^^^^^^^^^^^^^^^^^^
+2.1.2.1. Stream Creators
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Functions to create, destroy and modify stream creator objects (factory pattern).
-
 
 *  hcrngStreamCreator* 	**hcrngCopyStreamCreator** (const hcrngStreamCreator* creator, hcrngStatus* err)
 
@@ -60,8 +58,8 @@ Functions to create, destroy and modify stream creator objects (factory pattern)
 
   Change the spacing between successive streams. `More... <hcRNG_template.html#hcrngchangestreamsspacing>`_
  
-2.2 Stream Allocation, Destruction and Initialization
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.2.2. Stream Allocation, Destruction and Initialization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Functions to create or destroy random streams and arrays of random streams.
 
@@ -89,8 +87,8 @@ Functions to create or destroy random streams and arrays of random streams.
 
   Copy RNG stream objects in already allocated memory [device]. `More... <hcRNG_template.html#hcrngcopyoverstreams>`_
  
-2.3 Stream Output
-^^^^^^^^^^^^^^^^^
+2.1.2.3. Stream Output
+^^^^^^^^^^^^^^^^^^^^^^
 
 Functions to read successive values from a random stream.
 
@@ -110,8 +108,8 @@ Functions to read successive values from a random stream.
 
   Fill an array with successive random integer values [device]. `More... <hcRNG_template.html#hcrngrandomintegerarray>`_
  
-2.4 Stream Navigation
-^^^^^^^^^^^^^^^^^^^^^
+2.1.2.4. Stream Navigation
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Functions to roll back or advance streams by many steps.
 
@@ -139,34 +137,32 @@ Functions to roll back or advance streams by many steps.
 
   Advance the state of streams by many steps. `More... <hcRNG_template.html#hcrngadvancestreams>`_
  
-2.5 Work Functions
-^^^^^^^^^^^^^^^^^^
+2.1.2.5. Work Functions
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Kernel functions to generate Random numbers.
 
-* hcrngStatus **hcrngDeviceRandomU01Array_single** (hc::accelerator_view &accl_view, size_t streamCount, hcrngStream* streams,
-        size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)
+*  hcrngStatus **hcrngDeviceRandomU01Array_single** (hc::accelerator_view &accl_view, size_t streamCount, hcrngStream* streams, size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)
 
-* hcrngStatus **hcrngDeviceRandomU01Array_double** (hc::accelerator_view &accl_view, size_t streamCount, hcrngStream* streams,
-        size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)
+*  hcrngStatus **hcrngDeviceRandomU01Array_double** (hc::accelerator_view &accl_view, size_t streamCount, hcrngStream* streams, size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1)
 
 The last two arguments are default arguments and can be used in case of multistream usage. `More... <hcRNG_template.html#hcrngdevicerandomu01array>`_
 
  
-2.6 Miscellaneous Functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.2.6 Miscellaneous Functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
   hcrngStatus **hcrngWriteStreamInfo** (const hcrngStream* stream, FILE* file)
 
  Format and output information about a stream object to a file. `More... <hcRNG_template.html#hcrngwritestreaminfo>`_
 
-*********************** 
-3. Detailed Description
-***********************
+*************************** 
+2.1.3. Detailed Description
+***************************
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-Template of the specialized interface for specific generators (not to be included as is!)
+Template of the specialized interface for specific generators.
 
 The function and type names in this API all start with hcrng. In each specific implementation, this prefix is expanded to a specific prefix; e.g., hcrngMrg31k3p for the MRG31k3p generator.
 
@@ -179,7 +175,7 @@ Some functions are available on both the host and the devices (they can be used 
 To use the hcRNG library from within a user-defined kernel, the user must include the hcRNG header file corresponding to the desired RNG via an include directive. Other specific preprocessor macros can be placed before including the header file to change settings of the library when the default values are not suitable for the user. The following options are currently available:
 
 |    **HCRNG_SINGLE_PRECISION** : With this option, all the random numbers returned by hcrngRandomU01() and hcrngRandomU01Array(), and generated by hcrngDeviceRandomU01Array(), will be of type float instead of double (the default setting). This option can be activated and affects all implemented RNGs.
-
+|
 To generate single-precision floating point numbers also on the host, still using the MRG31k3p generator, the host code should contain:
 
 ::
@@ -205,33 +201,33 @@ The following table lists the RNG's that are currently implemented in hcRNG with
 +--------------------+-----------------------+---------------------------+
 
 
-3.1 The MRG31k3p Generator
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.3.1. The MRG31k3p Generator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The MRG31k3p generator is defined in `[4] <bibliography.html>`_ . In its specific implementation, the function and type names start with hcrngMrg31k3p. For this RNG, a state is a vector of six 31-bit integers, represented internally as unsigned int. The entire period length of approximately 2^185 is divided into approximately 2^51 non-overlapping streams of length Z=2^134. Each stream is further partitioned into substreams of length W=2^72. The state (and seed) of each stream is a vector of six 31-bit integers. This size of state is appropriate for having streams running in work items on GPU cards, for example, while providing a sufficient period length for most applications.
 
-3.2 The MRG32k3a Generator
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.3.2. The MRG32k3a Generator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 MRG32k3a is a combined multiple recursive generator (MRG) proposed by L'Ecuyer `[7] <bibliography.html>`_, implemented here in 64-bit integer arithmetic. This RNG has a period length of approximately 2^191, and is divided into approximately 2^64 non-overlapping streams of length Z=2^127, and each stream is subdivided in 2^51 substreams of length W=2^76. These are the same numbers as in `[5] <bibliography.html>`_ . The state of a stream at any given step is a six-dimensional vector of 32-bit integers, but those integers are stored as unsigned long (64-bit integers) in the present implementation (so they use twice the space). The generator has 32 bits of resolution. Note that in the original version proposed in `[7] <bibliography.html>`_ and `[5] <bibliography.html>`_, the recurrences are implemented in double instead, and the state is stored in six 32-bit integers. The change in implementation is to avoid using double's, which are not available on many GPU devices, and also because the 64-bit implementation is much faster than that in double when 64-bit integer arithmetic is available on the hardware.
 
-3.3 The LFSR113 Generator
-^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.3.3. The LFSR113 Generator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The LFSR113 generator is defined in `[8] <bibliography.html>`_. In its implementation, the function and type names start with hcrngLfsr113. For this RNG, a state vector of four 31-bit integers, represented internally as unsigned int. The period length of approximately 2^113 is divided into approximately 2^23 non-overlapping streams of length Z=2^90. Each stream is further partitioned into 2^35 substreams of length W=2^55. Note that the functions hcrngLfsr113ChangeStreamsSpacing() and hcrngLfsr113AdvancedStreams() are not implemented in the current version.
 
-3.4 The Philox-4×32-10 Generator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.3.4. The Philox-4×32-10 Generator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The counter-based Philox-4×32-10 generator is defined in `[11] <bibliography.html>`_. Unlike the previous three generators, its design is not supported by a theoretical analysis of equidistribution. It has only been subjected to empirical testing with the TestU01 software `[3] <bibliography.html>`_ (the other three generators also have). In its implementation, the function and type names start with hcrngPhilox432. For this RNG, a state is a 128-bit counter with a 64-bit key, and a 2-bit index used to iterate over the four 32-bit outputs generated for each counter value. The counter is represented internally as a vector of four 32-bit unsigned int values and the index, as a single unsigned int value. In the current hcRNG version, the key is the same for all streams, so it is not stored in each stream object but rather hardcoded in the implementation. The period length of 2^130 is divided into 2^28 non-overlapping streams of length Z=2^102. Each stream is further partitioned into 2^36 substreams of length W=2^66. The key (all bits to 0), initial counter and order in which the four outputs per counter value are returned are chosen to generate the same values, in the same order, as Random123's Engine module `[11] <bibliography.html>`_, designed for use with the standard C++11 random library. Note that the function hcrngPhilox432ChangeStreamsSpacing() supports only values of c that are multiples of 4, with either e=0 or e ≥ 2.
 
-*************************
-4. Function Documentation
-*************************
+*****************************
+2.1.4. Function Documentation
+*****************************
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-hcrngCopyStreamCreator()
-^^^^^^^^^^^^^^^^^^^^^^^^ 
+2.1.4.1. hcrngCopyStreamCreator()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 
 ::
 
@@ -253,11 +249,10 @@ Create an identical copy (a clone) of the stream creator creator. To create a co
 +------------+-----------------+--------------------------------------------------------------+
 
 Returns,
-
     The newly created stream creator object. 
 
-hcrngDestroyStreamCreator()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.2. hcrngDestroyStreamCreator()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -274,8 +269,8 @@ Destroy a stream creator object. Release the resources associated to a stream cr
 Returns,
     Error status 
 
-hcrngRewindStreamCreator()
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.3. hcrngRewindStreamCreator()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -292,8 +287,8 @@ Reset a stream creator to its original initial state, so it can re-create the sa
 Returns,
     Error status 
 
-hcrngSetBaseCreatorState()
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.4. hcrngSetBaseCreatorState()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
  
@@ -319,8 +314,8 @@ Returns,
 
 .. warning:: It is recommended to use the library default base state. 
 
-hcrngChangeStreamsSpacing()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.5. hcrngChangeStreamsSpacing()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ::
 
  hcrngStatus hcrngChangeStreamsSpacing ( hcrngStreamCreator *  	creator,
@@ -347,8 +342,8 @@ Returns,
 
 .. warning:: It is recommended to use the library default spacing and not to invoke this function. 
 
-hcrngAllocStreams()
-^^^^^^^^^^^^^^^^^^^
+2.1.4.6. hcrngAllocStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -372,8 +367,8 @@ Reserve memory space for count stream objects, without creating the stream objec
 Returns,
     Pointer to the newly allocated buffer. 
 
-hcrngDestroyStreams()
-^^^^^^^^^^^^^^^^^^^^^
+2.1.4.7. hcrngDestroyStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -393,8 +388,8 @@ Returns,
 Examples:
     `Multistream.cpp <Multistream.cpp.html>`_, and `RandomArray.cpp <Randomarray.cpp.html>`_.
 
-hcrngCreateStreams()
-^^^^^^^^^^^^^^^^^^^^
+2.1.4.8. hcrngCreateStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -426,8 +421,8 @@ Returns,
 Examples:
     `Multistream.cpp <Multistream.cpp.html>`_, and `RandomArray.cpp <Randomarray.cpp.html>`_.
 
-hcrngCreateOverStreams()
-^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.9. hcrngCreateOverStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -438,7 +433,7 @@ hcrngCreateOverStreams()
 
 Create new RNG stream objects in already allocated memory.
 
-This function is similar to hcrngCreateStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated streams buffer, which could have been reserved earlier via either hcrngAllocStreams() or hcrngCreateStreams(). It permits the hcient to reuse memory that was previously allocated for other streams.
+This function is similar to hcrngCreateStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated streams buffer, which could have been reserved earlier via either hcrngAllocStreams() or hcrngCreateStreams(). It permits the client to reuse memory that was previously allocated for other streams.
 
 +------------+-----------------+------------------------------------------------------------------+
 |  In/out    |  Parameters     | Description                                                      |
@@ -453,8 +448,8 @@ This function is similar to hcrngCreateStreams(), except that it does not reserv
 Returns,
     Error status 
 
-hcrngCopyStreams()
-^^^^^^^^^^^^^^^^^^
+2.1.4.10. hcrngCopyStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -478,8 +473,8 @@ Clone RNG stream objects. Create an identical copy (a clone) of each of the coun
 Returns,
     The newly created stream object or array of stream objects. 
 
-hcrngCopyOverStreams()
-^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.11. hcrngCopyOverStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -503,8 +498,8 @@ Copy RNG stream objects in already allocated memory [device]. Copy (or restore) 
 Returns,
     Error status
 
-hcrngRandomU01()
-^^^^^^^^^^^^^^^^
+2.1.4.12. hcrngRandomU01()
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -524,8 +519,8 @@ Returns,
 Examples:
     `Multistream.cpp <Multistream.cpp.html>`_, and `RandomArray.cpp <Randomarray.cpp.html>`_.
 
-hcrngRandomInteger()
-^^^^^^^^^^^^^^^^^^^^
+2.1.4.13. hcrngRandomInteger()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -550,8 +545,8 @@ Generate the next random integer value [device]. Generate and return a (pseudo)r
 Returns,
     A random integer value uniformly distributed in {i,…,j}.
 
-hcrngRandomU01Array()
-^^^^^^^^^^^^^^^^^^^^^
+2.1.4.14. hcrngRandomU01Array()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -575,8 +570,8 @@ Fill an array with successive random values in (0,1) [device].Fill preallocated 
 Returns,
     Error status 
 
-hcrngRandomIntegerArray()
-^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.15. hcrngRandomIntegerArray()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -606,8 +601,8 @@ Fill an array with successive random integer values [device].Same as hcrngRandom
 Returns,
     Error status 
 
-hcrngRewindStreams()
-^^^^^^^^^^^^^^^^^^^^
+2.1.4.16. hcrngRewindStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -631,8 +626,8 @@ Returns,
 
 .. warning:: This function can be slow on the device, because it reads the initial state from global memory. 
 
-hcrngRewindSubstreams()
-^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.17. hcrngRewindSubstreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -657,8 +652,8 @@ Returns,
 Examples:
     `Multistream.cpp <Multistream.cpp.html>`_
 
-hcrngForwardToNextSubstreams()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.18. hcrngForwardToNextSubstreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -682,8 +677,8 @@ Returns,
 Examples:
     `Multistream.cpp <Multistream.cpp.html>`_
 
-hcrngMakeSubstreams()
-^^^^^^^^^^^^^^^^^^^^^
+2.1.4.19. hcrngMakeSubstreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -697,8 +692,8 @@ Allocate and make an array of substreams of a stream.
 
 Make and return an array of count copies of stream, whose current (and initial substream) states are the initial states of count successive substreams of stream. The first substream in the returned array is simply a copy of stream. This function also reserves the memory space required for the structures and initializes the stream states. It returns in bufSize the size of the allocated buffer, in bytes. To create a single stream, just set count to 1. When this function is invoked, the substream state and initial state of stream are advanced by count substreams.
 
-hcrngMakeOverSubstreams()
-^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.20. hcrngMakeOverSubstreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -709,10 +704,10 @@ hcrngMakeOverSubstreams()
 
 Make an array of substreams of a stream.
 
-This function is similar to hcrngMakeStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated substreams buffer, which could have been reserved earlier via either hcrngAllocStreams(), hcrngMakeSubstreams() or hcrngCreateStreams(). It permits the hcient to reuse memory that was previously allocated for other streams.
+This function is similar to hcrngMakeStreams(), except that it does not reserve memory for the structure. It creates the array of new streams in the preallocated substreams buffer, which could have been reserved earlier via either hcrngAllocStreams(), hcrngMakeSubstreams() or hcrngCreateStreams(). It permits the client to reuse memory that was previously allocated for other streams.
 
-hcrngAdvanceStreams()
-^^^^^^^^^^^^^^^^^^^^^
+2.1.4.21. hcrngAdvanceStreams()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -743,8 +738,8 @@ Returns,
 
 .. warning:: Check the implementation for all cases e>0, e=0 and e<0. 
 
-hcrngDeviceRandomU01Array()
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.22. hcrngDeviceRandomU01Array()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -765,7 +760,7 @@ hcrngDeviceRandomU01Array()
 
 Fill a buffer of random numbers.
 
-Fill the buffer pointed to by outBuffer with numberCount uniform random numbers of type double (or of type float if HCRNG_SINGLE_PRECISION is defined), using streamCount work items. In the current implementation, numberCount must be a multiple of streamCount. See hcEnqueueNDRangeKernel() from the OpenHC API documentation for a description of the numWaitEvents and waitEvents arguments.
+Fill the buffer pointed to by outBuffer with numberCount uniform random numbers of type double (or of type float if HCRNG_SINGLE_PRECISION is defined), using streamCount work items. In the current implementation, numberCount must be a multiple of streamCount. It is adviced to call the kernel depending on the type of output buffer. Kernels of type float and double has suffixes "_single" and "_double" respectively. 
 
 +------------+---------------------+-----------------------------------------------------------------------------------+
 |  In/out    |  Parameters         | Description                                                                       |
@@ -798,8 +793,8 @@ Examples:
 
 .. warning:: In the current implementation, numberCount must be a multiple of streamCount and streams_per_thread must be a multiple of streamCount. The array streams is left unchanged, as there is no write-back from the device code. stream_length and streams_per_thread are default arguments and can be used for multistream random number generation.
 
-hcrngWriteStreamInfo()
-^^^^^^^^^^^^^^^^^^^^^^
+2.1.4.23. hcrngWriteStreamInfo()
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 

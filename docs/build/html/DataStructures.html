@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2.2. Data Structures &mdash; hcRNG   documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="hcRNG   documentation" href="index.html"/>
+        <link rel="up" title="2. hcRNG API Reference" href="API_reference.html"/>
+        <link rel="next" title="2.3. Examples" href="examples.html"/>
+        <link rel="prev" title="2.1 hcRNG_template File Reference" href="hcRNG_template.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hcRNG
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                 
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="Getting_Started.html">1. Getting Started</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="API_reference.html">2. hcRNG API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html">2.1 hcRNG_template File Reference</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">2.2. Data Structures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hcrngstreamstate">2.2.1. hcrngStreamState</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hcrngstream">2.2.2. hcrngStream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hcrngstreamcreator">2.2.3. hcrngStreamCreator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">2.3. Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bibliography.html">2.4. Bibliography</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">hcRNG</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="API_reference.html">2. hcRNG API Reference</a> &raquo;</li>
+      
+    <li>2.2. Data Structures</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/DataStructures.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-structures">
+<h1>2.2. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h1>
+<hr class="docutils" />
+<div class="section" id="hcrngstreamstate">
+<h2>2.2.1. hcrngStreamState<a class="headerlink" href="#hcrngstreamstate" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>struct hcrngStreamState
+</pre></div>
+</div>
+<p>Stream state [host/device]. Contains the state of a random stream. The definition of a state depends on the type of generator.</p>
+<dl class="docutils">
+<dt>Examples:</dt>
+<dd><a class="reference external" href="Multistream.cpp.html">Multistream.cpp</a>.</dd>
+</dl>
+</div>
+<div class="section" id="hcrngstream">
+<h2>2.2.2. hcrngStream<a class="headerlink" href="#hcrngstream" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>struct hcrngStream
+</pre></div>
+</div>
+<p>Stream object [host/device]. A structure that contains the current information on a stream object. It generally depends on the type of generator. It typically stores the current state, the initial state of the stream, and the initial state of the current substream.</p>
+<dl class="docutils">
+<dt>Examples:</dt>
+<dd><a class="reference external" href="Multistream.cpp.html">Multistream.cpp</a>, and <a class="reference external" href="Randomarray.cpp.html">RandomArray.cpp</a>.</dd>
+</dl>
+</div>
+<div class="section" id="hcrngstreamcreator">
+<h2>2.2.3. hcrngStreamCreator<a class="headerlink" href="#hcrngstreamcreator" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>struct hcrngStreamCreator
+</pre></div>
+</div>
+<p>Stream creator object. For each type of RNG, there is a single default creator of streams, and this should be sufficient for most applications. Multiple creators could be useful for example to create the same successive stream objects multiple times in the same order, instead of storing them in an array and reusing them, or to create copies of the same streams in the same order at different locations in a distributed system, e.g., when simulating similar systems with common random numbers. Stream creators are created according to an abstract factory pattern.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="2.3. Examples" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hcRNG_template.html" class="btn btn-neutral" title="2.1 hcRNG_template File Reference" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, MulticoreWare.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:' ',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

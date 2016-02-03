@@ -1,6 +1,5 @@
 /*  @file Philox432.h
 *  @brief Specific interface for the Philox432 generator
-*  @see hcRNG_template.h
 */
 
 #pragma once
