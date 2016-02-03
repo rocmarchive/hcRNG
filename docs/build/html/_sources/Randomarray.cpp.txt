@@ -66,9 +66,9 @@
 
         // Compare host and device outputs
         for(int i =0; i < numberCount; i++) {
-           if (outBufferDevice[i] != Random2[i]) {
+           if (Random1[i] != Random2[i]) {
                 ispassed = 0;
-                std::cout <<" RANDDEVICE[" << i<< "] " << outBufferDevice[i] << "and RANDHOST[" << i <<"] mismatches"<< Random2[i] << std::endl;
+                std::cout <<" RANDDEVICE[" << i<< "] " << Random1[i] << "and RANDHOST[" << i <<"] mismatches"<< Random2[i] << std::endl;
                 break;
             }
             else
