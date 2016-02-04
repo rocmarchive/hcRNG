@@ -87,8 +87,8 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="API_reference.html">2. hcRNG API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html">2.1 hcRNG_template File Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DataStructures.html">2.2. Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html">2.1. hcRNG_template File Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html">2.2. hcRNG TYPES</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="examples.html">2.3. Examples</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="Host_only.cpp.html">2.3.1. Host-only Code Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="Randomarray.cpp.html">2.3.2. Random-array generation Code example</a></li>
@@ -245,6 +245,15 @@
               <span class="k">continue</span><span class="p">;</span>
       <span class="p">}</span>
       <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ispassed</span><span class="p">)</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;TEST FAILED&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+      <span class="c1">//Free host resources</span>
+      <span class="n">free</span><span class="p">(</span><span class="n">Random1</span><span class="p">);</span>
+      <span class="n">free</span><span class="p">(</span><span class="n">Random2</span><span class="p">);</span>
+
+      <span class="c1">//Release device resources</span>
+      <span class="n">hc</span><span class="o">::</span><span class="n">am_free</span><span class="p">(</span><span class="n">outBufferDevice_substream</span><span class="p">);</span>
+      <span class="n">hc</span><span class="o">::</span><span class="n">am_free</span><span class="p">(</span><span class="n">streams_buffer</span><span class="p">);</span>
+
       <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>

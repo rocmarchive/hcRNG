@@ -75,6 +75,15 @@
                 continue;
         }
         if(!ispassed) std::cout << "TEST FAILED" << std::endl;
+      
+        //Free host resources
+        free(Random1);
+        free(Random2);
+
+        //Release device resources
+        hc::am_free(outBufferDevice);
+        hc::am_free(streams_buffer);
+
         return 0;
   } 
 
