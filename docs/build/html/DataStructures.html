@@ -88,20 +88,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="API_reference.html">2. hcRNG API Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html">2.1. hcRNG_template File Reference</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">2.2. hcRNG TYPES</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#enumerations">2.2.1. Enumerations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hcrng-status-hcrngstatus">2.2.1.1. HCRNG STATUS (hcrngStatus)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">2.2. hcRNG TYPES</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">2.2.1. Enumerations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hcrng-status-hcrngstatus">2.2.1.1. HCRNG STATUS (hcrngStatus)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#data-structures">2.2.2. Data Structures</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngstreamstate">2.2.2.1. hcrngStreamState</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngstream">2.2.2.2. hcrngStream</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrngstreamcreator">2.2.2.3. hcrngStreamCreator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-structures">2.2.2. Data Structures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngstreamstate">2.2.2.1. hcrngStreamState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngstream">2.2.2.2. hcrngStream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrngstreamcreator">2.2.2.3. hcrngStreamCreator</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#helper-functions">2.2.3. Helper Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hcrnggetlibraryroot">2.2.3.1. hcrngGetLibraryRoot()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hcrnggeterrorstring">2.2.3.2. hcrngGetErrorString()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-functions">2.2.3. Helper Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hcrnggetlibraryroot">2.2.3.1. hcrngGetLibraryRoot()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hcrnggeterrorstring">2.2.3.2. hcrngGetErrorString()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html">2.3. Examples</a></li>
@@ -156,13 +158,11 @@
             
   <div class="section" id="hcrng-types">
 <h1>2.2. hcRNG TYPES<a class="headerlink" href="#hcrng-types" title="Permalink to this headline">¶</a></h1>
-</div>
-<hr class="docutils" />
 <div class="section" id="enumerations">
-<h1>2.2.1. Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h1>
+<h2>2.2.1. Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="hcrng-status-hcrngstatus">
-<h2>2.2.1.1. HCRNG STATUS (hcrngStatus)<a class="headerlink" href="#hcrng-status-hcrngstatus" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.1.1. HCRNG STATUS (hcrngStatus)<a class="headerlink" href="#hcrng-status-hcrngstatus" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>typedef enum hcrngStatus_ {
   HCRNG_SUCCESS                  = 0,
   HCRNG_OUT_OF_RESOURCES         = -1,
@@ -213,10 +213,10 @@
 </div>
 </div>
 <div class="section" id="data-structures">
-<h1>2.2.2. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h1>
+<h2>2.2.2. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="hcrngstreamstate">
-<h2>2.2.2.1. hcrngStreamState<a class="headerlink" href="#hcrngstreamstate" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.2.1. hcrngStreamState<a class="headerlink" href="#hcrngstreamstate" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>struct hcrngStreamState
 </pre></div>
 </div>
@@ -227,7 +227,7 @@
 </dl>
 </div>
 <div class="section" id="hcrngstream">
-<h2>2.2.2.2. hcrngStream<a class="headerlink" href="#hcrngstream" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.2.2. hcrngStream<a class="headerlink" href="#hcrngstream" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>struct hcrngStream
 </pre></div>
 </div>
@@ -238,7 +238,7 @@
 </dl>
 </div>
 <div class="section" id="hcrngstreamcreator">
-<h2>2.2.2.3. hcrngStreamCreator<a class="headerlink" href="#hcrngstreamcreator" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.2.3. hcrngStreamCreator<a class="headerlink" href="#hcrngstreamcreator" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>struct hcrngStreamCreator
 </pre></div>
 </div>
@@ -246,10 +246,10 @@
 </div>
 </div>
 <div class="section" id="helper-functions">
-<h1>2.2.3. Helper Functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h1>
+<h2>2.2.3. Helper Functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
 <hr class="docutils" />
 <div class="section" id="hcrnggetlibraryroot">
-<h2>2.2.3.1. hcrngGetLibraryRoot()<a class="headerlink" href="#hcrnggetlibraryroot" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.3.1. hcrngGetLibraryRoot()<a class="headerlink" href="#hcrnggetlibraryroot" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>const char* hcrngGetLibraryRoot ()
 </pre></div>
 </div>
@@ -260,7 +260,7 @@
 </dl>
 </div>
 <div class="section" id="hcrnggeterrorstring">
-<h2>2.2.3.2. hcrngGetErrorString()<a class="headerlink" href="#hcrnggeterrorstring" title="Permalink to this headline">¶</a></h2>
+<h3>2.2.3.2. hcrngGetErrorString()<a class="headerlink" href="#hcrnggeterrorstring" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre>const char* hcrngGetErrorString ()
 </pre></div>
 </div>
@@ -269,6 +269,7 @@
 <dt>Returns,</dt>
 <dd>Error message or NULL.</dd>
 </dl>
+</div>
 </div>
 </div>
 
