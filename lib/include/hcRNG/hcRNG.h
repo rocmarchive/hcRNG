@@ -71,13 +71,6 @@ extern "C" {
  */
 HCRNGAPI const char* hcrngGetErrorString();
 
-/*! @brief Generate an include option string for use 
- *
- *  Generate and return "-I${HCRNG_ROOT}/include", where \c ${HCRNG_ROOT} is
- *  the value of the \c HCRNG_ROOT environment variable.
- */
-HCRNGAPI const char* hcrngGetLibraryDeviceIncludes(int* err);
-
 /*! @brief Retrieve the library installation path
  *
  *  @return Value of the HCRNG_ROOT environment variable, if defined; else,

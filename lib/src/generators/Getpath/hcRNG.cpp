@@ -27,50 +27,18 @@ const char* hcrngGetErrorString()
 	return errorString;
 }
 
-
-static char lib_path_default1[] = "/usr";
-static char lib_path_default1_check[] = "/usr/include/hcRNG/hcRNG.h";
-static char lib_path_default2[] = ".";
+static char lib_path_default[] = ".";
 
 const char* hcrngGetLibraryRoot()
 {
 	const char* lib_path = getenv("HCRNG_PATH");
 
 	if (lib_path == NULL) {
-		// check if lib_path_default1_check exists
-		if (
-		access(lib_path_default1_check, F_OK) != -1
-		)
-			return lib_path_default1;
-		// last resort
-		return lib_path_default2;
+		return lib_path_default;
 	}
 	else
 		return lib_path;
 }
-
-
-static char lib_includes[1024];
-
-const char* hcrngGetLibraryDeviceIncludes(int* err)
-{
-	if (err) 
-		*err = HCRNG_SUCCESS;
-
-	int nbytes;
-	nbytes = snprintf(
-		lib_includes,
-		sizeof(lib_includes),
-		"-I\"%s/include\"",
-		hcrngGetLibraryRoot());
-
-	if (nbytes >= sizeof(lib_includes)) {
-		if (err)
-			*err = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "value of HCRNG_PATH too long (max = %u)", sizeof(lib_includes) - 16);
-		return NULL;
-	}
-	return lib_includes;
-	}
 
 hcrngStatus hcrngSetErrorString(int err, const char* msg, ...)
 {

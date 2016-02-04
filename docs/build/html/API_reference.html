@@ -87,7 +87,10 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="">2. hcRNG API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html">2.1. hcRNG_template File Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DataStructures.html">2.2. Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html">2.2. hcRNG TYPES</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#enumerations">2.2.1. Enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#data-structures">2.2.2. Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#helper-functions">2.2.3. Helper Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html">2.3. Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bibliography.html">2.4. Bibliography</a></li>
 </ul>
@@ -143,55 +146,67 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="hcRNG_template.html">2.1. hcRNG_template File Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#data-structures">2.1.1. Data Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#functions">2.1.2. Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-creators">2.1.2.1. Stream Creators</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-allocation-destruction-and-initialization">2.1.2.2. Stream Allocation, Destruction and Initialization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-output">2.1.2.3. Stream Output</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-navigation">2.1.2.4. Stream Navigation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#work-functions">2.1.2.5. Work Functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#miscellaneous-functions">2.1.2.6 Miscellaneous Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#enumerations">2.1.1. Enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#data-structures">2.1.2. Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#functions">2.1.3. Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#helper-functions">2.1.3.1. Helper functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-creators">2.1.3.2. Stream Creators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-allocation-destruction-and-initialization">2.1.3.3. Stream Allocation, Destruction and Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-output">2.1.3.4. Stream Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#stream-navigation">2.1.3.5. Stream Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#work-functions">2.1.3.6. Work Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#miscellaneous-functions">2.1.3.7. Miscellaneous Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#detailed-description">2.1.3. Detailed Description</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-mrg31k3p-generator">2.1.3.1. The MRG31k3p Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-mrg32k3a-generator">2.1.3.2. The MRG32k3a Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-lfsr113-generator">2.1.3.3. The LFSR113 Generator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-philox-432-10-generator">2.1.3.4. The Philox-4×32-10 Generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#detailed-description">2.1.4. Detailed Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-mrg31k3p-generator">2.1.4.1. The MRG31k3p Generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-mrg32k3a-generator">2.1.4.2. The MRG32k3a Generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-lfsr113-generator">2.1.4.3. The LFSR113 Generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#the-philox-432-10-generator">2.1.4.4. The Philox-4×32-10 Generator</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#function-documentation">2.1.4. Function Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopystreamcreator">2.1.4.1. hcrngCopyStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdestroystreamcreator">2.1.4.2. hcrngDestroyStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindstreamcreator">2.1.4.3. hcrngRewindStreamCreator()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngsetbasecreatorstate">2.1.4.4. hcrngSetBaseCreatorState()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngchangestreamsspacing">2.1.4.5. hcrngChangeStreamsSpacing()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngallocstreams">2.1.4.6. hcrngAllocStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdestroystreams">2.1.4.7. hcrngDestroyStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcreatestreams">2.1.4.8. hcrngCreateStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcreateoverstreams">2.1.4.9. hcrngCreateOverStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopystreams">2.1.4.10. hcrngCopyStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopyoverstreams">2.1.4.11. hcrngCopyOverStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomu01">2.1.4.12. hcrngRandomU01()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandominteger">2.1.4.13. hcrngRandomInteger()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomu01array">2.1.4.14. hcrngRandomU01Array()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomintegerarray">2.1.4.15. hcrngRandomIntegerArray()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindstreams">2.1.4.16. hcrngRewindStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindsubstreams">2.1.4.17. hcrngRewindSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngforwardtonextsubstreams">2.1.4.18. hcrngForwardToNextSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngmakesubstreams">2.1.4.19. hcrngMakeSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngmakeoversubstreams">2.1.4.20. hcrngMakeOverSubstreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngadvancestreams">2.1.4.21. hcrngAdvanceStreams()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdevicerandomu01array">2.1.4.22. hcrngDeviceRandomU01Array()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngwritestreaminfo">2.1.4.23. hcrngWriteStreamInfo()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hcRNG_template.html#function-documentation">2.1.5. Function Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopystreamcreator">2.1.5.1. hcrngCopyStreamCreator()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdestroystreamcreator">2.1.5.2. hcrngDestroyStreamCreator()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindstreamcreator">2.1.5.3. hcrngRewindStreamCreator()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngsetbasecreatorstate">2.1.5.4. hcrngSetBaseCreatorState()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngchangestreamsspacing">2.1.5.5. hcrngChangeStreamsSpacing()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngallocstreams">2.1.5.6. hcrngAllocStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdestroystreams">2.1.5.7. hcrngDestroyStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcreatestreams">2.1.5.8. hcrngCreateStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcreateoverstreams">2.1.5.9. hcrngCreateOverStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopystreams">2.1.5.10. hcrngCopyStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngcopyoverstreams">2.1.5.11. hcrngCopyOverStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomu01">2.1.5.12. hcrngRandomU01()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandominteger">2.1.5.13. hcrngRandomInteger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomu01array">2.1.5.14. hcrngRandomU01Array()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrandomintegerarray">2.1.5.15. hcrngRandomIntegerArray()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindstreams">2.1.5.16. hcrngRewindStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngrewindsubstreams">2.1.5.17. hcrngRewindSubstreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngforwardtonextsubstreams">2.1.5.18. hcrngForwardToNextSubstreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngmakesubstreams">2.1.5.19. hcrngMakeSubstreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngmakeoversubstreams">2.1.5.20. hcrngMakeOverSubstreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngadvancestreams">2.1.5.21. hcrngAdvanceStreams()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngdevicerandomu01array">2.1.5.22. hcrngDeviceRandomU01Array()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hcRNG_template.html#hcrngwritestreaminfo">2.1.5.23. hcrngWriteStreamInfo()</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="DataStructures.html">2.2. Data Structures</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstreamstate">2.2.1. hcrngStreamState</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstream">2.2.2. hcrngStream</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstreamcreator">2.2.3. hcrngStreamCreator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataStructures.html">2.2. hcRNG TYPES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataStructures.html#enumerations">2.2.1. Enumerations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrng-status-hcrngstatus">2.2.1.1. HCRNG STATUS (hcrngStatus)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataStructures.html#data-structures">2.2.2. Data Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstreamstate">2.2.2.1. hcrngStreamState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstream">2.2.2.2. hcrngStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrngstreamcreator">2.2.2.3. hcrngStreamCreator</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DataStructures.html#helper-functions">2.2.3. Helper Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrnggetlibraryroot">2.2.3.1. hcrngGetLibraryRoot()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DataStructures.html#hcrnggeterrorstring">2.2.3.2. hcrngGetErrorString()</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">2.3. Examples</a><ul>
