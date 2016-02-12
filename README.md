@@ -1,6 +1,4 @@
-# ** HCRNG ** #
-
-##Introduction: ##
+## A. Introduction: ##
 
 The hcRNG library is an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime. The computational resources of underlying AMD heterogenous compute gets exposed and exploited through the HCC C++ frontend. Refer [here](https://bitbucket.org/multicoreware/hcc/wiki/Home) for more details on HCC compiler.
 
@@ -11,54 +9,31 @@ The following list enumerates the current set of RNG generators that are support
 3. LFSR113
 4. Philox-4x32-10
 
-##Repository Structure: ##
+To know more, go through the [Documentation](http://hcrng-documentation.readthedocs.org/en/latest/)
 
-##Prerequisites: ##
-* **dGPU**:  AMD firepro S9150
-* **OS** : Ubuntu 14.04 LTS
-* **Ubuntu Pack**: libc6-dev-i386
-* **AMD APP SDK** : Ver 2.9.1 launched on 18/8/2014 from [here](http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/)
-* **AMD Driver installer**: amd-driver-installer-14.301.1001-x86.x86_64
+## B. Key Features ##
 
+* Support for 4 commonly used uniform random number generators.
+* Single and Double precision.
+* Multiple streams, created on the host and generates random numbers either on the host or on computing devices.
 
-## Installation Steps:    
+## C. Prerequisites ##
 
-### A. HCC Compiler Installation: 
+* Refer Prerequisites section [here](http://hcrng-documentation.readthedocs.org/en/latest/Prerequisites.html)
 
+## D. Tested Environment so far 
 
-**Install HCC compiler debian package:**
+* Refer Tested environments enumerated [here](http://hcrng-documentation.readthedocs.org/en/latest/Tested_Environments.html)
 
-  Download the debian package from the link given below,
+## E. Installation  
 
-  [Compiler-Debians](https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb)
+* Follow installation steps as described [here](http://hcrng-documentation.readthedocs.org/en/latest/Installation_steps.html)
 
-  Install the package hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb
+## F. API reference
 
-  using the command,
+* The Specification of API's supported along with description  can be found [here](http://hcrng-documentation.readthedocs.org/en/latest/API_reference.html)
 
-    sudo dpkg -i <package_name>
-      e.g. sudo dpkg -i  hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb
-
-  Note:
-      Ignore clamp-bolt, Bolt is not required for hcRNG.
-
-
-### B. HCRNG Installation 
-
-Clone MCW HCRNG source codes
-
-       * cd ~/
-
-       * git clone https://bitbucket.org/multicoreware/hcrng.git
-
-       * cd ~/hcrng
-
-       * ./install.sh test=ON/OFF 
-       Where
-       test=OFF    - Build library and tests
-       test=ON     - Build library, tests and run test.sh (do functionality check and gtest)
-
-### C. Unit testing
+## G. Unit testing
 
 ### Testing:
 
@@ -78,7 +53,7 @@ Clone MCW HCRNG source codes
      * cd ~/hcrng/build/test/unit/bin/
        All functions are tested against google test.
 
-## D. Example Code
+## H. Example Code
 
 Random number generator Mrg31k3p example:
 
@@ -157,4 +132,3 @@ int main()
 * Compiling the example code:
 
           /opt/hcc/bin/clang++ `/opt/hcc/bin/hcc-config --cxxflags --ldflags` -lhc_am -lhcrng Randomarray.cpp
-
