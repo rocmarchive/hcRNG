@@ -43,12 +43,7 @@ To know more, go through the [Documentation](http://hcrng-documentation.readthed
 
 ### Manual testing: 
 
-(i)   Functionality check
-
-     * cd ~/hcrng/build/test/src/bin/
-       Run all executables (stream and substream device kernel outputs are compared with host outputs).
-
-(ii)  Google testing (GTEST)
+(i)  Google testing (GTEST) with Functionality check
 
      * cd ~/hcrng/build/test/unit/bin/
        All functions are tested against google test.
