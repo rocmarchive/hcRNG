@@ -27,7 +27,7 @@ SET (TESTSRCS
   string(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
   set (HCC_CXXFLAGS "${HCC_CXXFLAGS}")
   string(STRIP "${HCC_LDFLAGS}" HCC_LDFLAGS)
-  set (HCC_LDFLAGS "${HCC_LDFLAGS}")
+  set (HCC_LDFLAGS "${HCC_LDFLAGS} -L $ENV{hcrng_install}/lib/hcrng")
   FOREACH(test_file ${TESTSRCS})
     SET_PROPERTY(SOURCE ${test_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS}")
     STRING( REPLACE ".cpp" "" testname ${test_file} )

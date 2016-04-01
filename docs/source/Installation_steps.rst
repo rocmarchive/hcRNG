@@ -92,14 +92,26 @@ Once done with the above steps the compiler headers, binaries and libraries gets
        ``chmod +x install.sh``
 
     c. Install library
+     
+       (1) Installation in /opt/ROCm/ (sudo)
 
-       ``./install.sh``
+            ``./install.sh``
 
-    d. Additionally to run the unit test along with installation invoke the following command
+            Additionally to run the unit test along with installation invoke the following command,
 
-       ``./install.sh test=ON``
+            ``./install.sh --test=on``
 
-Once done with the above steps the libhcblas.so and associated headers gets installed under system path.
+       (2) Installation in User Specific path
+
+            ``./install.sh --path=/path/to/user/installation/``
+
+            Additionally to run the unit test along with installation invoke the following command,
+
+            ``./install.sh --path=/path/to/user/installation/ --test=on``
+
+    .. note:: **To switch between the installation paths, please uninstall the library and start the installation again.**
+
+Once done with the above steps the libhcrng.so and associated headers gets installed under either /opt/ROCm path (needs sudo access) or User specific path.
 
 To uninstall the library, invoke the following series of commands
 
