@@ -5,116 +5,79 @@
 
 The following are the steps to use the library
 
-      * Boltzmann Driver and Runtime installation (if not done until now)
-
-      * Compiler installation.
+      * ROCM 1.0 Kernel, Driver and Compiler Installation (if not done until now)
 
       * Library installation.
 
-1.4.1. Boltzmann Driver and Runtime Installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-     a. Downloading the kernel binaries from the repo
-
-        ``git clone https://github.com/RadeonOpenCompute/ROCK-Kernel-Driver.git``
-
-     b. Go to the top of the repo
-
-        ``cd ROCK-Kernel-Driver``
-
-     c. Configure udev to allow any user to access /dev/kfd.
-        As root, use a text editor to create /etc/udev/rules.d/kfd.rules
-        containing one line: KERNEL=="kfd", MODE="0666", Or you could use the following command
-
-        ``echo "KERNEL==\"kfd\", MODE=\"0666\"" | sudo tee /etc/udev/rules.d/kfd.rules``
-
-     d. For Ubuntu, install the kernel and libhsakmt packages using:
-
-        ``sudo dpkg -i packages/ubuntu/*.deb``
-
-     e. Reboot the system to install the new kernel and enable the HSA kernel driver
-
-        ``sudo reboot``
-
-     f. Once done with reboot, one could proceed with runtime installation
-
-        ``git clone https://github.com/RadeonOpenCompute/ROCR-Runtime``
-
-        ``cd ROCR-Runtime/packages/ubuntu``
-
-        ``sudo dpkg -i hsa-runtime-dev-1.0.0-amd64.deb``
-
-        The contents get installed by default under /opt/hsa path
-
-
-     e. Create a file called hsa.conf in /etc/ld.so.conf.d/ and write "/opt/hsa/lib" in it,
-        then run "sudo ldconfig -v" or you could use the following command
-
-        ``echo "/opt/hsa/lib" | sudo tee /etc/ld.so.conf.d/hsa.conf``
-
-        ``sudo ldconfig -v``
-
-1.4.2. Compiler Installation
+1.4.1. ROCM 1.0 Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-     a. Install pre-dependency packages
+To Know more about ROCM  refer https://github.com/RadeonOpenCompute/ROCm/blob/master/README.md
 
-::
+a. Installing Debian ROCM repositories
+--------------------------------------
+     
+  Before proceeding, make sure to completely uninstall any pre-release ROCm packages.
+     
+  Refer https://github.com/RadeonOpenCompute/ROCm#removing-pre-release-packages for instructions to remove pre-release ROCM packages.
+     
+  Steps to install rocm package are, 
 
-        sudo apt-get install cmake git subversion g++ libstdc++-4.8-dev libdwarf-dev libelf-dev 
-        libtinfo-dev libc6-dev-i386 gcc-multilib llvm llvm-dev llvm-runtime libc++1 libc++-dev 
-        libc++abi1 libc++abi-dev re2c libncurses5-dev
+     
+  ``wget -qO - http://packages.amd.com/rocm/apt/debian/rocm.gpg.key | sudo apt-key add -``
 
-|
-     b. Download Compiler
+      
+  ``sudo sh -c 'echo deb [arch=amd64] http://packages.amd.com/rocm/apt/debian/ trusty main > /etc/apt/sources.list.d/rocm.list'``
 
-        Click `here <https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb>`_
+     
+  ``sudo apt-get update``
 
-                                              (or)
+      
+  ``sudo apt-get install rocm``
 
-        wget https://bitbucket.org/multicoreware/hcc/downloads/hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb
+      
+  and Reboot the system
+      
+b. Verifying the Installation
+-----------------------------
 
-     c. Install the compiler
+  Once Reboot, to verify that the ROCm stack completed successfully you can execute HSA vector_copy sample application:
 
-        ``sudo dpkg -i hcc-0.9.16041-0be508d-ff03947-5a1009a-Linux.deb``
+       * cd /opt/rocm/hsa/sample
+        
+       * make
+       
+       * ./vector_copy
 
-Once done with the above steps the compiler headers, binaries and libraries gets installed under /opt system path as ``/opt/hcc`` .
 
-1.4.3. Library Installation
+1.4.2. Library Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    a. Clone the repo
+a. Install using Prebuilt debian
 
-       ``git clone https://bitbucket.org/multicoreware/hcrng.git && cd hcrng``
+    
+    ``wget https://bitbucket.org/multicoreware/hcrng/downloads/hcrng-master-c751168-Linux.deb``
+        
+        
+    ``sudo dpkg -i hcrng-master-c751168-Linux.deb``
 
-    b. Modify scripts mode to binary
-
-       ``chmod +x install.sh``
-
-    c. Install library
      
-       (1) Installation in /opt/ROCm/ (sudo)
+b. Build debian from source
 
-            ``./install.sh``
+    
+    ``git clone https://bitbucket.org/multicoreware/hcrng.git && cd hcrng``
+        
+        
+    ``chmod +x build.sh && ./build.sh``
+        
+        
+    **build.sh** execution builds the library and generates a debian under build directory. Additionally to run the unit test along with installation invoke the following command,
 
-            Additionally to run the unit test along with installation invoke the following command,
+    ``./build.sh --test=on``
 
-            ``./install.sh --test=on``
-
-       (2) Installation in User Specific path
-
-            ``./install.sh --path=/path/to/user/installation/``
-
-            Additionally to run the unit test along with installation invoke the following command,
-
-            ``./install.sh --path=/path/to/user/installation/ --test=on``
-
-    .. note:: **To switch between the installation paths, please uninstall the library and start the installation again.**
-
-Once done with the above steps the libhcrng.so and associated headers gets installed under either /opt/ROCm path (needs sudo access) or User specific path.
 
 To uninstall the library, invoke the following series of commands
 
-       ``chmod +x uninstall.sh``
+    chmod +x clean.sh
 
-       ``./uninstall.sh``
+    ./clean.sh
