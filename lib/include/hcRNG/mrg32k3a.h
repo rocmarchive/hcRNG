@@ -102,6 +102,7 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	HCRNGAPI hcrngMrg32k3aStream* hcrngMrg32k3aCopyStreams(size_t count, const hcrngMrg32k3aStream* streams, hcrngStatus* err);
 
 #define hcrngMrg32k3aRandomU01          _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomU01)
+#define hcrngMrg32k3aRandomN            _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomN)           //Normal distribution 
 #define hcrngMrg32k3aRandomInteger      _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomInteger)
 #define hcrngMrg32k3aRandomU01Array     _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomU01Array)
 #define hcrngMrg32k3aRandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomIntegerArray)
@@ -112,6 +113,13 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
 	HCRNGAPI _HCRNG_FPTYPE hcrngMrg32k3aRandomU01(hcrngMrg32k3aStream* stream);
 	HCRNGAPI float  hcrngMrg32k3aRandomU01_float (hcrngMrg32k3aStream* stream);
 	HCRNGAPI double hcrngMrg32k3aRandomU01_double(hcrngMrg32k3aStream* stream);
+        
+        // Normal distribution
+        
+	HCRNGAPI _HCRNG_FPTYPE hcrngMrg32k3aRandomN(hcrngMrg32k3aStream* stream1, hcrngMrg32k3aStream* stream2, _HCRNG_FPTYPE mu, _HCRNG_FPTYPE sigma);
+	HCRNGAPI float  hcrngMrg32k3aRandomN_float (hcrngMrg32k3aStream* stream, hcrngMrg32k3aStream* stream2, float mu, float sigma);
+	HCRNGAPI double hcrngMrg32k3aRandomN_double(hcrngMrg32k3aStream* stream, hcrngMrg32k3aStream* stream2, double mu, double sigma);
+
 
 	/*! @copybrief hcrngRandomInteger()
 	*  @see hcrngRandomInteger()
@@ -182,7 +190,10 @@ typedef struct hcrngMrg32k3aStreamCreator_ hcrngMrg32k3aStreamCreator;
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
  */
-
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+	       size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+	       size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()
 	*/

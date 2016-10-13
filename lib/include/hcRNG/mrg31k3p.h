@@ -102,6 +102,7 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pCopyOverStreams(size_t count, hcrngMrg31k3pStr
 HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pCopyStreams(size_t count, const hcrngMrg31k3pStream* streams, hcrngStatus* err);
 
 #define hcrngMrg31k3pRandomU01          _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomU01)
+#define hcrngMrg31k3pRandomN            _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomN)
 #define hcrngMrg31k3pRandomInteger      _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomInteger)
 #define hcrngMrg31k3pRandomU01Array     _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomU01Array)
 #define hcrngMrg31k3pRandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomIntegerArray)
@@ -112,6 +113,12 @@ HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pCopyStreams(size_t count, const hcrng
 HCRNGAPI _HCRNG_FPTYPE hcrngMrg31k3pRandomU01(hcrngMrg31k3pStream* stream);
 HCRNGAPI float  hcrngMrg31k3pRandomU01_float (hcrngMrg31k3pStream* stream);
 HCRNGAPI double hcrngMrg31k3pRandomU01_double(hcrngMrg31k3pStream* stream);
+
+        
+	HCRNGAPI _HCRNG_FPTYPE hcrngMrg31k3pRandomN(hcrngMrg31k3pStream* stream1, hcrngMrg31k3pStream* stream2, _HCRNG_FPTYPE mu, _HCRNG_FPTYPE sigma);
+	HCRNGAPI float  hcrngMrg31k3pRandomN_float (hcrngMrg31k3pStream* stream, hcrngMrg31k3pStream* stream2, float mu, float sigma);
+	HCRNGAPI double hcrngMrg31k3pRandomN_double(hcrngMrg31k3pStream* stream, hcrngMrg31k3pStream* stream2, double mu, double sigma);
+
 
 /*! @copybrief hcrngRandomInteger()
  *  @see hcrngRandomInteger()
@@ -183,6 +190,12 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(hc::accelerator_vi
 /** \endinternal
  */
 
+// Normal distribution
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+	
 /*! @copybrief hcrngWriteStreamInfo()
  *  @see hcrngWriteStreamInfo()
  */

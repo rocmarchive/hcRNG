@@ -8,7 +8,7 @@
 
 #define Lfsr113_NORM_double 1.0 / 0x100000001L   // 2^32 + 1    // 2.328306436538696e-10
 #define Lfsr113_NORM_float  2.3283063e-10
-
+#include <hc_math.hpp>
 
 hcrngStatus hcrngLfsr113CopyOverStreams(size_t count, hcrngLfsr113Stream* destStreams, const hcrngLfsr113Stream* srcStreams) __attribute__((hc, cpu)) 
 {
@@ -53,6 +53,20 @@ static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState
 	\
 	fptype hcrngLfsr113RandomU01_##fptype(hcrngLfsr113Stream* stream) __attribute__((hc, cpu)) { \
 	    return hcrngLfsr113NextState(&stream->current) * Lfsr113_NORM_##fptype; \
+	} \
+	\
+        fptype hcrngLfsr113RandomN_##fptype(hcrngLfsr113Stream* stream1, hcrngLfsr113Stream* stream2, fptype mu, fptype sigma) __attribute__((hc,cpu)) { \
+            static fptype z0, z1;\
+            const fptype two_pi = 2.0 * 3.14159265358979323846;\
+            static bool generate;\
+            generate =! generate;\
+            if (!generate) return z1 * sigma +mu;\
+            fptype u1, u2;\
+            u1 = (fptype)hcrngLfsr113RandomU01_##fptype(stream1);\
+            u2 = (fptype)hcrngLfsr113RandomU01_##fptype(stream2);\
+            z0 = sqrt(-2.0 * log(u1)) * cos(two_pi * u2);\
+            z1 = sqrt(-2.0 * log(u1)) * sin(two_pi * u2);\
+	    return z0 * sigma + mu; \
 	} \
 	\
 	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) __attribute__((hc, cpu)) { \

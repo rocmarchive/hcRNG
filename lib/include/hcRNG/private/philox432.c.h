@@ -11,6 +11,8 @@
 #define Philox432_NORM_double    1.0 / 0x100000000L   // 1.0 /2^32 
 #define Philox432_NORM_float     2.32830644e-010; 
 
+#include <hc_math.hpp>
+
 hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432Counter b) __attribute__((hc, cpu))
 {
 	hcrngPhilox432Counter c;
@@ -105,6 +107,20 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 	\
 	fptype hcrngPhilox432RandomU01_##fptype(hcrngPhilox432Stream* stream) __attribute__((hc, cpu)) { \
 	    return (hcrngPhilox432NextState(&stream->current) + 0.5) * Philox432_NORM_##fptype; \
+	} \
+	\
+        fptype hcrngPhilox432RandomN_##fptype(hcrngPhilox432Stream* stream1, hcrngPhilox432Stream* stream2, fptype mu, fptype sigma) __attribute__((hc,cpu)) { \
+            static fptype z0, z1;\
+            const fptype two_pi = 2.0 * 3.14159265358979323846;\
+            static bool generate;\
+            generate =! generate;\
+            if (!generate) return z1 * sigma +mu;\
+            fptype u1, u2;\
+            u1 = (fptype)hcrngPhilox432RandomU01_##fptype(stream1);\
+            u2 = (fptype)hcrngPhilox432RandomU01_##fptype(stream2);\
+            z0 = sqrt(-2.0 * log(u1)) * cos(two_pi * u2);\
+            z1 = sqrt(-2.0 * log(u1)) * sin(two_pi * u2);\
+	    return z0 * sigma + mu; \
 	} \
 	\
 	int hcrngPhilox432RandomInteger_##fptype(hcrngPhilox432Stream* stream, int i, int j) __attribute__((hc, cpu)) { \

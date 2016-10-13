@@ -94,6 +94,7 @@ hcrngStatus hcrngSetErrorString(int err, const char* msg, ...);
 }
 #endif
 */
+
 #endif /* HCRNG_H */
 
 /*

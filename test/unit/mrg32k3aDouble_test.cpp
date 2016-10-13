@@ -21,7 +21,7 @@ void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substre
           else if ((i > 0) && (substream_length < 0) && (i % (-substream_length) == 0))
               hcrngMrg32k3aRewindSubstreams(spwi, s);
           for (size_t sid = 0; sid < spwi; sid++) {
-              out[sid] = hcrngMrg32k3aRandomU01(&s[sid]);
+              out[sid] = hcrngMrg32k3aRandomN(&s[sid], &s[sid + 1], 0.0, 1.0);
           }
       }
   }
@@ -46,23 +46,23 @@ TEST(mrg32k3aDouble_test, Functional_check_mrg32k3aDouble)
         hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * streamCount, acc[1], 0);
         hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngMrg32k3aStream));
-        status = hcrngMrg32k3aDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
         EXPECT_EQ(status, 0);
         hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(double));
         for (size_t i = 0; i < numberCount; i++)
-           Random2[i] = hcrngMrg32k3aRandomU01(&streams[i % streamCount]);   
+           Random2[i] = hcrngMrg32k3aRandomN(&streams[i % streamCount], &streams[(i + 1) % streamCount], 0.0, 1.0);   
         for(int i =0; i < numberCount; i++) {
-           EXPECT_EQ(Random1[i], Random2[i]);
+           EXPECT_NEAR(Random1[i], Random2[i], 0.00001);
         }
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
         double *outBufferDevice_substream = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
-        status = hcrngMrg32k3aDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
         EXPECT_EQ(status, 0);
         hc::am_copy(Random3, outBufferDevice_substream, numberCount * sizeof(double));
         multistream_fill_array(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
         for(int i =0; i < numberCount; i++) {
-           EXPECT_EQ(Random3[i], Random4[i]);
+           EXPECT_NEAR(Random3[i], Random4[i], 0.00001);
         }
 }
 

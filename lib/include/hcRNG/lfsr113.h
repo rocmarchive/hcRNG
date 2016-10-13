@@ -99,6 +99,7 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
 	HCRNGAPI hcrngLfsr113Stream* hcrngLfsr113CopyStreams(size_t count, const hcrngLfsr113Stream* streams, hcrngStatus* err);
 
 #define hcrngLfsr113RandomU01          _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomU01)
+#define hcrngLfsr113RandomN            _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomN)
 #define hcrngLfsr113RandomInteger      _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomInteger)
 #define hcrngLfsr113RandomU01Array     _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomU01Array)
 #define hcrngLfsr113RandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomIntegerArray)
@@ -109,6 +110,12 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
 	HCRNGAPI _HCRNG_FPTYPE hcrngLfsr113RandomU01(hcrngLfsr113Stream* stream);
 	HCRNGAPI float  hcrngLfsr113RandomU01_float (hcrngLfsr113Stream* stream);
 	HCRNGAPI double hcrngLfsr113RandomU01_double(hcrngLfsr113Stream* stream);
+
+ // Normal distribution
+        
+	HCRNGAPI _HCRNG_FPTYPE hcrngLfsr113RandomN(hcrngLfsr113Stream* stream1, hcrngLfsr113Stream* stream2, _HCRNG_FPTYPE mu, _HCRNG_FPTYPE sigma);
+	HCRNGAPI float  hcrngLfsr113RandomN_float (hcrngLfsr113Stream* stream, hcrngLfsr113Stream* stream2, float mu, float sigma);
+	HCRNGAPI double hcrngLfsr113RandomN_double(hcrngLfsr113Stream* stream, hcrngLfsr113Stream* stream2, double mu, double sigma);
 
 	/*! @copybrief hcrngRandomInteger()
 	*  @see hcrngRandomInteger()
@@ -179,6 +186,12 @@ typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
  */
+ 
+//Normal distribution
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngLfsr113Stream *streams,
+	        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngLfsr113Stream *streams,
+	        size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);	
 
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()

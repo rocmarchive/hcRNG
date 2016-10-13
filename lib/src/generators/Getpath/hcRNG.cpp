@@ -13,7 +13,6 @@
 
 //tern char errorString[1024];
 char errorString[1024]                          = "";
-
 static const char MSG_DEFAULT[]                 = "unknown status";
 static const char MSG_SUCCESS[]                 = "success";
 static const char MSG_OUT_OF_RESOURCES[]        = "out of resources";

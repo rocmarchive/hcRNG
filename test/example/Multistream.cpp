@@ -35,7 +35,7 @@ void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substre
               hcrngMrg31k3pRewindSubstreams(spwi, s);
           //Generate Random Numbers
           for (size_t sid = 0; sid < spwi; sid++) {
-              out[sid] = hcrngMrg31k3pRandomU01(&s[sid]);
+              out[sid] = hcrngMrg31k3pRandomN(&s[sid], &s[sid + 1], 0.0, 1.0);
           }
       }
   }
@@ -72,9 +72,9 @@ int main()
 
         //Invoke Random number generator function in Device
 #ifdef HCRNG_SINGLE_PRECISION        	
-        status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngMrg31k3pDeviceRandomNArray_single(accl_view, streamCount, streams_buffer, numberCount,0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
 #else
-      	status = hcrngMrg31k3pDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+      	status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0,  outBufferDevice_substream, stream_length, streams_per_thread);
 #endif       	
         //Status check
         if(status) std::cout << "TEST FAILED" << std::endl;
@@ -85,7 +85,8 @@ int main()
         
         //Compare Host and device outputs
         for(int i =0; i < numberCount; i++) {
-           if (Random1[i] != Random2[i]) {
+           fp_type diff = abs(Random1[i] - Random2[i]);
+           if (diff > 0.00001) {
                 ispassed = 0;
                 std::cout <<" RANDDEVICE_SUBSTREAM[" << i<< "] " << Random1[i] << "and RANDHOST_SUBSTREAM[" << i <<"] mismatches"<< Random2[i] << std::endl;
                 break;

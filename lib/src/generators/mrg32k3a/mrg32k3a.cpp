@@ -1,6 +1,8 @@
 #include "hcRNG/mrg32k3a.h"
 #include "hcRNG/hcRNG.h"
+#include "hcRNG/box_muller_transform.h"
 #include <stdlib.h>
+#include <hc_am.hpp>
 #define BLOCK_SIZE 256
 #define MODULAR_NUMBER_TYPE unsigned long
 #define MODULAR_FIXED_SIZE 3
@@ -194,7 +196,7 @@ hcrngMrg32k3aStream* hcrngMrg32k3aAllocStreams(size_t count, size_t* bufSize, hc
 	hcrngStatus err_ = HCRNG_SUCCESS;
 	size_t bufSize_ = count * sizeof(hcrngMrg32k3aStream);
 
-	// allocate streams
+
 	hcrngMrg32k3aStream* buf = (hcrngMrg32k3aStream*)malloc(bufSize_);
 
 	if (buf == NULL) {
@@ -418,6 +420,28 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(hc::accelerator_view &accl_
 }
 
 
+hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
+{
+#define HCRNG_SINGLE_PRECISION
+	if (streamCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+	if (numberCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+        if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        hcrngStatus status = hcrngMrg32k3aDeviceRandomU01Array_single(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+//                float* Random1 = (float*)malloc(numberCount * sizeof(float));
+  //              hc::am_copy(Random1, outBuffer, numberCount * sizeof(float));
+               	status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+              //  hc::am_copy(outBuffer, Random1, numberCount * sizeof(float));
+                return status;
+            }
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
+
 hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream* streams,
         size_t numberCount, double* outBuffer, int streamlength, size_t streams_per_thread)
 {
@@ -447,5 +471,22 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view &accl_
               }
            }
         }).wait();
+        return status;
+}
+
+hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength, size_t streams_per_thread)
+{
+	if (streamCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+	if (numberCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+        if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        hcrngStatus status = hcrngMrg32k3aDeviceRandomU01Array_double(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS) {
+	    	status = box_muller_transform_double(accl_view, mu, sigma, outBuffer, numberCount);
+                return status;
+               }
         return status;
 }

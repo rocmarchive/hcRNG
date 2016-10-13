@@ -16,6 +16,7 @@
 
 #define mrg31k3p_NORM_double 4.656612873077392578125e-10  /* 1/2^31 */
 #define mrg31k3p_NORM_float  4.6566126e-10
+#include <hc_math.hpp>
 // hcrngMrg31k3p_A1p72 and hcrngMrg31k3p_A2p72 jump 2^72 steps forward
 static
 unsigned int hcrngMrg31k3p_A1p72[3][3] = { 
@@ -98,6 +99,20 @@ static unsigned int hcrngMrg31k3pNextState(hcrngMrg31k3pStreamState* currentStat
 	\
 	fptype hcrngMrg31k3pRandomU01_##fptype(hcrngMrg31k3pStream* stream) __attribute__((hc, cpu)) { \
 	    return hcrngMrg31k3pNextState(&stream->current) * mrg31k3p_NORM_##fptype; \
+	} \
+	\
+        fptype hcrngMrg31k3pRandomN_##fptype(hcrngMrg31k3pStream* stream1, hcrngMrg31k3pStream* stream2, fptype mu, fptype sigma) __attribute__((hc,cpu)) { \
+            static fptype z0, z1;\
+            const fptype two_pi = 2.0 * 3.14159265358979323846;\
+            static bool generate;\
+            generate =! generate;\
+            if (!generate) return z1 * sigma +mu;\
+            fptype u1, u2;\
+            u1 = (fptype)hcrngMrg31k3pRandomU01_##fptype(stream1);\
+            u2 = (fptype)hcrngMrg31k3pRandomU01_##fptype(stream2);\
+            z0 = sqrt(-2.0 * log(u1)) * cos(two_pi * u2);\
+            z1 = sqrt(-2.0 * log(u1)) * sin(two_pi * u2);\
+	    return z0 * sigma + mu; \
 	} \
 	\
 	int hcrngMrg31k3pRandomInteger_##fptype(hcrngMrg31k3pStream* stream, int i, int j) __attribute__((hc, cpu)) { \

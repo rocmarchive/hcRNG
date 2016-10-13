@@ -1,5 +1,6 @@
 #include "hcRNG/philox432.h"
 #include "hcRNG/hcRNG.h"
+#include "hcRNG/box_muller_transform.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
 
@@ -480,6 +481,26 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(hc::accelerator_view &accl
         return status;
 }
 
+hcrngStatus hcrngPhilox432DeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
+{
+#define HCRNG_SINGLE_PRECISION
+	if (streamCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+	if (numberCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+        if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_single(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+	    	status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+                return status;
+                }
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
+
+
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream* streams,
         size_t numberCount, double* outBuffer, int streamlength, size_t streams_per_thread)
 {
@@ -509,5 +530,22 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view &accl
               }
            }
         }).wait();
+        return status;
+}
+
+hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength, size_t streams_per_thread)
+{
+	if (streamCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+	if (numberCount < 1)
+		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+        if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_double(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+	    	status = box_muller_transform_double(accl_view, mu, sigma, outBuffer, numberCount);
+                return status;
+                }
         return status;
 }

@@ -11,6 +11,9 @@
 #define Mrg32k3a_NORM_double 2.328306549295727688e-10
 #define Mrg32k3a_NORM_float  2.3283064e-10
 
+#include <hc.hpp>
+#include <hc_math.hpp>
+
 // hcrngMrg32k3a_A1p76 and hcrngMrg32k3a_A2p76 jump 2^76 steps forward
 static
 unsigned long hcrngMrg32k3a_A1p76[3][3] = {
@@ -75,12 +78,28 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 }
 
 
+
 // We use an underscore on the r.h.s. to avoid potential recursion with certain
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
 	fptype hcrngMrg32k3aRandomU01_##fptype(hcrngMrg32k3aStream* stream) __attribute__((hc, cpu)) { \
 	    return hcrngMrg32k3aNextState(&stream->current) * Mrg32k3a_NORM_##fptype; \
+	} \
+	\
+        fptype hcrngMrg32k3aRandomN_##fptype(hcrngMrg32k3aStream* stream1, hcrngMrg32k3aStream* stream2, fptype mu, fptype sigma) __attribute__((hc,cpu)) { \
+            static fptype z0, z1, i;\
+            i++;\
+            const fptype two_pi = 2.0 * 3.14159265358979323846;\
+            static bool generate;\
+            generate =! generate;\
+            if (!generate) return z1 * sigma +mu;\
+            fptype u1, u2;\
+            u1 = hcrngMrg32k3aRandomU01_##fptype(stream1);\
+            u2 = hcrngMrg32k3aRandomU01_##fptype(stream2);\
+            z0 = sqrt(-2.0 * log((float)u1)) * cos(two_pi * (float)u2);\
+            z1 = sqrt(-2.0 * log((float)u1)) * sin(two_pi * (float)u2);\
+	    return z0 * sigma + mu; \
 	} \
 	\
 	int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream, int i, int j) __attribute__((hc, cpu)) { \

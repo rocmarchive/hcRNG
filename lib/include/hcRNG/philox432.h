@@ -110,6 +110,7 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 	HCRNGAPI hcrngPhilox432Stream* hcrngPhilox432CopyStreams(size_t count, const hcrngPhilox432Stream* streams, hcrngStatus* err);
 
 #define hcrngPhilox432RandomU01          _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomU01)
+#define hcrngPhilox432RandomN            _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomN)
 #define hcrngPhilox432RandomInteger      _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomInteger)
 #define hcrngPhilox432RandomU01Array     _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomU01Array)
 #define hcrngPhilox432RandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomIntegerArray)
@@ -120,6 +121,11 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 	HCRNGAPI _HCRNG_FPTYPE hcrngPhilox432RandomU01(hcrngPhilox432Stream* stream);
 	HCRNGAPI float  hcrngPhilox432RandomU01_float (hcrngPhilox432Stream* stream);
 	HCRNGAPI double hcrngPhilox432RandomU01_double(hcrngPhilox432Stream* stream);
+
+        
+	HCRNGAPI _HCRNG_FPTYPE hcrngPhilox432RandomN(hcrngPhilox432Stream* stream1, hcrngPhilox432Stream* stream2, _HCRNG_FPTYPE mu, _HCRNG_FPTYPE sigma);
+	HCRNGAPI float  hcrngPhilox432RandomN_float (hcrngPhilox432Stream* stream, hcrngPhilox432Stream* stream2, float mu, float sigma);
+	HCRNGAPI double hcrngPhilox432RandomN_double(hcrngPhilox432Stream* stream, hcrngPhilox432Stream* stream2, double mu, double sigma);
 
 	/*! @copybrief hcrngRandomInteger()
 	*  @see hcrngRandomInteger()
@@ -188,7 +194,12 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 		size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
         HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream* streams,
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-
+               
+//Normal distribution             
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+	        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+	        size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()
 	*/
