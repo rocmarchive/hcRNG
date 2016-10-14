@@ -9,16 +9,16 @@
 
 // code that is common to host and device
 #include <hcRNG/private/mrg31k3p.c.h>
-
+/*
 struct hcrngMrg31k3pStreamCreator_ {
 	hcrngMrg31k3pStreamState initialState;
 	hcrngMrg31k3pStreamState nextState;
-	/*! @brief Jump matrices for advancing the initial seed of streams
-	 */
+	//! @brief Jump matrices for advancing the initial seed of streams
+	 
 	unsigned int nuA1[3][3];
 	unsigned int nuA2[3][3];
 };
-
+*/
 
 /*! @brief Matrices to advance to the next state
  */
@@ -52,12 +52,12 @@ static unsigned int invA2[3][3] = {
 	{ 252696625, 252696624, 0 }
 };
 
-
-/*! @brief Default initial seed of the first stream
- */
+/*
+//! @brief Default initial seed of the first stream
+ 
 #define BASE_CREATOR_STATE { { 12345, 12345, 12345 }, { 12345, 12345, 12345 } }
-/*! @brief Jump matrices for \f$2^{134}\f$ steps forward
- */
+// @brief Jump matrices for \f$2^{134}\f$ steps forward
+
 #define BASE_CREATOR_JUMP_MATRIX_1 { \
         {1702500920, 1849582496, 1656874625}, \
         { 828554832, 1702500920, 1512419905}, \
@@ -67,20 +67,20 @@ static unsigned int invA2[3][3] = {
         {1241679051, 1431130166, 1464208080}, \
         {1401213391, 1178684362, 1431130166} }
 
-/*! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
+! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
  *
  *  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
  *  adjacent streams are spaced nu steps apart.
  *  The default is \f$nu = 2^{134}\f$.
  *  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
- */
-static hcrngMrg31k3pStreamCreator defaultStreamCreator = {
+ *
+static hcrngMrg31k3pStreamCreator defaultStreamCreator_Mrg31k3p = {
 	BASE_CREATOR_STATE,
 	BASE_CREATOR_STATE,
 	BASE_CREATOR_JUMP_MATRIX_1,
 	BASE_CREATOR_JUMP_MATRIX_2
 };
-
+*/
 /*! @brief Check the validity of a seed for MRG31k3p
  */
 static hcrngStatus validateSeed(const hcrngMrg31k3pStreamState* seed)
@@ -115,7 +115,7 @@ hcrngMrg31k3pStreamCreator* hcrngMrg31k3pCopyStreamCreator(const hcrngMrg31k3pSt
 		err_ = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "%s(): could not allocate memory for stream creator", __func__);
 	else {
 	    if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Mrg31k3p;
 	    // initialize creator
 	    *newCreator = *creator;
 	}
@@ -137,7 +137,7 @@ hcrngStatus hcrngMrg31k3pDestroyStreamCreator(hcrngMrg31k3pStreamCreator* creato
 hcrngStatus hcrngMrg31k3pRewindStreamCreator(hcrngMrg31k3pStreamCreator* creator)
 {
 	if (creator == NULL)
-	    creator = &defaultStreamCreator;
+	    creator = &defaultStreamCreator_Mrg31k3p;
 	creator->nextState = creator->initialState;
 	return HCRNG_SUCCESS;
 }
@@ -231,7 +231,7 @@ static hcrngStatus mrg31k3pCreateStream(hcrngMrg31k3pStreamCreator* creator, hcr
 
 	// use default creator if not given
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Mrg31k3p;
 
 	// initialize stream
 	buffer->current = buffer->initial = buffer->substream = creator->nextState;

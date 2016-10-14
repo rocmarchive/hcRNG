@@ -3,33 +3,33 @@
 #include "hcRNG/box_muller_transform.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-
+/*
 struct hcrngLfsr113StreamCreator_ {
 	hcrngLfsr113StreamState initialState;
 	hcrngLfsr113StreamState nextState;
 };
-
+*/
 // code that is common to host and device
 #include "../include/hcRNG/private/lfsr113.c.h"
 
+/*
+! @brief Default initial seed of the first stream
 
-/*! @brief Default initial seed of the first stream
-*/
 #define BASE_CREATOR_STATE { 987654321, 987654321, 987654321, 987654321 }
 
 
-/*! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
+! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
 *
 *  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
 *  adjacent streams are spaced nu steps apart.
 *  The default is \f$nu = 2^{134}\f$.
 *  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
-*/
-static hcrngLfsr113StreamCreator defaultStreamCreator = {
+
+static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 	{ BASE_CREATOR_STATE },
 	{ BASE_CREATOR_STATE }
 };
-
+*/
 /*! @brief Check the validity of a seed for Lfsr113
 */
 static hcrngStatus validateSeed(const hcrngLfsr113StreamState* seed)
@@ -62,7 +62,7 @@ hcrngLfsr113StreamCreator* hcrngLfsr113CopyStreamCreator(const hcrngLfsr113Strea
 		err_ = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "%s(): could not allocate memory for stream creator", __func__);
 	else {
 		if (creator == NULL)
-			creator = &defaultStreamCreator;
+			creator = &defaultStreamCreator_Lfsr113;
 		// initialize creator
 		*newCreator = *creator;
 	}
@@ -84,7 +84,7 @@ hcrngStatus hcrngLfsr113DestroyStreamCreator(hcrngLfsr113StreamCreator* creator)
 hcrngStatus hcrngLfsr113RewindStreamCreator(hcrngLfsr113StreamCreator* creator)
 {
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Lfsr113;
 	creator->nextState = creator->initialState;
 	return HCRNG_SUCCESS;
 }
@@ -208,7 +208,7 @@ static hcrngStatus Lfsr113CreateStream(hcrngLfsr113StreamCreator* creator, hcrng
 
 	// use default creator if not given
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Lfsr113;
 
 	// initialize stream
 	buffer->current = buffer->initial = buffer->substream = creator->nextState;

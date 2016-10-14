@@ -2,7 +2,6 @@
 #include "hcRNG/hcRNG.h"
 #include "hcRNG/box_muller_transform.h"
 #include <stdlib.h>
-#include <hc_am.hpp>
 #define BLOCK_SIZE 256
 #define MODULAR_NUMBER_TYPE unsigned long
 #define MODULAR_FIXED_SIZE 3
@@ -10,16 +9,16 @@
 
 // code that is common to host and device
 #include "../include/hcRNG/private/mrg32k3a.c.h"
-
+/*
 struct hcrngMrg32k3aStreamCreator_ {
 	hcrngMrg32k3aStreamState initialState;
 	hcrngMrg32k3aStreamState nextState;
-	/*! @brief Jump matrices for advancing the initial seed of streams
-	*/
+	//! @brief Jump matrices for advancing the initial seed of streams
+
 	unsigned long nuA1[3][3];
 	unsigned long nuA2[3][3];
 };
-
+*/
 /*! @brief Matrices to advance to the next state
 */
 static unsigned long Mrg32k3a_A1p0[3][3] = {
@@ -52,12 +51,12 @@ static unsigned long invA2[3][3] = {
 	{ 0, 1, 0 }
 };
 
+/*
+//! @brief Default initial seed of the first stream
 
-/*! @brief Default initial seed of the first stream
-*/
 #define BASE_CREATOR_STATE { { 12345, 12345, 12345 }, { 12345, 12345, 12345 } }
-/*! @brief Jump matrices for \f$2^{127}\f$ steps forward
-*/
+//! @brief Jump matrices for \f$2^{127}\f$ steps forward
+
 #define BASE_CREATOR_JUMP_MATRIX_1 { \
         {2427906178, 3580155704, 949770784}, \
         { 226153695, 1230515664, 3580155704}, \
@@ -67,20 +66,20 @@ static unsigned long invA2[3][3] = {
         {32183930, 1464411153, 1022607788}, \
         {2824425944, 32183930, 2093834863} }
 
-/*! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
+* @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
 *
 *  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
 *  adjacent streams are spaced nu steps apart.
 *  The default is \f$nu = 2^{134}\f$.
 *  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
-*/
-static hcrngMrg32k3aStreamCreator defaultStreamCreator = {
+*
+static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 	BASE_CREATOR_STATE,
 	BASE_CREATOR_STATE,
 	BASE_CREATOR_JUMP_MATRIX_1,
 	BASE_CREATOR_JUMP_MATRIX_2
 };
-
+*/
 /*! @brief Check the validity of a seed for Mrg32k3a
 */
 static hcrngStatus validateSeed(const hcrngMrg32k3aStreamState* seed)
@@ -115,7 +114,7 @@ hcrngMrg32k3aStreamCreator* hcrngMrg32k3aCopyStreamCreator(const hcrngMrg32k3aSt
 		err_ = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "%s(): could not allocate memory for stream creator", __func__);
 	else {
 		if (creator == NULL)
-			creator = &defaultStreamCreator;
+			creator = &defaultStreamCreator_Mrg32k3a;
 		// initialize creator
 		*newCreator = *creator;
 	}
@@ -137,7 +136,7 @@ hcrngStatus hcrngMrg32k3aDestroyStreamCreator(hcrngMrg32k3aStreamCreator* creato
 hcrngStatus hcrngMrg32k3aRewindStreamCreator(hcrngMrg32k3aStreamCreator* creator)
 {
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Mrg32k3a;
 	creator->nextState = creator->initialState;
 	return HCRNG_SUCCESS;
 }
@@ -231,7 +230,7 @@ static hcrngStatus Mrg32k3aCreateStream(hcrngMrg32k3aStreamCreator* creator, hcr
 
 	// use default creator if not given
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Mrg32k3a;
 
 	// initialize stream
 	buffer->current = buffer->initial = buffer->substream = creator->nextState;

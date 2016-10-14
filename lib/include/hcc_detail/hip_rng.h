@@ -23,18 +23,18 @@ THE SOFTWARE.
 #include <iostream>
 #include <hip_runtime_api.h>
 #include <hcRNG/hcRNG.h>
+#include <hcRNG/mrg31k3p.h>
+#include <hcRNG/mrg32k3a.h>
+#include <hcRNG/lfsr113.h>
 #include <hc_am.hpp>
 #include <hc.hpp>
-#include "../src/generators/mrg32k3a/mrg32k3a.cpp"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef hcrngMrg32k3aStreamCreator *hiprngGenerator_t;
-
+typedef void *hiprngGenerator_t;
 enum hiprngRngType_t {
-   HCRNG_PSEUDO_MRG32K3A,  HCRNG_PSEUDO_PHILOX432 };
-
+   HIPRNG_PSEUDO_MRG31K3P, HIPRNG_PSEUDO_MRG32K3A, HIPRNG_PSEUDO_LFSR113, HIPRNG_PSEUDO_PHILOX432 };
 
 inline static hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
   switch (hcStatus) {
@@ -74,85 +74,173 @@ inline static hiprngStatus_t hiprngSetErrorString(int err, const char* msg,
 
 inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
+  if(rng_type == 0) {
+  *generator = &defaultStreamCreator_Mrg31k3p;
+  #define Mrg31k3p 
+  }
+  else if(rng_type == 1) {
+   *generator = &defaultStreamCreator_Mrg32k3a;
+   #define Mrg32k3a 
+  }
+  else if(rng_type == 2) {
+   *generator = &defaultStreamCreator_Lfsr113;
+   #define Lfsr113 
+  }
 
-  *generator = &defaultStreamCreator;
+
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
+#define SetSeed(gt) \
+    if(temp##gt != 0) {\
+      hcrng##gt##StreamState baseState;\
+    for (size_t i = 0; i < 3; ++i)\
+      baseState.g1[i] =  temp##gt;\
+    for (size_t i = 0; i < 3; ++i)\
+      baseState.g2[i] =  temp##gt;\
+    return hipHCRNGStatusToHIPStatus(\
+       hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, &baseState));\
+   }\
+   else\
+      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
+#define SetSeedLfsr113() \
+    if(tempLfsr113 != 0) {\
+      hcrngLfsr113StreamState baseState;\
+    for (size_t i = 0; i < 4; ++i)\
+      baseState.g[i] =  tempLfsr113;\
+    return hipHCRNGStatusToHIPStatus(\
+       hcrngLfsr113SetBaseCreatorState((hcrngLfsr113StreamCreator*)generator, &baseState));\
+   }\
+   else\
+      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
 inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
-    unsigned long temp = seed;
-    if(seed != 0) {
-      hcrngMrg32k3aStreamState baseState;
-    for (size_t i = 0; i < 3; ++i)
-      baseState.g1[i] =  temp;
-    for (size_t i = 0; i < 3; ++i)
-      baseState.g2[i] =  temp;
-    return hipHCRNGStatusToHIPStatus(
-       hcrngMrg32k3aSetBaseCreatorState(generator, &baseState));
-   }
-   else
-      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
+  #ifdef Mrg32k3a
+    unsigned long tempMrg32k3a = seed;
+    SetSeed(Mrg32k3a)
+  #endif
+  #ifdef Mrg31k3p
+     unsigned int tempMrg31k3p = seed;
+     SetSeed(Mrg31k3p)
+  #endif
+  #ifdef Mrg31k3p
+     unsigned int tempLfsr113 = seed;
+     SetSeedLfsr113()
+  #endif
+
+
 }
 
+
+  #define GenerateUniform(gt)\
+  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
+  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  free(streams##gt);\
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
+      accl_view, num, streams_buffer##gt, num, outputPtr);\
+  hc::am_free(streams_buffer##gt);\
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
 
 inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num) {
   std::vector<hc::accelerator>acc = hc::accelerator::get_all();
   accelerator_view accl_view = (acc[1].create_view());
-  hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(generator, num, NULL, NULL);
-  hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * num, acc[1], 0);
-  hc::am_copy(streams_buffer, streams, num* sizeof(hcrngMrg32k3aStream));
-  free(streams);
-  hcrngStatus hcStatus = hcrngMrg32k3aDeviceRandomU01Array_single(
-      accl_view, num, streams_buffer, num, outputPtr);
-  hc::am_free(streams_buffer);
-  return hipHCRNGStatusToHIPStatus(hcStatus);
+  #ifdef Mrg32k3a
+    GenerateUniform(Mrg32k3a)
+  #endif
+  #ifdef Mrg31k3p
+     GenerateUniform(Mrg31k3p)
+  #endif
+  #ifdef Lfsr113
+     GenerateUniform(Lfsr113)
+  #endif
+
 }
+
+  #define GenerateUniformDouble(gt)\
+  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
+  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  free(streams##gt);\
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
+      accl_view, num, streams_buffer##gt, num, outputPtr);\
+  hc::am_free(streams_buffer##gt);\
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 inline static hiprngStatus_t hiprngGenerateUniformDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num) {
   std::vector<hc::accelerator>acc = hc::accelerator::get_all();
   accelerator_view accl_view = (acc[1].create_view());
-  hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(generator, num, NULL, NULL);
-  hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * num, acc[1], 0);
-  hc::am_copy(streams_buffer, streams, num* sizeof(hcrngMrg32k3aStream));
-  free(streams);
-  hcrngStatus hcStatus = hcrngMrg32k3aDeviceRandomU01Array_double(
-      accl_view, num, streams_buffer, num, outputPtr);
-  hc::am_free(streams_buffer);
-  return hipHCRNGStatusToHIPStatus(hcStatus);
+  #ifdef Mrg32k3a
+    GenerateUniformDouble(Mrg32k3a)
+  #endif
+  #ifdef Mrg31k3p
+     GenerateUniformDouble(Mrg31k3p)
+  #endif
+ #ifdef Lfsr113
+     GenerateUniformDouble(Lfsr113)
+  #endif
 }
+
+  #define GenerateNormal(gt)\
+  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
+  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  free(streams##gt);\
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
+      accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+  hc::am_free(streams_buffer##gt);\
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+
 
 inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num, float mean, float stddev) {
   std::vector<hc::accelerator>acc = hc::accelerator::get_all();
   accelerator_view accl_view = (acc[1].create_view());
-  hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(generator, num, NULL, NULL);
-  hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * num, acc[1], 0);
-  hc::am_copy(streams_buffer, streams, num* sizeof(hcrngMrg32k3aStream));
-  free(streams);
-  hcrngStatus hcStatus = hcrngMrg32k3aDeviceRandomNArray_single(
-      accl_view, num, streams_buffer, num, mean, stddev, outputPtr);
-  hc::am_free(streams_buffer);
-  return hipHCRNGStatusToHIPStatus(hcStatus);
+  #ifdef Mrg32k3a
+    GenerateNormal(Mrg32k3a)
+  #endif
+  #ifdef Mrg31k3p
+     GenerateNormal(Mrg31k3p)
+  #endif
+  #ifdef Lfsr113
+     GenerateNormal(Lfsr113)
+  #endif
+
+
 }
+
+  #define GenerateNormalDouble(gt)\
+  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
+  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  free(streams##gt);\
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
+      accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+  hc::am_free(streams_buffer##gt);\
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+
+
 
 inline static hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
   std::vector<hc::accelerator>acc = hc::accelerator::get_all();
   accelerator_view accl_view = (acc[1].create_view());
-  hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(generator, num, NULL, NULL);
-  hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * num, acc[1], 0);
-  hc::am_copy(streams_buffer, streams, num* sizeof(hcrngMrg32k3aStream));
-  free(streams);
-  hcrngStatus hcStatus = hcrngMrg32k3aDeviceRandomNArray_double(
-      accl_view, num, streams_buffer, num, mean, stddev, outputPtr);
-  hc::am_free(streams_buffer);
-  return hipHCRNGStatusToHIPStatus(hcStatus);
+
+  #ifdef Mrg32k3a
+    GenerateNormalDouble(Mrg32k3a)
+  #endif
+  #ifdef Mrg31k3p
+     GenerateNormalDouble(Mrg31k3p)
+  #endif
+  #ifdef Lfsr113
+     GenerateNormalDouble(Lfsr113)
+  #endif
+
 }
 
 

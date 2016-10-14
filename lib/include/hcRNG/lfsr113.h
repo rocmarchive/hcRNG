@@ -37,11 +37,37 @@ struct hcrngLfsr113Stream_ {
 */
 typedef struct hcrngLfsr113Stream_ hcrngLfsr113Stream;
 
-struct hcrngLfsr113StreamCreator_;
+//struct hcrngLfsr113StreamCreator_;
 /*! @copybrief hcrngStreamCreator
 *  @see hcrngStreamCreator
 */
+
+struct hcrngLfsr113StreamCreator_ {
+        hcrngLfsr113StreamState initialState;
+        hcrngLfsr113StreamState nextState;
+};
+
+
 typedef struct hcrngLfsr113StreamCreator_ hcrngLfsr113StreamCreator;
+
+/*! @brief Default initial seed of the first stream
+*/
+#define BASE_CREATOR_STATE_LFSR113 { 987654321, 987654321, 987654321, 987654321 }
+
+
+/*! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
+*
+*  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
+*  adjacent streams are spaced nu steps apart.
+*  The default is \f$nu = 2^{134}\f$.
+*  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
+*/
+static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
+        { BASE_CREATOR_STATE_LFSR113 },
+        { BASE_CREATOR_STATE_LFSR113 }
+};
+
+
 
 	/*! @copybrief hcrngCopyStreamCreator()
 	*  @see hcrngCopyStreamCreator()

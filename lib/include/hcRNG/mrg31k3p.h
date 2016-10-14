@@ -40,11 +40,55 @@ struct hcrngMrg31k3pStream_ {
  */
 typedef struct hcrngMrg31k3pStream_ hcrngMrg31k3pStream;
 
-struct hcrngMrg31k3pStreamCreator_;
+//struct hcrngMrg31k3pStreamCreator_;
 /*! @copybrief hcrngStreamCreator
  *  @see hcrngStreamCreator
  */
+
+struct hcrngMrg31k3pStreamCreator_ {
+        hcrngMrg31k3pStreamState initialState;
+        hcrngMrg31k3pStreamState nextState;
+        /*! @brief Jump matrices for advancing the initial seed of streams
+         */
+        unsigned int nuA1[3][3];
+        unsigned int nuA2[3][3];
+};
+
+
+
 typedef struct hcrngMrg31k3pStreamCreator_ hcrngMrg31k3pStreamCreator;
+
+/*! @brief Default initial seed of the first stream
+ */
+#define BASE_CREATOR_STATE_MRG31K3P { { 12345, 12345, 12345 }, { 12345, 12345, 12345 } }
+/*! @brief Jump matrices for \f$2^{134}\f$ steps forward
+ */
+#define BASE_CREATOR_JUMP_MATRIX_1_MRG31K3P { \
+        {1702500920, 1849582496, 1656874625}, \
+        { 828554832, 1702500920, 1512419905}, \
+        {1143731069,  828554832,  102237247} }
+#define BASE_CREATOR_JUMP_MATRIX_2_MRG31K3P { \
+        { 796789021, 1464208080,  607337906}, \
+        {1241679051, 1431130166, 1464208080}, \
+        {1401213391, 1178684362, 1431130166} }
+
+/*! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
+ *
+ *  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
+ *  adjacent streams are spaced nu steps apart.
+ *  The default is \f$nu = 2^{134}\f$.
+ *  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
+ */
+static hcrngMrg31k3pStreamCreator defaultStreamCreator_Mrg31k3p = {
+        BASE_CREATOR_STATE_MRG31K3P,
+        BASE_CREATOR_STATE_MRG31K3P,
+        BASE_CREATOR_JUMP_MATRIX_1_MRG31K3P,
+        BASE_CREATOR_JUMP_MATRIX_2_MRG31K3P
+};
+
+
+
+
 
 /*! @copybrief hcrngCopyStreamCreator()
  *  @see hcrngCopyStreamCreator()

@@ -16,28 +16,28 @@
 int main(int argc, char *argv[]) {
   size_t n = 10;
   hiprngGenerator_t gen;
-  double *hostDataUniform, *devDataUniform;
+  float *hostDataUniform, *devDataUniform;
 
   // Allocate n floats on host
-  hostDataUniform = (double *)calloc(n, sizeof(double));
+  hostDataUniform = (float *)calloc(n, sizeof(float));
 
   // Allocate n floats on device
-  hipMalloc((void **)&devDataUniform, n * sizeof(double));
+  hipMalloc((void **)&devDataUniform, n * sizeof(float));
 
 
   //  Create pseudo-random number generator
-  hiprngCreateGenerator(&gen, HCRNG_PSEUDO_MRG32K3A);
+  hiprngCreateGenerator(&gen, HIPRNG_PSEUDO_LFSR113);
   //  Set seed
-  std::cout << gen->initialState.g1[0]<<std::endl;
-  hiprngSetPseudoRandomGeneratorSeed(gen, 5000);
-  std::cout << gen->initialState.g1[0]<<std::endl;
+//  std::cout << gen->initialState.g1[0]<<std::endl;
+  hiprngSetPseudoRandomGeneratorSeed(gen,100);
+// std::cout << gen->initialState.g1[0]<<std::endl;
   printf("Generating random numbers Uniform distribution (single precision) using MRG32K3A...");
 
-  hiprngGenerateNormalDouble(gen, devDataUniform, n, 0.0, 1.0);
+  hiprngGenerateNormal(gen, devDataUniform, n, 0.0, 1.0);
 
   printf("\ndone.\n");
 
-  hipMemcpy(hostDataUniform, devDataUniform, n * sizeof(double), hipMemcpyDeviceToHost);
+  hipMemcpy(hostDataUniform, devDataUniform, n * sizeof(float), hipMemcpyDeviceToHost);
 
   
   for(int i = 0; i < n ; i++)
