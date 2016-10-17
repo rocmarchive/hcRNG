@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/lfsr113.h>
+#include <hcRNG/philox432.h>
 #include <hc_am.hpp>
 #include <hc.hpp>
 #ifdef __cplusplus
@@ -86,8 +87,10 @@ inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
    *generator = &defaultStreamCreator_Lfsr113;
    #define Lfsr113 
   }
-
-
+ else if(rng_type == 3) {
+   *generator = &defaultStreamCreator_Philox432;
+   #define Philox432
+ }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #define SetSeed(gt) \
@@ -114,6 +117,15 @@ inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
    else\
       return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
+#define SetSeedPhilox432() \
+    hcrngPhilox432StreamState baseState;\
+      baseState.ctr.H.msb = tempPhilox432;\
+      baseState.ctr.H.lsb = tempPhilox432;\
+      baseState.ctr.L.msb = tempPhilox432;\
+      baseState.ctr.L.lsb = tempPhilox432;\
+    return hipHCRNGStatusToHIPStatus(\
+       hcrngPhilox432SetBaseCreatorState((hcrngPhilox432StreamCreator*)generator, &baseState));
+
 inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
   #ifdef Mrg32k3a
@@ -128,7 +140,10 @@ inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
      unsigned int tempLfsr113 = seed;
      SetSeedLfsr113()
   #endif
-
+  #ifdef Philox432
+     unsigned int tempPhilox432 = seed;
+     SetSeedPhilox432()
+  #endif
 
 }
 
@@ -158,6 +173,9 @@ inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
      GenerateUniform(Lfsr113)
   #endif
 
+  #ifdef Philox432
+     GenerateUniform(Philox432)
+  #endif
 }
 
   #define GenerateUniformDouble(gt)\
@@ -182,6 +200,9 @@ inline static hiprngStatus_t hiprngGenerateUniformDouble(
   #endif
  #ifdef Lfsr113
      GenerateUniformDouble(Lfsr113)
+  #endif
+ #ifdef Philox432
+     GenerateUniformDouble(Philox432)
   #endif
 }
 
@@ -211,6 +232,9 @@ inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
      GenerateNormal(Lfsr113)
   #endif
 
+  #ifdef Philox432
+     GenerateNormal(Philox432)
+  #endif
 
 }
 
@@ -241,6 +265,9 @@ inline static hiprngStatus_t hiprngGenerateNormalDouble(
      GenerateNormalDouble(Lfsr113)
   #endif
 
+  #ifdef Philox432
+     GenerateNormalDouble(Philox432)
+  #endif
 }
 
 

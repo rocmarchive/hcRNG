@@ -47,11 +47,40 @@ struct hcrngPhilox432Stream_ {
 */
 typedef struct hcrngPhilox432Stream_ hcrngPhilox432Stream;
 
-struct hcrngPhilox432StreamCreator_;
+//struct hcrngPhilox432StreamCreator_;
 /*! @copybrief hcrngStreamCreator
 *  @see hcrngStreamCreator
 */
+
+struct hcrngPhilox432StreamCreator_ {
+        hcrngPhilox432StreamState initialState;
+        hcrngPhilox432StreamState nextState;
+        hcrngPhilox432Counter JumpDistance;
+};
+
+
 typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
+
+
+/*! @brief Default initial seed of the first stream
+*/
+
+#define BASE_CREATOR_STATE { \
+        {{ 0, 0},{ 0, 1}}, \
+        { 0, 0, 0, 0 }, \
+        0 }
+/*! @brief Jump Struc for \f$2^{100}\f$ steps forward
+*/
+#define BASE_CREATOR_JUMP_DISTANCE {{ 16, 0},{ 0, 0 }}
+
+/*! @brief Default stream creator (defaults to \f$2^{100}\f$ steps forward)
+*
+*  Contains the default seed;
+*  adjacent streams are spaced nu steps apart.
+*  The default is \f$nu = 2^{100}\f$.
+*  The default seed is \f$({{0,0},{0,0}})\f$.
+*/
+static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE };
 
 
 	/*! @copybrief hcrngCopyStreamCreator()

@@ -3,36 +3,36 @@
 #include "hcRNG/box_muller_transform.h"
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-
+/*
 struct hcrngPhilox432StreamCreator_ {
 	hcrngPhilox432StreamState initialState;
 	hcrngPhilox432StreamState nextState;
 	hcrngPhilox432Counter JumpDistance;
 };
-
+*/
 // code that is common to host and device
 #include "hcRNG/private/philox432.c.h"
+/*
+// @brief Default initial seed of the first stream
 
-/*! @brief Default initial seed of the first stream
-*/
 
 #define BASE_CREATOR_STATE { \
         {{ 0, 0},{ 0, 1}}, \
         { 0, 0, 0, 0 }, \
         0 }
-/*! @brief Jump Struc for \f$2^{100}\f$ steps forward
-*/
+//! @brief Jump Struc for \f$2^{100}\f$ steps forward
+
 #define BASE_CREATOR_JUMP_DISTANCE {{ 16, 0},{ 0, 0 }}
 
-/*! @brief Default stream creator (defaults to \f$2^{100}\f$ steps forward)
+*! @brief Default stream creator (defaults to \f$2^{100}\f$ steps forward)
 *
 *  Contains the default seed;
 *  adjacent streams are spaced nu steps apart.
 *  The default is \f$nu = 2^{100}\f$.
 *  The default seed is \f$({{0,0},{0,0}})\f$.
+*
+static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE };
 */
-static  hcrngPhilox432StreamCreator defaultStreamCreator = { BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE };
-
 /*! @brief Check the validity of a seed for Philox432
 */
 static hcrngStatus validateSeed(const hcrngPhilox432StreamState* seed)
@@ -52,7 +52,7 @@ hcrngPhilox432StreamCreator* hcrngPhilox432CopyStreamCreator(const hcrngPhilox43
 		err_ = hcrngSetErrorString(HCRNG_OUT_OF_RESOURCES, "%s(): could not allocate memory for stream creator", __func__);
 	else {
 		if (creator == NULL)
-			creator = &defaultStreamCreator;
+			creator = &defaultStreamCreator_Philox432;
 		// initialize creator
 		*newCreator = *creator;
 	}
@@ -74,7 +74,7 @@ hcrngStatus hcrngPhilox432DestroyStreamCreator(hcrngPhilox432StreamCreator* crea
 hcrngStatus hcrngPhilox432RewindStreamCreator(hcrngPhilox432StreamCreator* creator)
 {
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Philox432;
 	creator->nextState = creator->initialState;
 	return HCRNG_SUCCESS;
 }
@@ -166,7 +166,7 @@ static hcrngStatus Philox432CreateStream(hcrngPhilox432StreamCreator* creator, h
 
 	// use default creator if not given
 	if (creator == NULL)
-		creator = &defaultStreamCreator;
+		creator = &defaultStreamCreator_Philox432;
 
 	// initialize stream
 	buffer->current = buffer->initial = buffer->substream = creator->nextState;
