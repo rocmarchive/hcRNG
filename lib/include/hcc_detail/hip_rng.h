@@ -26,9 +26,12 @@ THE SOFTWARE.
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/lfsr113.h>
+<<<<<<< HEAD
 #include <hcRNG/philox432.h>
 #include <hc_am.hpp>
 #include <hc.hpp>
+=======
+>>>>>>> 1bbc83e861f00403c38d66a910a794ccbfb2f705
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -150,19 +153,17 @@ inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 
   #define GenerateUniform(gt)\
   hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
-  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
-      accl_view, num, streams_buffer##gt, num, outputPtr);\
-  hc::am_free(streams_buffer##gt);\
+       num, streams_buffer##gt, num, outputPtr);\
+  hipfree(streams_buffer##gt);\\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
 
 inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num) {
-  std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-  accelerator_view accl_view = (acc[1].create_view());
   #ifdef Mrg32k3a
     GenerateUniform(Mrg32k3a)
   #endif
@@ -180,18 +181,16 @@ inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
 
   #define GenerateUniformDouble(gt)\
   hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
-  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
-      accl_view, num, streams_buffer##gt, num, outputPtr);\
-  hc::am_free(streams_buffer##gt);\
+       num, streams_buffer##gt, num, outputPtr);\
+  hipfree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 inline static hiprngStatus_t hiprngGenerateUniformDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num) {
-  std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-  accelerator_view accl_view = (acc[1].create_view());
   #ifdef Mrg32k3a
     GenerateUniformDouble(Mrg32k3a)
   #endif
@@ -208,20 +207,18 @@ inline static hiprngStatus_t hiprngGenerateUniformDouble(
 
   #define GenerateNormal(gt)\
   hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
-  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
-      accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-  hc::am_free(streams_buffer##gt);\
+       num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+  hipfree(streams_buffer##gt);\\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 
 inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num, float mean, float stddev) {
-  std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-  accelerator_view accl_view = (acc[1].create_view());
   #ifdef Mrg32k3a
     GenerateNormal(Mrg32k3a)
   #endif
@@ -240,20 +237,18 @@ inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
 
   #define GenerateNormalDouble(gt)\
   hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt = hc::am_alloc(sizeof(hcrng##gt##Stream) * num, acc[1], 0);\
-  hc::am_copy(streams_buffer##gt, streams##gt, num* sizeof(hcrng##gt##Stream));\
+  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
-      accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-  hc::am_free(streams_buffer##gt);\
+       num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+  hipfree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 
 
 inline static hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
-  std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-  accelerator_view accl_view = (acc[1].create_view());
 
   #ifdef Mrg32k3a
     GenerateNormalDouble(Mrg32k3a)

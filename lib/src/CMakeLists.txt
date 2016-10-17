@@ -48,7 +48,4 @@ SET (SRCS ${RNGSRC})
     ARCHIVE DESTINATION lib
   )
 
-#  MESSAGE(STATUS "hcrng_install path : $ENV{hcrng_install}")
-#  INSTALL(TARGETS "${PROJECT_NAME}.so" DESTINATION "$ENV{hcrng_install}/lib/hcrng")
-#  INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/hcRNG" DESTINATION "$ENV{hcrng_install}/include/")
-  INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/hcRNG" DESTINATION include)
+  INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/" DESTINATION include)

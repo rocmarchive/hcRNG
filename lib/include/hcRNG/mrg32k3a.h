@@ -8,6 +8,11 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+
+//extern "C" {
+
+#endif
 /*  @brief State type of a Mrg32k3a stream
 *  The state is a seed consisting of six unsigned 32-bit integers.
 *  @see hcrngStreamState
@@ -221,19 +226,22 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 	/** \internal
 	 *  @brief Helper function for hcrngMrg32k3aDeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(hc::accelerator_view &accl_view, size_t streamCount,  hcrngMrg32k3aStream* streams,
+	HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount,  hcrngMrg32k3aStream* streams,
 		size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount,  hcrngMrg32k3aStream* streams,
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(size_t streamCount,  hcrngMrg32k3aStream* streams,
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
  */
-        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(size_t streamCount, hcrngMrg32k3aStream *streams,
 	       size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
+        HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(size_t streamCount, hcrngMrg32k3aStream *streams,
 	       size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()
 	*/
 	HCRNGAPI hcrngStatus hcrngMrg32k3aWriteStreamInfo(const hcrngMrg32k3aStream* stream, FILE *file);
 
-#endif
+#ifdef __cplusplus
+//}
+#endif //__cplusplus
+#endif // MRG32K3A_H

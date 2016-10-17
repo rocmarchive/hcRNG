@@ -1,4 +1,5 @@
 #include "hcRNG/box_muller_transform.h"
+using namespace hc;
 #define BLOCK_SIZE 256
 
 hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float mu, float sigma, float* Randomnum, size_t numberCount) {

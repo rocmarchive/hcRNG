@@ -8,6 +8,11 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
+
+#ifdef __cplusplus 
+//extern "C" {
+#endif
+
 /*  @brief State type of a Philox432 stream
 *  The state is a seed consisting of a 128bits counter
 *  @see hcrngStreamState
@@ -219,19 +224,22 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	/** \internal
 	 *  @brief Helper function for hcrngPhilox432DeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream* streams,
+	HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngPhilox432Stream* streams,
 		size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream* streams,
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hcrngPhilox432Stream* streams,
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
                
 //Normal distribution             
-        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhilox432Stream *streams,
 	        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_double(size_t streamCount, hcrngPhilox432Stream *streams,
 	        size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()
 	*/
 	HCRNGAPI hcrngStatus hcrngPhilox432WriteStreamInfo(const hcrngPhilox432Stream* stream, FILE *file);
 
-#endif
+#ifdef __cplusplus 
+//}
+#endif // __cplusplus
+#endif // PHILOX432_H

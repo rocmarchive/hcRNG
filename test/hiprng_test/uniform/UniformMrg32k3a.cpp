@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
 
   //  Create pseudo-random number generator
-  hiprngCreateGenerator(&gen, HIPRNG_PSEUDO_LFSR113);
+  hiprngCreateGenerator(&gen, HIPRNG_PSEUDO_PHILOX432);
   //  Set seed
 //  std::cout << gen->initialState.g1[0]<<std::endl;
   hiprngSetPseudoRandomGeneratorSeed(gen,100);
