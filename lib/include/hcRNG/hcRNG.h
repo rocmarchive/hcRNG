@@ -10,17 +10,15 @@
 #ifndef HCRNG_H
 #define HCRNG_H
 
-#include <iostream>
-#include <hc.hpp>
-#include "hc_short_vector.hpp"
-
-//using namespace hc;
-using namespace hc;
-using namespace hc::short_vector;
-using namespace std;
-
 /** \internal
  */
+
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif //(__cplusplus)
+
 #ifdef HCRNG_SINGLE_PRECISION
   #define _HCRNG_FPTYPE float
 #else
@@ -94,6 +92,11 @@ hcrngStatus hcrngSetErrorString(int err, const char* msg, ...);
 }
 #endif
 */
+#ifdef __cplusplus
+
+}
+
+#endif //(__cplusplus)
 
 #endif /* HCRNG_H */
 

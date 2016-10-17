@@ -3,6 +3,15 @@
 * @brief Implementation of functions defined in hcRNG.h
 */
 #include "hcRNG/hcRNG.h"
+#include <iostream>
+#include <hc.hpp>
+#include "hc_short_vector.hpp"
+
+//using namespace hc;
+using namespace hc;
+using namespace hc::short_vector;
+using namespace std;
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>

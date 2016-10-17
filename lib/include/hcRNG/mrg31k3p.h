@@ -8,6 +8,12 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
+#ifdef __cplusplus 
+
+//extern "C" {
+
+#endif 
+
 /*  @brief State type of a MRG31k3p stream
  *  The state is a seed consisting of six unsigned 32-bit integers.
  *  @see hcrngStreamState
@@ -227,17 +233,17 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pAdvanceStreams(size_t count, hcrngMrg31k3pStre
 /** \internal
  *  @brief Helper function for hcrngMrg31k3pDeviceRandomU01Array()
  */
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_single(size_t streamCount, hcrngMrg31k3pStream *streams,
 	size_t numberCount, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(size_t streamCount, hcrngMrg31k3pStream *streams,
         size_t numberCount, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
  */
 
 // Normal distribution
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(size_t streamCount, hcrngMrg31k3pStream *streams,
 	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(hc::accelerator_view &accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(size_t streamCount, hcrngMrg31k3pStream *streams,
 	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	
 /*! @copybrief hcrngWriteStreamInfo()
@@ -245,4 +251,8 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(hc::accelerator_view
  */
 HCRNGAPI hcrngStatus hcrngMrg31k3pWriteStreamInfo(const hcrngMrg31k3pStream* stream, FILE *file);
 
-#endif
+#ifdef __cplusplus 
+//}
+#endif //__cplusplus
+#endif // MRG31K3P_H
+
