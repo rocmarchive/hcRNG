@@ -24,12 +24,11 @@ int main(int argc, char *argv[]) {
   // Allocate n floats on device
   hipMalloc((void **)&devDataUniform, n * sizeof(float));
 
-
   //  Create pseudo-random number generator
-  hiprngCreateGenerator(&gen, HIPRNG_PSEUDO_PHILOX432);
+  hiprngCreateGenerator(&gen, HIPRNG_PSEUDO_MRG32K3A);
   //  Set seed
 //  std::cout << gen->initialState.g1[0]<<std::endl;
-  hiprngSetPseudoRandomGeneratorSeed(gen,100);
+  hiprngSetPseudoRandomGeneratorSeed(gen,0);
 // std::cout << gen->initialState.g1[0]<<std::endl;
   printf("Generating random numbers Uniform distribution (single precision) using MRG32K3A...");
 
