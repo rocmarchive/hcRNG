@@ -86,7 +86,7 @@ hcrngLfsr113StreamCreator* hcrngLfsr113CopyStreamCreator(const hcrngLfsr113Strea
 hcrngStatus hcrngLfsr113DestroyStreamCreator(hcrngLfsr113StreamCreator* creator)
 {
 	if (creator != NULL)
-		free(creator);
+          free(creator);
 	return HCRNG_SUCCESS;
 }
 

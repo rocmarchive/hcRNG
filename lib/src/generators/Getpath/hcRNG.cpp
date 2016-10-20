@@ -29,6 +29,7 @@ static const char MSG_INVALID_VALUE[]           = "invalid value";
 static const char MSG_INVALID_RNG_TYPE[]        = "invalid type of RNG";
 static const char MSG_INVALID_STREAM_CREATOR[]  = "invalid stream creator";
 static const char MSG_INVALID_SEED[]            = "invalid seed";
+static const char MSG_FUNCTION_NOT_IMPLEMENTED[]= "function not implemented";
 
 const char* hcrngGetErrorString()
 {
@@ -59,12 +60,14 @@ hcrngStatus hcrngSetErrorString(int err, const char* msg, ...)
         CASE_ERR(INVALID_RNG_TYPE);
         CASE_ERR(INVALID_STREAM_CREATOR);
         CASE_ERR(INVALID_SEED);
+        CASE_ERR(FUNCTION_NOT_IMPLEMENTED);
         default: base = MSG_DEFAULT;
     }
     va_list args;
     va_start(args, msg);
     vsprintf(formatted, msg, args);
     sprintf(errorString, "[%s] %s", base, formatted);
+    printf("%s\n", errorString);
     va_end(args);
         return (hcrngStatus)err;
 }

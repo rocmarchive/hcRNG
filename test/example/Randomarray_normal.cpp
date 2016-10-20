@@ -9,7 +9,7 @@
 #include <hcRNG/hcRNG.h>
 #include <hc.hpp>
 #include <hc_am.hpp>
-
+#include <iostream>
 using namespace hc;
 
 #define HCRNG_SINGLE_PRECISION
@@ -47,9 +47,9 @@ int main()
 
         //Invoke random number generators in device (here strean_length and streams_per_thread arguments are default) 
 #ifdef HCRNG_SINGLE_PRECISION
-        status = hcrngMrg31k3pDeviceRandomNArray_single(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomNArray_single(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
 #else
-        status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
 #endif
         if(status) std::cout << "TEST FAILED" << std::endl;
         hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(fp_type));
@@ -60,7 +60,7 @@ int main()
 
         // Compare host and device outputs
         for(int i =0; i < numberCount; i++) {
-           fp_type diff = abs(Random1[i] - Random2[i]);
+           fp_type diff = std::abs(Random1[i] - Random2[i]);
            if (diff > 0.00001) {
                 ispassed = 0;
                 std::cout <<" RANDDEVICE[" << i<< "] " << Random1[i] << "and RANDHOST[" << i <<"] mismatches"<< Random2[i] << std::endl;

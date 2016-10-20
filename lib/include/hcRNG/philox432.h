@@ -146,8 +146,11 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 #define hcrngPhilox432RandomU01          _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomU01)
 #define hcrngPhilox432RandomN            _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomN)
 #define hcrngPhilox432RandomInteger      _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomInteger)
+#define hcrngPhilox432RandomUnsignedInteger      _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomUnsignedInteger)
 #define hcrngPhilox432RandomU01Array     _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomU01Array)
 #define hcrngPhilox432RandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomIntegerArray)
+#define hcrngPhilox432RandomUnsignedIntegerArray _HCRNG_TAG_FPTYPE(hcrngPhilox432RandomUnsignedIntegerArray)
+
 
 	/*! @copybrief hcrngRandomU01()
 	*  @see hcrngRandomU01()
@@ -168,6 +171,12 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	HCRNGAPI int hcrngPhilox432RandomInteger_float (hcrngPhilox432Stream* stream, int i, int j);
 	HCRNGAPI int hcrngPhilox432RandomInteger_double(hcrngPhilox432Stream* stream, int i, int j);
 
+        HCRNGAPI unsigned int hcrngPhilox432RandomUnsignedInteger(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngPhilox432RandomUnsignedInteger_float (hcrngPhilox432Stream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngPhilox432RandomUnsignedInteger_double(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j);
+
+
+
 	/*! @copybrief hcrngRandomU01Array()
 	*  @see hcrngRandomU01Array()
 	*/
@@ -181,6 +190,11 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	HCRNGAPI hcrngStatus hcrngPhilox432RandomIntegerArray(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer);
 	HCRNGAPI hcrngStatus hcrngPhilox432RandomIntegerArray_float (hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer);
 	HCRNGAPI hcrngStatus hcrngPhilox432RandomIntegerArray_double(hcrngPhilox432Stream* stream, int i, int j, size_t count, int* buffer);
+
+
+        HCRNGAPI hcrngStatus hcrngPhilox432RandomUnsignedIntegerArray(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngPhilox432RandomUnsignedIntegerArray_float (hcrngPhilox432Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngPhilox432RandomUnsignedIntegerArray_double(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
 
 	/*! @copybrief hcrngRewindStreams()
 	*  @see hcrngRewindStreams()

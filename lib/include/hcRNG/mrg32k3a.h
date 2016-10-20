@@ -146,8 +146,10 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 #define hcrngMrg32k3aRandomU01          _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomU01)
 #define hcrngMrg32k3aRandomN            _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomN)           //Normal distribution 
 #define hcrngMrg32k3aRandomInteger      _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomInteger)
+#define hcrngMrg32k3aRandomUnsignedInteger      _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomUnsignedInteger)
 #define hcrngMrg32k3aRandomU01Array     _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomU01Array)
 #define hcrngMrg32k3aRandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomIntegerArray)
+#define hcrngMrg32k3aRandomUnsignedIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg32k3aRandomUnsignedIntegerArray)
 
 	/*! @copybrief hcrngRandomU01()
 	*  @see hcrngRandomU01()
@@ -166,9 +168,15 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 	/*! @copybrief hcrngRandomInteger()
 	*  @see hcrngRandomInteger()
 	*/
-	HCRNGAPI int hcrngMrg32k3aRandomInteger(hcrngMrg32k3aStream* stream, int i, int j);
-	HCRNGAPI int hcrngMrg32k3aRandomInteger_float (hcrngMrg32k3aStream* stream, int i, int j);
-	HCRNGAPI int hcrngMrg32k3aRandomInteger_double(hcrngMrg32k3aStream* stream, int i, int j);
+	HCRNGAPI  int hcrngMrg32k3aRandomInteger(hcrngMrg32k3aStream* stream,  int i,  int j);
+	HCRNGAPI  int hcrngMrg32k3aRandomInteger_float (hcrngMrg32k3aStream* stream, int i, int j);
+	HCRNGAPI  int hcrngMrg32k3aRandomInteger_double(hcrngMrg32k3aStream* stream, int i, int j);
+        
+
+        HCRNGAPI unsigned int hcrngMrg32k3aRandomUnsignedInteger(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngMrg32k3aRandomUnsignedInteger_float (hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngMrg32k3aRandomUnsignedInteger_double(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j);
+
 
 	/*! @copybrief hcrngRandomU01Array()
 	*  @see hcrngRandomU01Array()
@@ -184,6 +192,10 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 	HCRNGAPI hcrngStatus hcrngMrg32k3aRandomIntegerArray_float (hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer);
 	HCRNGAPI hcrngStatus hcrngMrg32k3aRandomIntegerArray_double(hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer);
 
+
+        HCRNGAPI hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray_float (hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray_double(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
 	/*! @copybrief hcrngRewindStreams()
 	*  @see hcrngRewindStreams()
 	*/

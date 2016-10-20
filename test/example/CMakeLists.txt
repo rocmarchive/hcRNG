@@ -8,7 +8,7 @@ FIND_PACKAGE(HC++ 1.0 REQUIRED)
 
 #Setting a variable for source files
 SET (TESTSRCS
-    Host_only.cpp  Multistream.cpp  Randomarray.cpp
+    Host_only.cpp  Multistream_uniform.cpp Multistream_normal.cpp  Randomarray_uniform.cpp Randomarray_normal.cpp
     )
 
   # Choice to take compilation flags from source or package

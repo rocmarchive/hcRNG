@@ -102,10 +102,13 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 	    return z0 * sigma + mu; \
 	} \
 	\
-	int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream, int i, int j) __attribute__((hc, cpu)) { \
+        int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream,  int i, int j) __attribute__((hc, cpu)) { \
 	    return i + (int)((j - i + 1) * hcrngMrg32k3aRandomU01_##fptype(stream)); \
 	} \
 	\
+        unsigned int hcrngMrg32k3aRandomUnsignedInteger_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j) __attribute__((hc, cpu)) { \
+            return i + (unsigned int)((j - i + 1) * hcrngMrg32k3aRandomU01_##fptype(stream)); \
+        } \
 	hcrngStatus hcrngMrg32k3aRandomU01Array_##fptype(hcrngMrg32k3aStream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngMrg32k3aRandomU01_##fptype(stream); \
@@ -116,7 +119,12 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngMrg32k3aRandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
-	}
+	}\
+       hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) __attribute__((hc, cpu)) { \
+                for (size_t k = 0; k < count; k++) \
+                  buffer[k] = hcrngMrg32k3aRandomUnsignedInteger_##fptype(stream, i, j); \
+                return HCRNG_SUCCESS; \
+        }
 
 // On the host, implement everything.
 // On the device, implement only what is required to avoid hcuttering memory.

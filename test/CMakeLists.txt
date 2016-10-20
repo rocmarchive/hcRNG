@@ -2,3 +2,4 @@ cmake_minimum_required(VERSION 2.8)
 
 add_subdirectory(unit)
 add_subdirectory(example)
+add_subdirectory(HIP_Unit_Tests)

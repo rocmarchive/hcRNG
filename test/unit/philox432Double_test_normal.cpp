@@ -10,7 +10,7 @@
 #include "gtest/gtest.h"
 using namespace hc;
 
-void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substream_length, hcrngPhilox432Stream* streams, double* out_)
+void multistream_fill_array_normal(size_t spwi, size_t gsize, size_t quota, int substream_length, hcrngPhilox432Stream* streams, double* out_)
 {
   for (size_t i = 0; i < quota; i++) {
       for (size_t gid = 0; gid < gsize; gid++) {
@@ -27,7 +27,7 @@ void multistream_fill_array(size_t spwi, size_t gsize, size_t quota, int substre
   }
 }
 
-TEST(philox432Double_test, Functional_check_philox432Double)
+TEST(philox432Double_test_normal, Functional_check_philox432Double_normal)
 {
         hcrngPhilox432Stream* stream = NULL;
         hcrngStatus status = HCRNG_SUCCESS;
@@ -46,7 +46,7 @@ TEST(philox432Double_test, Functional_check_philox432Double)
         hcrngPhilox432Stream *streams = hcrngPhilox432CreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngPhilox432Stream *streams_buffer = hc::am_alloc(sizeof(hcrngPhilox432Stream) * streamCount, acc[1], 0);
         hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngPhilox432Stream));
-        status = hcrngPhilox432DeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
+        status = hcrngPhilox432DeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
         EXPECT_EQ(status, 0);
         hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(double));
         for (size_t i = 0; i < numberCount; i++)
@@ -57,10 +57,10 @@ TEST(philox432Double_test, Functional_check_philox432Double)
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
         double *outBufferDevice_substream = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
-        status = hcrngPhilox432DeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngPhilox432DeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
         EXPECT_EQ(status, 0);
         hc::am_copy(Random3, outBufferDevice_substream, numberCount * sizeof(double));
-        multistream_fill_array(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
+        multistream_fill_array_normal(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
         for(int i =0; i < numberCount; i++) {
            EXPECT_NEAR(Random3[i], Random4[i], 0.00001);
         }

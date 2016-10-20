@@ -69,6 +69,10 @@ static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState
 	    return z0 * sigma + mu; \
 	} \
 	\
+        unsigned int hcrngLfsr113RandomUnsignedInteger_##fptype(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j) __attribute__((hc, cpu)) { \
+            return i + (unsigned int)((j - i + 1) * hcrngLfsr113RandomU01_##fptype(stream)); \
+        } \
+        \
 	int hcrngLfsr113RandomInteger_##fptype(hcrngLfsr113Stream* stream, int i, int j) __attribute__((hc, cpu)) { \
 	    return i + (int)((j - i + 1) * hcrngLfsr113RandomU01_##fptype(stream)); \
 	} \
@@ -83,7 +87,13 @@ static unsigned long hcrngLfsr113NextState(hcrngLfsr113StreamState *currentState
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngLfsr113RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
-	}
+	}\
+        hcrngStatus hcrngLfsr113RandomUnsignedIntegerArray_##fptype(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) __attribute__((hc, cpu)) { \
+                for (size_t k = 0; k < count; k++) \
+                        buffer[k] = hcrngLfsr113RandomUnsignedInteger_##fptype(stream, i, j); \
+                return HCRNG_SUCCESS; \
+        }
+
 
 // On the host, implement everything.
 // On the device, implement only what is required to avoid hcuttering memory.

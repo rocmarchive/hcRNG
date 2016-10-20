@@ -131,8 +131,10 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 #define hcrngLfsr113RandomU01          _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomU01)
 #define hcrngLfsr113RandomN            _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomN)
 #define hcrngLfsr113RandomInteger      _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomInteger)
+#define hcrngLfsr113RandomUnsignedInteger      _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomUnsignedInteger)
 #define hcrngLfsr113RandomU01Array     _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomU01Array)
 #define hcrngLfsr113RandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomIntegerArray)
+#define hcrngLfsr113RandomUnsignedIntegerArray _HCRNG_TAG_FPTYPE(hcrngLfsr113RandomUnsignedIntegerArray)
 
 	/*! @copybrief hcrngRandomU01()
 	*  @see hcrngRandomU01()
@@ -154,6 +156,12 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 	HCRNGAPI int hcrngLfsr113RandomInteger_float (hcrngLfsr113Stream* stream, int i, int j);
 	HCRNGAPI int hcrngLfsr113RandomInteger_double(hcrngLfsr113Stream* stream, int i, int j);
 
+        HCRNGAPI unsigned int hcrngLfsr113RandomUnsignedInteger(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngLfsr113RandomUnsignedInteger_float (hcrngLfsr113Stream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngLfsr113RandomUnsignedInteger_double(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j);
+
+
+
 	/*! @copybrief hcrngRandomU01Array()
 	*  @see hcrngRandomU01Array()
 	*/
@@ -167,6 +175,13 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 	HCRNGAPI hcrngStatus hcrngLfsr113RandomIntegerArray(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer);
 	HCRNGAPI hcrngStatus hcrngLfsr113RandomIntegerArray_float (hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer);
 	HCRNGAPI hcrngStatus hcrngLfsr113RandomIntegerArray_double(hcrngLfsr113Stream* stream, int i, int j, size_t count, int* buffer);
+
+
+        HCRNGAPI hcrngStatus hcrngLfsr113RandomUnsignedIntegerArray(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngLfsr113RandomUnsignedIntegerArray_float (hcrngLfsr113Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+        HCRNGAPI hcrngStatus hcrngLfsr113RandomUnsignedIntegerArray_double(hcrngLfsr113Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+
+
 
 	/*! @copybrief hcrngRewindStreams()
 	*  @see hcrngRewindStreams()

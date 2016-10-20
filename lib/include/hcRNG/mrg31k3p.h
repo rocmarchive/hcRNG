@@ -154,8 +154,10 @@ HCRNGAPI hcrngMrg31k3pStream* hcrngMrg31k3pCopyStreams(size_t count, const hcrng
 #define hcrngMrg31k3pRandomU01          _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomU01)
 #define hcrngMrg31k3pRandomN            _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomN)
 #define hcrngMrg31k3pRandomInteger      _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomInteger)
+#define hcrngMrg31k3pRandomUnsignedInteger      _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomUnsignedInteger)
 #define hcrngMrg31k3pRandomU01Array     _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomU01Array)
 #define hcrngMrg31k3pRandomIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomIntegerArray)
+#define hcrngMrg31k3pRandomUnsignedIntegerArray _HCRNG_TAG_FPTYPE(hcrngMrg31k3pRandomUnsignedIntegerArray)
 
 /*! @copybrief hcrngRandomU01()
  *  @see hcrngRandomU01()
@@ -177,6 +179,12 @@ HCRNGAPI int hcrngMrg31k3pRandomInteger(hcrngMrg31k3pStream* stream, int i, int 
 HCRNGAPI int hcrngMrg31k3pRandomInteger_float (hcrngMrg31k3pStream* stream, int i, int j);
 HCRNGAPI int hcrngMrg31k3pRandomInteger_double(hcrngMrg31k3pStream* stream, int i, int j);
 
+HCRNGAPI unsigned int hcrngMrg31k3pRandomUnsignedInteger(hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j);
+HCRNGAPI unsigned int hcrngMrg31k3pRandomUnsignedInteger_float (hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j);
+HCRNGAPI unsigned int hcrngMrg31k3pRandomUnsignedInteger_double(hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j);
+
+
+
 /*! @copybrief hcrngRandomU01Array()
  *  @see hcrngRandomU01Array()
  */
@@ -190,6 +198,11 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pRandomU01Array_double(hcrngMrg31k3pStream* str
 HCRNGAPI hcrngStatus hcrngMrg31k3pRandomIntegerArray(hcrngMrg31k3pStream* stream, int i, int j, size_t count, int* buffer);
 HCRNGAPI hcrngStatus hcrngMrg31k3pRandomIntegerArray_float (hcrngMrg31k3pStream* stream, int i, int j, size_t count, int* buffer);
 HCRNGAPI hcrngStatus hcrngMrg31k3pRandomIntegerArray_double(hcrngMrg31k3pStream* stream, int i, int j, size_t count, int* buffer);
+
+HCRNGAPI hcrngStatus hcrngMrg31k3pRandomUnsignedIntegerArray(hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+HCRNGAPI hcrngStatus hcrngMrg31k3pRandomUnsignedIntegerArray_float (hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+HCRNGAPI hcrngStatus hcrngMrg31k3pRandomUnsignedIntegerArray_double(hcrngMrg31k3pStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
+
 
 /*! @copybrief hcrngRewindStreams()
  *  @see hcrngRewindStreams()

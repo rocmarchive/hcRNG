@@ -127,6 +127,10 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 	    return i + (int)((j - i + 1) * hcrngPhilox432RandomU01_##fptype(stream)); \
 	} \
 	\
+        unsigned int hcrngPhilox432RandomUnsignedInteger_##fptype(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j) __attribute__((hc, cpu)) { \
+            return i + (unsigned int)((j - i + 1) * hcrngPhilox432RandomU01_##fptype(stream)); \
+        } \
+        \
 	hcrngStatus hcrngPhilox432RandomU01Array_##fptype(hcrngPhilox432Stream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngPhilox432RandomU01_##fptype(stream); \
@@ -137,7 +141,13 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngPhilox432RandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
-	}
+	}\
+        hcrngStatus hcrngPhilox432RandomUnsignedIntegerArray_##fptype(hcrngPhilox432Stream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) __attribute__((hc, cpu)) { \
+                for (size_t k = 0; k < count; k++) \
+                        buffer[k] = hcrngPhilox432RandomUnsignedInteger_##fptype(stream, i, j); \
+                return HCRNG_SUCCESS; \
+        }
+
 
 // On the host, implement everything.
 // On the device, implement only what is required to avoid hcuttering memory.

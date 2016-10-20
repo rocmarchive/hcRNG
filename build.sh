@@ -68,6 +68,9 @@ set +e
 # MAKE BUILD DIR
 mkdir $current_work_dir/build
 mkdir $current_work_dir/build/test
+mkdir -p $current_work_dir/build/test/HIP_Unit_Tests/common/bin/
+mkdir -p $current_work_dir/build/test/HIP_Unit_Tests/normal/bin/
+mkdir -p $current_work_dir/build/test/HIP_Unit_Tests/uniform/bin/
 set -e
 
 # SET BUILD DIR
@@ -88,6 +91,12 @@ if [ "$testing" = "on" ]; then
 
 # Move to test folder
     cd $current_work_dir/test/
+
+#Invoke test script
+    ./test.sh
+
+chmod +x $current_work_dir/test/HIP_Unit_Tests/test.sh
+cd $current_work_dir/test/HIP_Unit_Tests/
   
 #Invoke test script
     ./test.sh
