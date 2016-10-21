@@ -53,19 +53,47 @@ inline static hiprngStatus_t hipCURANDStatusToHIPStatus(hcrngStatus hcStatus) {
 }
 inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
-  return hipCURANDStatustoHIPStatus(curandCreateGenerator(generator, rng_type));
+  return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, rng_type));
 }
 
 inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
-  return hipCURANDStatustoHIPStatus(
+  return hipCURANDStatusToHIPStatus(
       curandSetPseudoRandomGeneratorSeed(generator, seed));
+}
+inline static hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
+                                                   unsigned int* outputPtr,
+                                                   size_t num) {
+  return hipCURANDStatusToHIPStatus(
+      curandGenerate(generator, outputPtr, num));
 }
 inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num) {
-  return hipCURANDStatustoHIPStatus(
+  return hipCURANDStatusToHIPStatus(
       curandGenerateUniform(generator, outputPtr, num));
+}
+inline static hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
+                                                   double* outputPtr,
+                                                   size_t num) {
+  return hipCURANDStatusToHIPStatus(
+      curandGenerateUniformDouble(generator, outputPtr, num));
+}
+inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
+                                                   float* outputPtr,
+                                                   size_t num, float mean, float stddev) {
+  return hipCURANDStatusToHIPStatus(
+      curandGenerateNormal(generator, outputPtr, num, mean, stddev));
+}
+inline static hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
+                                                   double* outputPtr,
+                                                   size_t num, double mean, double stddev) {
+  return hipCURANDStatusToHIPStatus(
+      curandGenerateNormalDouble(generator, outputPtr, num, mean, stddev));
+}
+inline static hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){ 
+  return hipCURANDStatusToHIPStatus(
+      curandDestroyGenerator(generator);
 }
 #ifdef __cplusplus
 }

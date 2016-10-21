@@ -12,33 +12,9 @@ using namespace std;
 
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-/*
-struct hcrngLfsr113StreamCreator_ {
-	hcrngLfsr113StreamState initialState;
-	hcrngLfsr113StreamState nextState;
-};
-*/
 // code that is common to host and device
 #include "../include/hcRNG/private/lfsr113.c.h"
 
-/*
-! @brief Default initial seed of the first stream
-
-#define BASE_CREATOR_STATE { 987654321, 987654321, 987654321, 987654321 }
-
-
-! @brief Default stream creator (defaults to \f$2^{134}\f$ steps forward)
-*
-*  Contains the default seed and the transition matrices to jump \f$\nu\f$ steps forward;
-*  adjacent streams are spaced nu steps apart.
-*  The default is \f$nu = 2^{134}\f$.
-*  The default seed is \f$(12345,12345,12345,12345,12345,12345)\f$.
-
-static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
-	{ BASE_CREATOR_STATE },
-	{ BASE_CREATOR_STATE }
-};
-*/
 /*! @brief Check the validity of a seed for Lfsr113
 */
 static hcrngStatus validateSeed(const hcrngLfsr113StreamState* seed)

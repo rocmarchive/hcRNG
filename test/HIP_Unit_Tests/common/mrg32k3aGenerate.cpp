@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
    }
   if(!ispassed) printf("TEST FAILED\n");
   //Cleanup
+  hiprngDestroyGenerator(gen);
   hipFree(devData1);
   hipFree(devData2);
   hipFree(devData3);

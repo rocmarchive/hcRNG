@@ -12,36 +12,8 @@ using namespace std;
 
 #include <stdlib.h>
 #define BLOCK_SIZE 256
-/*
-struct hcrngPhilox432StreamCreator_ {
-	hcrngPhilox432StreamState initialState;
-	hcrngPhilox432StreamState nextState;
-	hcrngPhilox432Counter JumpDistance;
-};
-*/
 // code that is common to host and device
 #include "hcRNG/private/philox432.c.h"
-/*
-// @brief Default initial seed of the first stream
-
-
-#define BASE_CREATOR_STATE { \
-        {{ 0, 0},{ 0, 1}}, \
-        { 0, 0, 0, 0 }, \
-        0 }
-//! @brief Jump Struc for \f$2^{100}\f$ steps forward
-
-#define BASE_CREATOR_JUMP_DISTANCE {{ 16, 0},{ 0, 0 }}
-
-*! @brief Default stream creator (defaults to \f$2^{100}\f$ steps forward)
-*
-*  Contains the default seed;
-*  adjacent streams are spaced nu steps apart.
-*  The default is \f$nu = 2^{100}\f$.
-*  The default seed is \f$({{0,0},{0,0}})\f$.
-*
-static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE };
-*/
 /*! @brief Check the validity of a seed for Philox432
 */
 static hcrngStatus validateSeed(const hcrngPhilox432StreamState* seed)
