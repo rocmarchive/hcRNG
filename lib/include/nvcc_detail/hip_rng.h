@@ -33,7 +33,7 @@ extern "C" {
 typedef curandGenerator_t hiprngGenerator_t;
 typedef curandRngType_t hiprngRngType_t;
  
-inline static hiprngStatus_t hipCURANDStatusToHIPStatus(hcrngStatus hcStatus) {
+inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
   switch (hcStatus) {
     case CURAND_STATUS_SUCCESS:
       return HIPRNG_SUCCESS;
@@ -93,7 +93,7 @@ inline static hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t genera
 }
 inline static hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){ 
   return hipCURANDStatusToHIPStatus(
-      curandDestroyGenerator(generator);
+      curandDestroyGenerator(generator));
 }
 #ifdef __cplusplus
 }
