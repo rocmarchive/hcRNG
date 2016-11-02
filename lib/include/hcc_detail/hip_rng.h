@@ -270,7 +270,7 @@ inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
   else if(rngtyp == 2){
      GenerateNormal(Lfsr113)
   }
-  else if(rngtyp == 0){
+  else if(rngtyp == 3){
      GenerateNormal(Philox432)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
