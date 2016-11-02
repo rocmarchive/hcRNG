@@ -32,8 +32,6 @@ extern "C" {
 #endif
 
 typedef void *hiprngGenerator_t;
-enum hiprngRngType_t {
-   HIPRNG_RNG_PSEUDO_MRG31K3P, HIPRNG_RNG_PSEUDO_MRG32K3A, HIPRNG_RNG_PSEUDO_LFSR113, HIPRNG_RNG_PSEUDO_PHILOX432 };
 
 inline static hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
   switch (hcStatus) {
@@ -70,6 +68,14 @@ inline static hiprngStatus_t hiprngSetErrorString(int err, const char* msg,
 }
 
 static int rngtyp; 
+
+inline static hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
+  return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
+      
+}
+inline static hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
+ return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
+}
 
 inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {

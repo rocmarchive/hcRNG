@@ -24,17 +24,16 @@ THE SOFTWARE.
 #include <cuda_runtime_api.h>
 #include <curand.h>
 #include <curand_kernel.h>
-
+#include <hip/hip_runtime_api.h>
 // HGSOS for Kalmar leave it as C++, only cuRAND needs C linkage.
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 typedef curandGenerator_t hiprngGenerator_t;
-typedef curandRngType_t hiprngRngType_t;
- 
+typedef cudaStream_t hipStream_t;
 inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
-  switch (hcStatus) {
+  switch (cuStatus) {
     case CURAND_STATUS_SUCCESS:
       return HIPRNG_SUCCESS;
     case CURAND_STATUS_ALLOCATION_FAILED:
@@ -51,6 +50,22 @@ inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus)
       throw "Unimplemented status";
   }
 }
+inline static curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType){
+   switch(hipType) 
+   {
+    case HIPRNG_RNG_PSEUDO_MRG31K3P:
+        throw "Not supported";
+    case HIPRNG_RNG_PSEUDO_MRG32K3A:
+        return CURAND_RNG_PSEUDO_MRG32K3A;
+    case HIPRNG_RNG_PSEUDO_LFSR113:
+        throw "Not supported";
+    case HIPRNG_RNG_PSEUDO_PHILOX432:
+        return CURAND_RNG_PSEUDO_PHILOX4_32_10;
+    default:
+        throw "Unimplemented Type";
+  }
+}
+
 inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
   return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, rng_type));
@@ -60,6 +75,14 @@ inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
   return hipCURANDStatusToHIPStatus(
       curandSetPseudoRandomGeneratorSeed(generator, seed));
+}
+inline static hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
+  return hipCURANDStatusToHIPStatus(
+      curandSetStream(generator, stream);
+}
+inline static hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
+ return hipCURANDStatusToHIPStatus(
+      curandSetGeneratorOffset(generator, offset);
 }
 inline static hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                                    unsigned int* outputPtr,

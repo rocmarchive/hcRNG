@@ -46,7 +46,12 @@ enum hiprngStatus_t {
   HIPRNG_VERSION_MISMATCH = -8             //if the header file version does not match the dynamically linked library version (cuRAND only)
 };
 
-
+enum hiprngRngType_t {
+  HIPRNG_RNG_PSEUDO_MRG31K3P,
+  HIPRNG_RNG_PSEUDO_MRG32K3A,
+  HIPRNG_RNG_PSEUDO_LFSR113,
+  HIPRNG_RNG_PSEUDO_PHILOX432
+};
 // Some standard header files, these are included by hc.hpp and so want to make
 // them avail on both
 // paths to provide a consistent include env and avoid "missing symbol" errors
