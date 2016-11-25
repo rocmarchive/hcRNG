@@ -5,7 +5,7 @@
 // Utilities and system includes
 #include <assert.h>
 // HIP runtime
-#include <hip_runtime.h>
+#include <hip/hip_runtime.h>
 #include <hiprng.h>
 // HIP and hcrng functions
 #include <helper_functions.h>

@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 #pragma once
 #include <iostream>
-#include <hip_runtime_api.h>
+#include <hip/hip_runtime_api.h>
 #include <hcRNG/hcRNG.h>
 #include <hcRNG/mrg31k3p.h>
 #include <hcRNG/mrg32k3a.h>
