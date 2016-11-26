@@ -50,7 +50,8 @@ enum hiprngRngType_t {
   HIPRNG_RNG_PSEUDO_MRG31K3P,
   HIPRNG_RNG_PSEUDO_MRG32K3A,
   HIPRNG_RNG_PSEUDO_LFSR113,
-  HIPRNG_RNG_PSEUDO_PHILOX432
+  HIPRNG_RNG_PSEUDO_PHILOX432,
+  HIPRNG_RNG_PSEUDO_DEFAULT=0
 };
 // Some standard header files, these are included by hc.hpp and so want to make
 // them avail on both
