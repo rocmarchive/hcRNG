@@ -13,7 +13,7 @@
 int main(int argc, char *argv[]) {
   size_t n = 100;
   hiprngGenerator_t gen;
-  hiprngStatus_t status = HIPRNG_SUCCESS;
+  hiprngStatus_t status = HIPRNG_STATUS_SUCCESS;
   bool ispassed = 1;
   double *hostData1, *devData1,*hostData2, *devData2, *hostData3, *devData3;
 
