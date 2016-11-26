@@ -92,7 +92,7 @@ Create buffer to transfer streams to the device. acc[1] denotes that a pointer i
    std::vector<hc::accelerator>acc = hc::accelerator::get_all();
    accelerator_view accl_view = (acc[1].create_view());
    hcrngMrg31k3pStream* buf_in = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * numWorkItems, acc[1], 0);
-   hc::am_copy(streams_buffer, streams, numWorkItems * sizeof(hcrngMrg31k3pStream));
+   accl_view.copy(streams, streams_buffer, numWorkItems * sizeof(hcrngMrg31k3pStream));
 
 Create buffer to transfer output back from the device.
 
@@ -111,7 +111,7 @@ RNG-Specific API's
   
 ::
 
-  hc::am_copy(RandomOutput, buf_out, numberCount * sizeof(float));
+  accl_view.copy(buf_out, RandomOutput, numberCount * sizeof(float));
 
 
 `hcRNG_template <hcRNG_template.html>`_ describes the random streams API as it is intended to be implemented using different types of RNG's or even using quasi-Monte Carlo (QMC) point sets.

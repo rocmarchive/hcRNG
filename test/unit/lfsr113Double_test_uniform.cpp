@@ -45,10 +45,10 @@ TEST(lfsr113Double_test_uniform, Functional_check_lfsr113Double_uniform)
         double *outBufferDevice = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
         hcrngLfsr113Stream *streams = hcrngLfsr113CreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngLfsr113Stream *streams_buffer = hc::am_alloc(sizeof(hcrngLfsr113Stream) * streamCount, acc[1], 0);
-        hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngLfsr113Stream));
+        accl_view.copy(streams, streams_buffer, streamCount* sizeof(hcrngLfsr113Stream));
         status = hcrngLfsr113DeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
         EXPECT_EQ(status, 0);
-        hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(double));
+        accl_view.copy(outBufferDevice, Random1, numberCount * sizeof(double));
         for (size_t i = 0; i < numberCount; i++)
            Random2[i] = hcrngLfsr113RandomU01(&streams[i % streamCount]);   
         for(int i =0; i < numberCount; i++) {
@@ -59,7 +59,7 @@ TEST(lfsr113Double_test_uniform, Functional_check_lfsr113Double_uniform)
         double *outBufferDevice_substream = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
         status = hcrngLfsr113DeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
         EXPECT_EQ(status, 0);
-        hc::am_copy(Random3, outBufferDevice_substream, numberCount * sizeof(double));
+        accl_view.copy(outBufferDevice_substream, Random3, numberCount * sizeof(double));
         multistream_fill_array_uniform(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
         for(int i =0; i < numberCount; i++) {
            EXPECT_EQ(Random3[i], Random4[i]);

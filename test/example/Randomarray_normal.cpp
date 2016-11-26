@@ -43,7 +43,7 @@ int main()
         //Create streams
         hcrngMrg31k3pStream *streams = hcrngMrg31k3pCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngMrg31k3pStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * streamCount, acc[1], 0);
-        hc::am_copy(streams_buffer, streams, streamCount* sizeof(hcrngMrg31k3pStream));
+        accl_view.copy(streams, streams_buffer, streamCount* sizeof(hcrngMrg31k3pStream));
 
         //Invoke random number generators in device (here strean_length and streams_per_thread arguments are default) 
 #ifdef HCRNG_SINGLE_PRECISION
@@ -52,7 +52,7 @@ int main()
         status = hcrngMrg31k3pDeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
 #endif
         if(status) std::cout << "TEST FAILED" << std::endl;
-        hc::am_copy(Random1, outBufferDevice, numberCount * sizeof(fp_type));
+        accl_view.copy(outBufferDevice, Random1, numberCount * sizeof(fp_type));
 
         //Invoke random number generators in host
         for (size_t i = 0; i < numberCount; i++)

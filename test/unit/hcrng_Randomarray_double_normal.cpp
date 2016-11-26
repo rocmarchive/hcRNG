@@ -30,7 +30,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg31k3p_normal )
      hcrngMrg31k3pStream *streams = hcrngMrg31k3pCreateStreams(NULL, STREAM_COUNT, &streamBufferSize, &err);
      EXPECT_EQ(err, HCRNG_SUCCESS);
      hcrngMrg31k3pStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg31k3pStream) * STREAM_COUNT, acc[1], 0);
-     hc::am_copy(streams_buffer, streams, STREAM_COUNT* sizeof(hcrngMrg31k3pStream));
+     accl_view.copy(streams, streams_buffer, STREAM_COUNT* sizeof(hcrngMrg31k3pStream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
      status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
@@ -75,7 +75,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg32k3a_normal )
      hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(NULL, STREAM_COUNT, &streamBufferSize, &err);
      EXPECT_EQ(err, HCRNG_SUCCESS);
      hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * STREAM_COUNT, acc[1], 0);
-     hc::am_copy(streams_buffer, streams, STREAM_COUNT* sizeof(hcrngMrg32k3aStream));
+     accl_view.copy(streams, streams_buffer, STREAM_COUNT* sizeof(hcrngMrg32k3aStream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
      status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0,  outBuffer);
@@ -120,7 +120,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Lfsr113_normal ) 
      hcrngLfsr113Stream *streams = hcrngLfsr113CreateStreams(NULL, STREAM_COUNT, &streamBufferSize, &err);
      EXPECT_EQ(err, HCRNG_SUCCESS);
      hcrngLfsr113Stream *streams_buffer = hc::am_alloc(sizeof(hcrngLfsr113Stream) * STREAM_COUNT, acc[1], 0);
-     hc::am_copy(streams_buffer, streams, STREAM_COUNT * sizeof(hcrngLfsr113Stream));
+     accl_view.copy(streams, streams_buffer, STREAM_COUNT * sizeof(hcrngLfsr113Stream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
      status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
@@ -165,7 +165,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Philox432_normal 
      hcrngPhilox432Stream *streams = hcrngPhilox432CreateStreams(NULL, STREAM_COUNT, &streamBufferSize, &err);
      EXPECT_EQ(err, HCRNG_SUCCESS);
      hcrngPhilox432Stream *streams_buffer = hc::am_alloc(sizeof(hcrngPhilox432Stream) * STREAM_COUNT, acc[1], 0);
-     hc::am_copy(streams_buffer, streams, STREAM_COUNT * sizeof(hcrngPhilox432Stream));
+     accl_view.copy(streams, streams_buffer, STREAM_COUNT * sizeof(hcrngPhilox432Stream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
      status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
