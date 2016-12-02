@@ -43,7 +43,8 @@ enum hiprngStatus_t {
   HIPRNG_STATUS_INVALID_SEED = -5,                //Seed value is greater than particular generators’ predefined values. (hcRNG only)
   HIPRNG_STATUS_FUNCTION_NOT_IMPLEMENTED = -6,     //an internal hcRNG function not implemented.
   HIPRNG_STATUS_INITIALIZATION_FAILED = -7,        // if there was a problem setting up the GPU (cuRAND only)
-  HIPRNG_STATUS_VERSION_MISMATCH = -8             //if the header file version does not match the dynamically linked library version (cuRAND only)
+  HIPRNG_STATUS_VERSION_MISMATCH = -8,             //if the header file version does not match the dynamically linked library version (cuRAND only)
+  HIPRNG_STATUS_INTERNAL_ERROR = -9
 };
 
 enum hiprngRngType_t {
