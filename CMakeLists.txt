@@ -1,4 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
+
+# HIP_PATH
+IF(NOT DEFINED $ENV{HIP_PATH})
+  SET(HIP_PATH "/opt/rocm/hip")
+ELSE()
+  SET(HIP_PATH $ENV{HIP_PATH})
+ENDIF()
+
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake  "${HIP_PATH}/cmake")
+EXECUTE_PROCESS(COMMAND ${HIP_PATH}/bin/hipconfig -P OUTPUT_VARIABLE PLATFORM)
+
 add_subdirectory(lib/src)
 
 # Get the current working branch
@@ -43,7 +54,7 @@ set(CPACK_BINARY_TZ "OFF")
 SET(CPACK_PACKAGE_NAME "hcrng")
 SET(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${GIT_BRANCH}-${GIT_COMMIT_HASH}-${CMAKE_SYSTEM_NAME})
 SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "HcRNG: an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "aparnasuresh <aparna@multicorewareinc.com>") #required
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Neelakandan <neelakandan@multicorewareinc.com>") #required
 
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
   "${PROJECT_BINARY_DIR}/packaging/debian/postinst;${PROJECT_BINARY_DIR}/packaging/debian/prerm")

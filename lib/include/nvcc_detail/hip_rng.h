@@ -23,17 +23,16 @@ THE SOFTWARE.
 
 #include <cuda_runtime_api.h>
 #include <curand.h>
-#include <curand_kernel.h>
-#include <hip/hip_runtime_api.h>
-// HGSOS for Kalmar leave it as C++, only cuRAND needs C linkage.
+//#include <hip/hip_runtime_api.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 typedef curandGenerator_t hiprngGenerator_t;
 typedef cudaStream_t hipStream_t;
-inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t cuStatus) {
-  switch (cuStatus) {
+
+inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
+  switch (hcStatus) {
     case CURAND_STATUS_SUCCESS:
       return HIPRNG_STATUS_SUCCESS;
     case CURAND_STATUS_ALLOCATION_FAILED:
@@ -46,6 +45,18 @@ inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t cuStatus)
       return HIPRNG_STATUS_VERSION_MISMATCH;
     case CURAND_STATUS_INTERNAL_ERROR:
       return HIPRNG_STATUS_INTERNAL_ERROR;
+    case CURAND_STATUS_NOT_INITIALIZED: 
+      return HIPRNG_STATUS_NOT_INITIALIZED;
+    case CURAND_STATUS_OUT_OF_RANGE:
+      return HIPRNG_STATUS_OUT_OF_RANGE;
+    case CURAND_STATUS_LENGTH_NOT_MULTIPLE: 
+      return HIPRNG_STATUS_LENGTH_NOT_MULTIPLE;
+    case CURAND_STATUS_LAUNCH_FAILURE:
+      return HIPRNG_STATUS_LAUNCH_FAILURE;
+    case CURAND_STATUS_PREEXISTING_FAILURE:  
+      return HIPRNG_STATUS_PREEXISTING_FAILURE;
+    case CURAND_STATUS_ARCH_MISMATCH:
+      return HIPRNG_STATUS_ARCH_MISMATCH;
     default:
       throw "Unimplemented status";
   }
@@ -66,58 +77,29 @@ inline static curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType){
   }
 }
 
-inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
-                                                   hiprngRngType_t rng_type) {
-  return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, hipHIPRngTypeToCuRngType(rng_type)));
-}
-
-inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
-    hiprngGenerator_t generator, unsigned long long seed) {
-  return hipCURANDStatusToHIPStatus(
-      curandSetPseudoRandomGeneratorSeed(generator, seed));
-}
-inline static hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
-  return hipCURANDStatusToHIPStatus(
-      curandSetStream(generator, stream));
-}
-inline static hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
- return hipCURANDStatusToHIPStatus(
-      curandSetGeneratorOffset(generator, offset));
-}
-inline static hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
+hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
+                                                   hiprngRngType_t rng_type);
+hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
+    hiprngGenerator_t generator, unsigned long long seed);
+hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream);
+hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset);
+hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                                    unsigned int* outputPtr,
-                                                   size_t num) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerate(generator, outputPtr, num));
-}
-inline static hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
+                                                   size_t num);
+hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
-                                                   size_t num) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerateUniform(generator, outputPtr, num));
-}
-inline static hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
+                                                   size_t num);
+hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
                                                    double* outputPtr,
-                                                   size_t num) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerateUniformDouble(generator, outputPtr, num));
-}
-inline static hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
+                                                   size_t num);
+hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
-                                                   size_t num, float mean, float stddev) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerateNormal(generator, outputPtr, num, mean, stddev));
-}
-inline static hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
+                                                   size_t num, float mean, float stddev) ;
+hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
                                                    double* outputPtr,
-                                                   size_t num, double mean, double stddev) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerateNormalDouble(generator, outputPtr, num, mean, stddev));
-}
-inline static hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){ 
-  return hipCURANDStatusToHIPStatus(
-      curandDestroyGenerator(generator));
-}
+                                                   size_t num, double mean, double stddev);
+
+hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator); 
 #ifdef __cplusplus
 }
 #endif
