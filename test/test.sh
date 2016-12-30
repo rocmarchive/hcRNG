@@ -22,6 +22,8 @@ eval $runcmd1
 
 Log_file="$working_dir1/gtestlog.txt"
 
+echo ""
+
 if [ ! -s "$Log_file" ]; then
    echo "${red}HCRNG UNIT GTEST IS NOT WORKING....${reset}"
 else
@@ -34,3 +36,5 @@ else
     rm $working_dir1/gtestlog.txt
   fi
 fi
+
+echo ""

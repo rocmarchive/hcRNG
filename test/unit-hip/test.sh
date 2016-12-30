@@ -9,6 +9,8 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
+echo "${green}HIP UNIT TESTS${reset}"
+
 test_common_file=($current_work_dir/common/*.cpp)
 numtests=${#test_common_file[@]}
 

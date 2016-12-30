@@ -2,8 +2,6 @@
 # This script is invoked to install the hcRNG library and test sources
 
 # CHECK FOR COMPILER PATH
-
-# CHECK FOR COMPILER PATH
 if [ ! -z $HCC_HOME ]
 then
   platform="hcc"
@@ -49,8 +47,7 @@ This script is invoked to build hcRNG library and test sources. Please provide t
 Usage: ./build.sh --test=on (or off) 
 =============================================================================================================================
 Example: 
-(2) ${green}./install.sh --test=on ${reset} (needs sudo access)
-       <library gets installed in /opt/ROCm/, testing = on>
+(1) ${green}./build.sh --test=on ${reset}
 
 =============================================================================================================================
 HELP
@@ -100,7 +97,7 @@ if [ "$platform" = "hcc" ]; then
 
   #Test=OFF (Build library and tests)
   if ( [ -z $testing ] ) || ( [ "$testing" = "off" ] ); then
-    echo "${green}HCFFT Installation Completed!${reset}"
+    echo "${green}HCRNG Installation Completed!${reset}"
   # Test=ON (Build and test the library)
   elif ( [ "$testing" = "on" ] ); then
     set +e
