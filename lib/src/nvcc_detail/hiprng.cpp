@@ -26,6 +26,41 @@ THE SOFTWARE.
 extern "C" {
 #endif
 
+hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
+  switch (cuStatus) {
+    case CURAND_STATUS_SUCCESS:
+      return HIPRNG_SUCCESS;
+    case CURAND_STATUS_ALLOCATION_FAILED:
+      return HIPRNG_OUT_OF_RESOURCES;
+    case CURAND_STATUS_INITIALIZATION_FAILED:
+      return HIPRNG_INITIALIZATION_FAILED;
+    case CURAND_STATUS_TYPE_ERROR:
+      return HIPRNG_INVALID_RNG_TYPE;
+    case CURAND_STATUS_VERSION_MISMATCH:
+      return HIPRNG_VERSION_MISMATCH;
+    case CURAND_STATUS_INTERNAL_ERROR:
+      return HIPRNG_FUNCTION_NOT_IMPLEMENTED;
+    default:
+      throw "Unimplemented status";
+  }
+}
+
+curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType){
+   switch(hipType) 
+   {
+    case HIPRNG_RNG_PSEUDO_MRG31K3P:
+        throw "Not supported";
+    case HIPRNG_RNG_PSEUDO_MRG32K3A:
+        return CURAND_RNG_PSEUDO_MRG32K3A;
+    case HIPRNG_RNG_PSEUDO_LFSR113:
+        throw "Not supported";
+    case HIPRNG_RNG_PSEUDO_PHILOX432:
+        return CURAND_RNG_PSEUDO_PHILOX4_32_10;
+    default:
+        throw "Unimplemented Type";
+  }
+}
+
  hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
   return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, hipHIPRngTypeToCuRngType(rng_type)));

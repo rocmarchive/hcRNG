@@ -4,6 +4,27 @@
 extern "C" {
 #endif
 
+hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
+  switch (hcStatus) {
+    case HCRNG_SUCCESS:
+      return HIPRNG_SUCCESS;
+    case HCRNG_OUT_OF_RESOURCES:
+      return HIPRNG_OUT_OF_RESOURCES;
+    case HCRNG_INVALID_VALUE:
+      return HIPRNG_INVALID_VALUE;
+    case HCRNG_INVALID_RNG_TYPE:
+      return HIPRNG_INVALID_RNG_TYPE;
+    case HCRNG_INVALID_STREAM_CREATOR:
+      return HIPRNG_INVALID_STREAM_CREATOR;
+    case HCRNG_INVALID_SEED:
+      return HIPRNG_INVALID_SEED;
+    case HCRNG_FUNCTION_NOT_IMPLEMENTED:
+      return HIPRNG_FUNCTION_NOT_IMPLEMENTED;
+    default:
+      throw "Unimplemented status";
+  }
+}
+
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
   return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
 }

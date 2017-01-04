@@ -72,9 +72,9 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if ( [ "$hip_so" = "on" ] ); then
-    export HIP_SHARED_OBJ=on
-fi
+#if ( [ "$hip_so" = "on" ] ); then
+#    export HIP_SHARED_OBJ=on
+#fi
 
 set +e
 # MAKE BUILD DIR
@@ -91,7 +91,11 @@ cd $build_dir
 if [ "$platform" = "hcc" ]; then
   
   # Cmake and make libhcRNG: Install hcRNG
-  cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  if ( [ "$hip_so" = "on" ] ); then
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  else
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  fi
   make package
   make
 
@@ -109,7 +113,11 @@ if [ "$platform" = "hcc" ]; then
     set -e
 
     # Build Tests
-    cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    if ( [ "$hip_so" = "on" ] ); then
+      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    else
+      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    fi
     make
 
     #Move to test folder
@@ -128,7 +136,11 @@ fi
 
 if [ "$platform" = "nvcc" ]; then
   # Cmake and make libhipRNG: Install hipRNG
-  cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  if ( [ "$hip_so" = "on" ] ); then
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  else
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+  fi
   make package
   make
   echo "${green}HIPRNG Build Completed!${reset}"
