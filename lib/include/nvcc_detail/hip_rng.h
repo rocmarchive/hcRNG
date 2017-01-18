@@ -63,17 +63,17 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
 inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
   switch (cuStatus) {
     case CURAND_STATUS_SUCCESS:
-      return HIPRNG_SUCCESS;
+      return HIPRNG_STATUS_SUCCESS;
     case CURAND_STATUS_ALLOCATION_FAILED:
-      return HIPRNG_OUT_OF_RESOURCES;
+      return HIPRNG_STATUS_ALLOCATION_FAILED;
     case CURAND_STATUS_INITIALIZATION_FAILED:
-      return HIPRNG_INITIALIZATION_FAILED;
+      return HIPRNG_STATUS_INITIALIZATION_FAILED;
     case CURAND_STATUS_TYPE_ERROR:
-      return HIPRNG_INVALID_RNG_TYPE;
+      return HIPRNG_STATUS_TYPE_ERROR;
     case CURAND_STATUS_VERSION_MISMATCH:
-      return HIPRNG_VERSION_MISMATCH;
+      return HIPRNG_STATUS_VERSION_MISMATCH;
     case CURAND_STATUS_INTERNAL_ERROR:
-      return HIPRNG_FUNCTION_NOT_IMPLEMENTED;
+      return  HIPRNG_STATUS_INTERNAL_ERROR;
     default:
       throw "Unimplemented status";
   }

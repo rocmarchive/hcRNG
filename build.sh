@@ -72,9 +72,6 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-#if ( [ "$hip_so" = "on" ] ); then
-#    export HIP_SHARED_OBJ=on
-#fi
 
 set +e
 # MAKE BUILD DIR
@@ -94,7 +91,7 @@ if [ "$platform" = "hcc" ]; then
   if ( [ "$hip_so" = "on" ] ); then
     cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
   else
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
   fi
   make package
   make
@@ -116,21 +113,23 @@ if [ "$platform" = "hcc" ]; then
     if ( [ "$hip_so" = "on" ] ); then
       cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
     else
-      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
     fi
     make
 
     #Move to test folder
     cd $current_work_dir/test/
     #Invoke test script
+     printf "* UNIT *\n"
+     printf "********\n"
     ./test.sh
     
-    if ( [ "$hip_so" = "on" ] ); then
-      chmod +x $current_work_dir/test/unit-hip/test.sh
-      cd $current_work_dir/test/unit-hip/
-      # Invoke hip unit test script
-      ./test.sh
-    fi
+    chmod +x $current_work_dir/test/unit-hip/test.sh
+    cd $current_work_dir/test/unit-hip/
+    # Invoke hip unit test script
+     printf "* UNIT HIP TESTS*\n"
+     printf "*****************\n"
+    ./test.sh
   fi
 fi
 
@@ -138,12 +137,11 @@ if [ "$platform" = "nvcc" ]; then
   # Cmake and make libhipRNG: Install hipRNG
   if ( [ "$hip_so" = "on" ] ); then
     cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
-  else
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=OFF -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+    
+    make package
+    make
+    echo "${green}HIPRNG Build Completed!${reset}"
   fi
-  make package
-  make
-  echo "${green}HIPRNG Build Completed!${reset}"
   
   if ( [ "$testing" = "on" ] ); then
     set +e
@@ -155,11 +153,16 @@ if [ "$platform" = "nvcc" ]; then
     set -e
 
     # Build Tests
-    cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    if ( [ "$hip_so" = "on" ] ); then
+      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    else
+      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    fi
     make
 
     chmod +x $current_work_dir/test/unit-hip/test.sh
     cd $current_work_dir/test/unit-hip/
+     printf "* UNIT HIP TESTS*\n"
     # Invoke hip unit test script
     ./test.sh
   fi

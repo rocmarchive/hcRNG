@@ -7,13 +7,13 @@ extern "C" {
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
   switch (hcStatus) {
     case HCRNG_SUCCESS:
-      return HIPRNG_SUCCESS;
+      return HIPRNG_STATUS_SUCCESS;
     case HCRNG_OUT_OF_RESOURCES:
-      return HIPRNG_OUT_OF_RESOURCES;
+      return HIPRNG_STATUS_ALLOCATION_FAILED;
     case HCRNG_INVALID_VALUE:
       return HIPRNG_INVALID_VALUE;
     case HCRNG_INVALID_RNG_TYPE:
-      return HIPRNG_INVALID_RNG_TYPE;
+      return HIPRNG_STATUS_TYPE_ERROR;
     case HCRNG_INVALID_STREAM_CREATOR:
       return HIPRNG_INVALID_STREAM_CREATOR;
     case HCRNG_INVALID_SEED:
