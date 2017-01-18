@@ -60,7 +60,7 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
 
 #else
 
-inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t hcStatus) {
+inline static hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t cuStatus) {
   switch (cuStatus) {
     case CURAND_STATUS_SUCCESS:
       return HIPRNG_STATUS_SUCCESS;
@@ -96,7 +96,7 @@ inline static curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType){
 
 inline static hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
-  return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, rng_type));
+  return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, hipHIPRngTypeToCuRngType(rng_type)));
 }
 
 inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
@@ -106,11 +106,11 @@ inline static hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 }
 inline static hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
   return hipCURANDStatusToHIPStatus(
-      curandSetStream(generator, stream);
+      curandSetStream(generator, stream));
 }
 inline static hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
  return hipCURANDStatusToHIPStatus(
-      curandSetGeneratorOffset(generator, offset);
+      curandSetGeneratorOffset(generator, offset));
 }
 inline static hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                                    unsigned int* outputPtr,
