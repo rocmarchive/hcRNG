@@ -23,7 +23,7 @@ THE SOFTWARE.
 
 #include <cuda_runtime_api.h>
 #include <curand.h>
-//#include <hip/hip_runtime_api.h>
+//#include <hip/hip_runtime.h>
 
 #ifdef __cplusplus
 extern "C" {
