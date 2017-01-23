@@ -34,6 +34,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$current_work_dir/build/lib/src
 red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
+install=0
 
 # Help menu
 print_help() {
@@ -58,6 +59,9 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --test=*)
       testing="${1#*=}"
+      ;;
+    --install)
+      install="1"
       ;;
     --hip_so=*)
       hip_so="${1#*=}"
@@ -89,12 +93,16 @@ if [ "$platform" = "hcc" ]; then
   
   # Cmake and make libhcRNG: Install hcRNG
   if ( [ "$hip_so" = "on" ] ); then
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
   else
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
   fi
   make package
   make
+ 
+  if [ "$install" = "1" ]; then
+    sudo make install
+  fi
 
   #Test=OFF (Build library and tests)
   if ( [ -z $testing ] ) || ( [ "$testing" = "off" ] ); then
@@ -120,15 +128,15 @@ if [ "$platform" = "hcc" ]; then
     #Move to test folder
     cd $current_work_dir/test/
     #Invoke test script
-     printf "* UNIT *\n"
-     printf "********\n"
+     printf "* UNIT API TESTS *\n"
+     printf "******************\n"
     ./test.sh
     
     chmod +x $current_work_dir/test/unit-hip/test.sh
     cd $current_work_dir/test/unit-hip/
     # Invoke hip unit test script
-     printf "* UNIT HIP TESTS*\n"
-     printf "*****************\n"
+     printf "* UNIT HIP TESTS *\n"
+     printf "******************\n"
     ./test.sh
   fi
 fi
@@ -136,7 +144,7 @@ fi
 if [ "$platform" = "nvcc" ]; then
   # Cmake and make libhipRNG: Install hipRNG
   if ( [ "$hip_so" = "on" ] ); then
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
+    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
     
     make package
     make
@@ -162,7 +170,8 @@ if [ "$platform" = "nvcc" ]; then
 
     chmod +x $current_work_dir/test/unit-hip/test.sh
     cd $current_work_dir/test/unit-hip/
-     printf "* UNIT HIP TESTS*\n"
+     printf "* UNIT HIP TESTS *\n"
+     printf "******************\n"
     # Invoke hip unit test script
     ./test.sh
   fi
