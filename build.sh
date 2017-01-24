@@ -30,6 +30,13 @@ fi
 current_work_dir=$PWD
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$current_work_dir/build/lib/src
+if [ ! -z $HIP_PATH ]
+then
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HIP_PATH/lib
+else
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/hip/lib
+fi
+
 
 red=`tput setaf 1`
 green=`tput setaf 2`
