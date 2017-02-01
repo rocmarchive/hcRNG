@@ -39,9 +39,16 @@ execute_process(COMMAND ${DEBIAN_EXTRA_SCRIPT_SOURCE_DIR}/process_packaging_scri
 
 execute_process(COMMAND ${DEBIAN_EXTRA_SCRIPT_SOURCE_DIR}/process_packaging_script.bsh ${DEBIAN_EXTRA_SCRIPT_SOURCE_DIR}/prerm.in  ${DEBIAN_EXTRA_SCRIPT_DEST_DIR}/prerm WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 
+IF (${PLATFORM} MATCHES "hcc")
+  set(CPACK_PACKAGE_NAME "hcrng")
+  SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "HcRNG: an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime")
+ELSEIF (${PLATFORM} MATCHES "nvcc")
+  set(CPACK_PACKAGE_NAME "hiprng")
+  SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "HipRNG: an RNG Library interface that links against curand library")
+ENDIF()
+
 set(CPACK_SET_DESTDIR TRUE)
 set(CPACK_INSTALL_PREFIX "${DEFAULT_DEBIAN_INSTALL_PREFIX}")
-set(CPACK_PACKAGE_NAME "hcrng")
 set(CPACK_PACKAGE_VENDOR "MulticoreWare, Inc")
 set(CPACK_GENERATOR "DEB;TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
@@ -53,7 +60,6 @@ set(CPACK_SOURCE_TBZ2 "OFF")
 set(CPACK_BINARY_TZ "OFF")
 SET(CPACK_PACKAGE_NAME "hcrng")
 SET(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${GIT_BRANCH}-${GIT_COMMIT_HASH}-${CMAKE_SYSTEM_NAME})
-SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "HcRNG: an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Neelakandan <neelakandan@multicorewareinc.com>") #required
 
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
