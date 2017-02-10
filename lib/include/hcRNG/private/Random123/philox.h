@@ -65,7 +65,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // x86-64, and powerpc64 but not much else.
 */
 #define _mulhilo_dword_tpl(W, Word, Dword)                              \
-R123_CUDA_DEVICE R123_STATIC_INLINE Word mulhilo##W(Word a, Word b, Word* hip){ \
+R123_CUDA_DEVICE R123_STATIC_INLINE Word mulhilo##W(Word a, Word b, Word* hip) __attribute__((hc, cpu)) { \
     Dword product = ((Dword)a)*((Dword)b);                              \
     *hip = product>>W;                                                  \
     return (Word)product;                                               \
@@ -135,7 +135,7 @@ R123_CUDA_DEVICE R123_STATIC_INLINE Word mulhilo##W(Word a, Word b, Word* hip){ 
 // set with a compile-time -D option.
 */
 #define _mulhilo_c99_tpl(W, Word) \
-R123_STATIC_INLINE Word mulhilo##W(Word a, Word b, Word *hip){ \
+R123_STATIC_INLINE Word mulhilo##W(Word a, Word b, Word *hip) __attribute__((hc, cpu)) { \
     const unsigned WHALF = W/2;                                    \
     const Word LOMASK = ((((Word)1)<<WHALF)-1);                    \
     Word lo = a*b;               /* full low multiply */           \
@@ -270,21 +270,21 @@ _mulhilo_fail_tpl(64, uint64_t)
    same macro regardless of N. */
 #define _philox2xWround_tpl(W, T)                                       \
 R123_CUDA_DEVICE R123_STATIC_INLINE R123_FORCE_INLINE(struct r123array2x##W _philox2x##W##round(struct r123array2x##W ctr, struct r123array1x##W key)); \
-R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array2x##W _philox2x##W##round(struct r123array2x##W ctr, struct r123array1x##W key){ \
+R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array2x##W _philox2x##W##round(struct r123array2x##W ctr, struct r123array1x##W key) __attribute__((hc, cpu)) { \
     T hi;                                                               \
     T lo = mulhilo##W(PHILOX_M2x##W##_0, ctr.v[0], &hi);                \
     struct r123array2x##W out = {{hi^key.v[0]^ctr.v[1], lo}};               \
     return out;                                                         \
 }
 #define _philox2xWbumpkey_tpl(W)                                        \
-R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array1x##W _philox2x##W##bumpkey( struct r123array1x##W key) { \
+R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array1x##W _philox2x##W##bumpkey( struct r123array1x##W key) __attribute__((hc, cpu)) { \
     key.v[0] += PHILOX_W##W##_0;                                        \
     return key;                                                         \
 }
 
 #define _philox4xWround_tpl(W, T)                                       \
 R123_CUDA_DEVICE R123_STATIC_INLINE R123_FORCE_INLINE(struct r123array4x##W _philox4x##W##round(struct r123array4x##W ctr, struct r123array2x##W key)); \
-R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array4x##W _philox4x##W##round(struct r123array4x##W ctr, struct r123array2x##W key){ \
+R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array4x##W _philox4x##W##round(struct r123array4x##W ctr, struct r123array2x##W key) __attribute__((hc, cpu)) { \
     T hi0;                                                              \
     T hi1;                                                              \
     T lo0 = mulhilo##W(PHILOX_M4x##W##_0, ctr.v[0], &hi0);              \
@@ -295,7 +295,7 @@ R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array4x##W _philox4x##W##round(st
 }
 
 #define _philox4xWbumpkey_tpl(W)                                        \
-R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array2x##W _philox4x##W##bumpkey( struct r123array2x##W key) { \
+R123_CUDA_DEVICE R123_STATIC_INLINE struct r123array2x##W _philox4x##W##bumpkey( struct r123array2x##W key) __attribute__((hc, cpu)) { \
     key.v[0] += PHILOX_W##W##_0;                                        \
     key.v[1] += PHILOX_W##W##_1;                                        \
     return key;                                                         \
