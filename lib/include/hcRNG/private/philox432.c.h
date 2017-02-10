@@ -13,7 +13,10 @@
 
 #include <hc_math.hpp>
 
-hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432Counter b) __attribute__((hc, cpu))
+// XXX: temp hack to get around known issue in Clang
+//      CodeGenFunction::EmitAutoVarInit() by setting the 2nd parameter to a
+//      reference
+hcrngPhilox432Counter hcrngPhilox432Add(hcrngPhilox432Counter a, hcrngPhilox432Counter& b) __attribute__((hc, cpu))
 {
 	hcrngPhilox432Counter c;
 
@@ -89,7 +92,10 @@ static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentSt
 	// Advance to the next Counter.
 	if (currentState->deckIndex == 4) {
 
-		hcrngPhilox432Counter incBy1 = { { 0, 0 }, { 0, 1 } };
+                // XXX: temp hack to get around known issue in Clang
+                //      CodeGenFunction::EmitAutoVarInit() by making the variable
+                //      a static variable
+		static hcrngPhilox432Counter incBy1 = { { 0, 0 }, { 0, 1 } };
 		currentState->ctr = hcrngPhilox432Add(currentState->ctr, incBy1);
 
 		currentState->deckIndex = 0;
@@ -190,7 +196,10 @@ hcrngStatus hcrngPhilox432RewindSubstreams(size_t count, hcrngPhilox432Stream* s
 void Philox432ResetNextSubStream(hcrngPhilox432Stream* stream) __attribute__((hc, cpu)) {
 
 	//2^64 states
-	hcrngPhilox432Counter steps = { { 0, 1 }, { 0, 0 } };
+        // XXX: temp hack to get around known issue in Clang
+        //      CodeGenFunction::EmitAutoVarInit() by making the variable
+        //      a static variable
+	static hcrngPhilox432Counter steps = { { 0, 1 }, { 0, 0 } };
 
 	//move the substream counter 2^64 steps forward.
 	stream->substream.ctr = hcrngPhilox432Add(stream->substream.ctr, steps);
