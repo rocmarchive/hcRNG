@@ -14,21 +14,6 @@
 #include <hc.hpp>
 #include <hc_math.hpp>
 
-// hcrngMrg32k3a_A1p76 and hcrngMrg32k3a_A2p76 jump 2^76 steps forward
-static
-unsigned long hcrngMrg32k3a_A1p76[3][3] = {
-	{ 82758667, 1871391091, 4127413238 },
-	{ 3672831523, 69195019, 1871391091 },
-	{ 3672091415, 3528743235, 69195019 }
-};
-
-static
-unsigned long hcrngMrg32k3a_A2p76[3][3] = {
-	{ 1511326704, 3759209742, 1610795712 },
-	{ 4292754251, 1511326704, 3889917532 },
-	{ 3859662829, 4292754251, 3708466080 }
-};
-
 hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) __attribute__((hc, cpu)) 
 {
         //Check params
@@ -166,6 +151,22 @@ hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* str
 
 hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
 {
+
+// hcrngMrg32k3a_A1p76 and hcrngMrg32k3a_A2p76 jump 2^76 steps forward
+static
+unsigned long hcrngMrg32k3a_A1p76[3][3] = {
+	{ 82758667, 1871391091, 4127413238 },
+	{ 3672831523, 69195019, 1871391091 },
+	{ 3672091415, 3528743235, 69195019 }
+};
+
+static
+unsigned long hcrngMrg32k3a_A2p76[3][3] = {
+	{ 1511326704, 3759209742, 1610795712 },
+	{ 4292754251, 1511326704, 3889917532 },
+	{ 3859662829, 4292754251, 3708466080 }
+};
+
         if (!streams)
                 return HCRNG_INVALID_VALUE;
 
