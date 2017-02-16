@@ -81,25 +81,25 @@ cd $build_dir
 
 # Cmake and make libhcRNG: Install hcRNG
 cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir
-make package
-make
+make package -j
+make -j
 
 if [ "$testing" = "on" ]; then
   # Build Tests
     cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
-    make
+    make -j
 
 # Move to test folder
     cd $current_work_dir/test/
 
 #Invoke test script
-    ./test.sh
+    #./test.sh
 
 chmod +x $current_work_dir/test/HIP_Unit_Tests/test.sh
 cd $current_work_dir/test/HIP_Unit_Tests/
   
 #Invoke test script
-    ./test.sh
+    #./test.sh
 
 else
   echo "${green}HCRNG Installation Completed!${reset}"
