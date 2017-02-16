@@ -67,18 +67,21 @@ void hcrngPhilox432GenerateDeck(hcrngPhilox432StreamState *currentState) __attri
 	c.v[2] = currentState->ctr.H.lsb;
 	c.v[3] = currentState->ctr.H.msb;
 
+        // XXX: temp hack to get around issue in Clang
+        //      need more study
+#if 0
 	//Generate 4 uint and store them into the stream state
-	philox4x32_ctr_t r = philox4x32(c, k);
+	static philox4x32_ctr_t r = philox4x32(c, k);
 	currentState->deck[3] = r.v[0];
 	currentState->deck[2] = r.v[1];
 	currentState->deck[1] = r.v[2];
 	currentState->deck[0] = r.v[3];
+#endif
 }
 
 /*! @brief Advance the rng one step
 */
 static unsigned int hcrngPhilox432NextState(hcrngPhilox432StreamState *currentState) __attribute__((hc, cpu)) {
-
 	if (currentState->deckIndex == 0)
 	{
 		hcrngPhilox432GenerateDeck(currentState);
