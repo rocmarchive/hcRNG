@@ -70,9 +70,6 @@ while [ $# -gt 0 ]; do
     --install)
       install="1"
       ;;
-    --hip_so=*)
-      hip_so="${1#*=}"
-      ;;
     --help) print_help;;
     *)
       printf "************************************************************\n"
@@ -102,21 +99,13 @@ cd $build_dir
 if [ "$platform" = "hcc" ]; then
   
   # Cmake and make libhcRNG: Install hcRNG
-  if ( [ "$hip_so" = "on" ] ); then
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
-  else
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
-  fi
+  cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
   make package
   make
  
   if [ "$install" = "1" ]; then
     sudo make install
-    if  [ "$hip_so" = "on" ] ; then
-     cd $build_dir/packaging/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir/packaging/
-    else
-     cd $build_dir/packaging/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir/packaging/
-    fi
+    cd $build_dir/packaging/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir/packaging/
   fi
 
   #Test=OFF (Build library and tests)
@@ -133,11 +122,7 @@ if [ "$platform" = "hcc" ]; then
     set -e
 
     # Build Tests
-    if ( [ "$hip_so" = "on" ] ); then
-      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
-    else
-      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
-    fi
+    cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
     make
 
     #Move to test folder
@@ -158,13 +143,10 @@ fi
 
 if [ "$platform" = "nvcc" ]; then
   # Cmake and make libhipRNG: Install hipRNG
-  if ( [ "$hip_so" = "on" ] ); then
-    cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
-    
-    make package
-    make
-    echo "${green}HIPRNG Build Completed!${reset}"
-  fi
+  cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
+  make package
+  make
+  echo "${green}HIPRNG Build Completed!${reset}"
   
   if ( [ "$testing" = "on" ] ); then
     set +e
@@ -176,11 +158,7 @@ if [ "$platform" = "nvcc" ]; then
     set -e
 
     # Build Tests
-    if ( [ "$hip_so" = "on" ] ); then
-      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DHIP_SHARED_OBJ=ON -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
-    else
-      cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
-    fi
+    cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
     make
 
     chmod +x $current_work_dir/test/unit-hip/test.sh
