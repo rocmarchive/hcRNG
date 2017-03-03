@@ -26,6 +26,13 @@ else
   exit 1
 fi
 
+if ( [ ! -z $HIP_PATH ] || [ -x "/opt/rocm/hip/bin/hipcc" ] ); then 
+  export HIP_SUPPORT=on
+elif ( [ "$platform" = "nvcc" ]); then
+  echo "HIP not found. Install latest HIP to continue."
+  exit 1
+fi
+
 # CURRENT_WORK_DIRECTORY
 current_work_dir=$PWD
 
@@ -132,12 +139,14 @@ if [ "$platform" = "hcc" ]; then
      printf "******************\n"
     ./test.sh
     
-    chmod +x $current_work_dir/test/unit-hip/test.sh
-    cd $current_work_dir/test/unit-hip/
-    # Invoke hip unit test script
-     printf "* UNIT HIP TESTS *\n"
-     printf "******************\n"
-    ./test.sh
+    if [ $HIP_SUPPORT = "on" ]; then
+      chmod +x $current_work_dir/test/unit-hip/test.sh
+      cd $current_work_dir/test/unit-hip/
+      # Invoke hip unit test script
+      printf "* UNIT HIP TESTS *\n"
+      printf "******************\n"
+      ./test.sh
+    fi
   fi
 fi
 
