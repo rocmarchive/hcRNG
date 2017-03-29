@@ -87,6 +87,7 @@ IF (${PLATFORM} MATCHES "hcc")
 ELSEIF (${PLATFORM} MATCHES "nvcc")
   MESSAGE(STATUS "Building hiprng.cpp")
 
+  #FILE(GLOB HIPRNGSRCS ${CMAKE_CURRENT_SOURCE_DIR}/nvcc_detail/*.cpp)
   SET(HIPRNGSRCS ${CMAKE_CURRENT_SOURCE_DIR}/nvcc_detail/hiprng.cpp)
 
   set (CXXFLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/../include -I${HIP_PATH}/include -I/usr/local/cuda/include -D__HIP_PLATFORM_NVCC__=")

@@ -28,6 +28,7 @@ fi
 
 if ( [ ! -z $HIP_PATH ] || [ -x "/opt/rocm/hip/bin/hipcc" ] ); then 
   export HIP_SUPPORT=on
+  hip_compiler=/opt/rocm/hip/bin/hipcc
 elif ( [ "$platform" = "nvcc" ]); then
   echo "HIP not found. Install latest HIP to continue."
   exit 1
@@ -164,10 +165,14 @@ if [ "$platform" = "nvcc" ]; then
     mkdir -p $current_work_dir/build/test/unit-hip/common/bin/
     mkdir -p $current_work_dir/build/test/unit-hip/normal/bin/
     mkdir -p $current_work_dir/build/test/unit-hip/uniform/bin/
+    mkdir -p $current_work_dir/build/test/unit-hip/device/device_normal/bin/
+    mkdir -p $current_work_dir/build/test/unit-hip/device/device_uniform/bin/
     set -e
 
     # Build Tests
     cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
+    make
+    cd $build_dir/test/unit-hip/device && cmake -DCMAKE_CXX_COMPILER=$hip_compiler $current_work_dir/test/unit-hip/device/
     make
 
     chmod +x $current_work_dir/test/unit-hip/test.sh

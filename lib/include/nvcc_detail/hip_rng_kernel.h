@@ -24,33 +24,56 @@ THE SOFTWARE.
 #include <cuda_runtime_api.h>
 #include <curand_kernel.h>
 
-#ifdef __cplusplus
-extern "C" {
+#if !defined(QUALIFIERS)
+#define QUALIFIERS static __inline__ __device__
 #endif
+
+/*#ifdef __cplusplus
+extern "C" {
+#endif*/
 
 typedef curandState_t hiprngState_t; 
 typedef curandStateMRG32k3a_t hiprngStateMRG32k3a_t;
-typedef curandStatePhilox4_32_10_t hiprandStatePhilox4_32_10_t;
+typedef curandStatePhilox4_32_10_t hiprngStatePhilox4_32_10_t;
 typedef curandStateXORWOW_t hiprngStateXORWOW_t;
 
-__device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ); 
+QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ){
+  return curand_init(seed, subsequence, offset, state);
+}
 
-__device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state );
+QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
+  return curand_init(seed, subsequence, offset, state);
+}
 
-__device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state );
+QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
+  return curand_init(seed, subsequence, offset, state);
+}
 
-__device__  float hiprng_normal ( hiprngStateMRG32k3a_t* state ); 
+QUALIFIERS float hiprng_normal ( hiprngStateMRG32k3a_t* state ){
+  return curand_normal(state);
+}
 
-__device__  float hiprng_normal ( hiprngStatePhilox4_32_10_t* state );
+QUALIFIERS float hiprng_normal ( hiprngStatePhilox4_32_10_t* state ){
+  return curand_normal(state);
+}
 
-__device__  float hiprng_normal ( hiprngStateXORWOW_t* state );
+QUALIFIERS float hiprng_normal ( hiprngStateXORWOW_t* state ){
+  return curand_normal(state);
+}
 
-__device__  float hiprng_uniform ( hiprngStateMRG32k3a_t* state );
+QUALIFIERS float hiprng_uniform ( hiprngStateMRG32k3a_t* state ){
+  return curand_uniform(state);
+}
 
-__device__  float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state );
+QUALIFIERS float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state ){
+  return curand_uniform(state);
+}
 
-__device__  float hiprng_uniform ( hiprngStateXORWOW_t* state );
+QUALIFIERS float hiprng_uniform ( hiprngStateXORWOW_t* state ){
+  return curand_uniform(state);
+}
 
+/*
 #ifdef __cplusplus
 }
-#endif
+#endif*/

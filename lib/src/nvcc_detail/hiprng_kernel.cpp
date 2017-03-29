@@ -31,9 +31,9 @@ __device__  void hiprng_init ( unsigned long long seed, unsigned long long subse
   return curand_init(seed, subsequence, offset, state);
 }
 
-__device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
+/*__device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
   return curand_init(seed, subsequence, offset, state);
-}
+}*/
 
 __device__  void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
   return curand_init(seed, subsequence, offset, state);
