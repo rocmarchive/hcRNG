@@ -17,6 +17,21 @@
 #define mrg31k3p_NORM_double 4.656612873077392578125e-10  /* 1/2^31 */
 #define mrg31k3p_NORM_float  4.6566126e-10
 #include <hc_math.hpp>
+// hcrngMrg31k3p_A1p72 and hcrngMrg31k3p_A2p72 jump 2^72 steps forward
+static
+unsigned int hcrngMrg31k3p_A1p72[3][3] = { 
+    {1516919229,  758510237, 499121365},
+    {1884998244, 1516919229, 335398200},
+    {601897748,  1884998244, 358115744}
+};
+
+static
+unsigned int hcrngMrg31k3p_A2p72[3][3] = { 
+    {1228857673, 1496414766,  954677935},
+    {1133297478, 1407477216, 1496414766},
+    {2002613992, 1639496704, 1407477216}
+};
+
 
 hcrngStatus hcrngMrg31k3pCopyOverStreams(size_t count, hcrngMrg31k3pStream* destStreams, const hcrngMrg31k3pStream* srcStreams) __attribute__((hc, cpu))
 {
@@ -166,21 +181,6 @@ hcrngStatus hcrngMrg31k3pRewindSubstreams(size_t count, hcrngMrg31k3pStream* str
 
 hcrngStatus hcrngMrg31k3pForwardToNextSubstreams(size_t count, hcrngMrg31k3pStream* streams) __attribute__((hc, cpu))
 {
-
-// hcrngMrg31k3p_A1p72 and hcrngMrg31k3p_A2p72 jump 2^72 steps forward
-static
-unsigned int hcrngMrg31k3p_A1p72[3][3] = { 
-    {1516919229,  758510237, 499121365},
-    {1884998244, 1516919229, 335398200},
-    {601897748,  1884998244, 358115744}
-};
-
-static
-unsigned int hcrngMrg31k3p_A2p72[3][3] = { 
-    {1228857673, 1496414766,  954677935},
-    {1133297478, 1407477216, 1496414766},
-    {2002613992, 1639496704, 1407477216}
-};
 
         if (!streams)
                 return HCRNG_INVALID_VALUE;
