@@ -119,13 +119,13 @@ numtests=${#test_uniform_file[@]}
     fi
   done
 
-test_normal_file=($current_work_dir/device/device_normal/*.cpp)
+test_device_normal_file=($current_work_dir/device/device_normal/*.cpp)
 numtests=${#test_device_normal_file[@]}
 
 ## now loop through the above array
   for (( i=0; i<numtests; i++ ));
   do
-    test_normal=$(basename "${test_device_normal_file[$i]}" .cpp)
+    test_device_normal=$(basename "${test_device_normal_file[$i]}" .cpp)
     working_dir1="$current_work_dir/../../build/test/unit-hip/device/device_normal/bin"
     cd $working_dir1
     if [ ! -d "errlog" ]; then
@@ -154,3 +154,39 @@ numtests=${#test_device_normal_file[@]}
       fi
     fi
   done
+
+test_device_uniform_file=($current_work_dir/device/device_uniform/*.cpp)
+numtests=${#test_device_uniform_file[@]}
+
+## now loop through the above array
+  for (( i=0; i<numtests; i++ ));
+  do
+    test_device_uniform=$(basename "${test_device_uniform_file[$i]}" .cpp)
+    working_dir1="$current_work_dir/../../build/test/unit-hip/device/device_uniform/bin"
+    cd $working_dir1
+    if [ ! -d "errlog" ]; then
+      mkdir "errlog"
+    fi
+    errlogdir="${working_dir1}/errlog"
+
+    #Gtest functions
+    unittest="${working_dir1}/${test_device_uniform}"
+
+    runcmd1="$unittest >> gtestlog.txt"
+    eval $runcmd1
+
+    Log_file="$working_dir1/gtestlog.txt"
+    if [ ! -s "$Log_file" ]; then
+      echo "${red}GTEST IS NOT WORKING....${reset}"
+    else
+      if grep -q FAILED "$Log_file";
+      then
+        echo "${red}hip_${test_device_uniform}            ----- [ FAILED ]${reset}"
+        mv "${working_dir1}/gtestlog.txt" "${errlogdir}/${test_device_uniform}.txt"
+      elif grep -q PASSED "$Log_file";
+      then
+        echo "${green}hip_${test_device_uniform}          ----- [ PASSED ]${reset}"
+        rm -f $working_dir1/gtestlog.txt
+      fi
+    fi
+  done  
