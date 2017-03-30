@@ -7,7 +7,7 @@
 #include <helper_functions.h>
 
 /* this GPU kernel function calculates a random number and stores it in the parameter */
-__global__ void random(float* result, unsigned long long seed) {
+__global__ void random(hipLaunchParm lp, float* result, unsigned long long seed) {
   /* CUDA's random number library uses curandState_t to keep track of the seed value
      we will store a random state for every thread  */
   hiprngStateMRG32k3a_t state;
@@ -34,7 +34,9 @@ TEST(hiprng_device_uniform, hip_device_mrg32k3aSingle_uniform ) {
   hipMalloc((void **)&devData1, sizeof(float));
 
   /* invoke the GPU to initialize all of the random states */
-  random<<<1, 1>>>(devData1, 5000);
+  hipLaunchKernel(random,
+                dim3(1), dim3(1), 0, 0,
+                devData1, 5000);
 
   /* copy the random number back */
   hipMemcpy(&x, devData1, sizeof(float), hipMemcpyDeviceToHost);
@@ -43,7 +45,9 @@ TEST(hiprng_device_uniform, hip_device_mrg32k3aSingle_uniform ) {
   hipMalloc((void **)&devData2, sizeof(float));
 
   /* invoke the GPU to initialize all of the random states */
-  random<<<1, 1>>>(devData2, 5000);
+  hipLaunchKernel(random,
+                dim3(1), dim3(1), 0, 0,
+                devData2, 5000);
 
   /* copy the random number back */
   hipMemcpy(&y, devData2, sizeof(float), hipMemcpyDeviceToHost);
@@ -57,7 +61,9 @@ TEST(hiprng_device_uniform, hip_device_mrg32k3aSingle_uniform ) {
   hipMalloc((void **)&devData3, sizeof(float));
 
   /* invoke the GPU to initialize all of the random states */
-  random<<<1, 1>>>(devData3, 0);
+  hipLaunchKernel(random,
+                dim3(1), dim3(1), 0, 0,
+                devData3, 0);
 
   /* copy the random number back */
   hipMemcpy(&x, devData2, sizeof(float), hipMemcpyDeviceToHost);
