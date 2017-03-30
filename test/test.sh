@@ -10,7 +10,7 @@ green=`tput setaf 2`
 reset=`tput sgr0`
 
 # Move to gtest bin
-working_dir1="$current_work_dir/../build/test/unit/bin/"
+working_dir1="$current_work_dir/../build/test/unit-api/bin/"
 cd $working_dir1
 
 #Gtest functions
@@ -22,15 +22,19 @@ eval $runcmd1
 
 Log_file="$working_dir1/gtestlog.txt"
 
+echo ""
+
 if [ ! -s "$Log_file" ]; then
-   echo "${red}GTEST IS NOT WORKING....${reset}"
+   echo "${red}HCRNG UNIT GTEST IS NOT WORKING....${reset}"
 else
   if grep -q FAILED "$Log_file"; 
   then
-    echo "${red}GTEST               ---- [ FAILED ]${reset}"  
+    echo "${red}HCRNG UNIT GTEST               ---- [ FAILED ]${reset}"  
     echo "Check $working_dir1/gtestlog.txt for more details" 
   else
-    echo "${green}GTEST               ---- [ PASSED ]${reset}"
+    echo "${green}HCRNG UNIT GTEST               ---- [ PASSED ]${reset}"
     rm $working_dir1/gtestlog.txt
   fi
 fi
+
+echo ""

@@ -34,17 +34,23 @@ THE SOFTWARE.
 
 #pragma once
 
-enum hiprngStatus_t {
-  HIPRNG_STATUS_SUCCESS = 0,                      //the operation completed successfully.
+enum hiprngStatus_t {                     
+  HIPRNG_STATUS_SUCCESS = 0,               //the operation completed successfully.
   HIPRNG_STATUS_ALLOCATION_FAILED = -1,            //resource allocation failed.
-  HIPRNG_STATUS_INVALID_VALUE = -2,               //unsupported numerical value was passed to function. (hcRNG only)
+  HIPRNG_INVALID_VALUE = -2,               //unsupported numerical value was passed to function. (hcRNG only)
   HIPRNG_STATUS_TYPE_ERROR = -3,            //unsupported rng type specified.
-  HIPRNG_STATUS_INVALID_STREAM_CREATOR = -4,      //Stream creator is invalid.  (hcRNG only)
-  HIPRNG_STATUS_INVALID_SEED = -5,                //Seed value is greater than particular generators’ predefined values. (hcRNG only)
-  HIPRNG_STATUS_FUNCTION_NOT_IMPLEMENTED = -6,     //an internal hcRNG function not implemented.
+  HIPRNG_INVALID_STREAM_CREATOR = -4,      //Stream creator is invalid.  (hcRNG only)
+  HIPRNG_INVALID_SEED = -5,                //Seed value is greater than particular generators’ predefined values. (hcRNG only)
+  HIPRNG_FUNCTION_NOT_IMPLEMENTED = -9,     //an internal hcRNG function not implemented.
+  HIPRNG_STATUS_INTERNAL_ERROR = -6,
   HIPRNG_STATUS_INITIALIZATION_FAILED = -7,        // if there was a problem setting up the GPU (cuRAND only)
   HIPRNG_STATUS_VERSION_MISMATCH = -8,             //if the header file version does not match the dynamically linked library version (cuRAND only)
-  HIPRNG_STATUS_INTERNAL_ERROR = -9
+  HIPRNG_STATUS_NOT_INITIALIZED = 101,
+  HIPRNG_STATUS_OUT_OF_RANGE = 104,
+  HIPRNG_STATUS_LENGTH_NOT_MULTIPLE = 105,
+  HIPRNG_STATUS_LAUNCH_FAILURE = 201,
+  HIPRNG_STATUS_PREEXISTING_FAILURE = 202,
+  HIPRNG_STATUS_ARCH_MISMATCH = 204,
 };
 
 enum hiprngRngType_t {
