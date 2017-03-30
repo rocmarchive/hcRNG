@@ -15,14 +15,14 @@
 #include <hc_math.hpp>
 
 // hcrngMrg32k3a_A1p76 and hcrngMrg32k3a_A2p76 jump 2^76 steps forward
-static
+[[hc]] static
 unsigned long hcrngMrg32k3a_A1p76[3][3] = {
 	{ 82758667, 1871391091, 4127413238 },
 	{ 3672831523, 69195019, 1871391091 },
 	{ 3672091415, 3528743235, 69195019 }
 };
 
-static
+[[hc]] static
 unsigned long hcrngMrg32k3a_A2p76[3][3] = {
 	{ 1511326704, 3759209742, 1610795712 },
 	{ 4292754251, 1511326704, 3889917532 },
