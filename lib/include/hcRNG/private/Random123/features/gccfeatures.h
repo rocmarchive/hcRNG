@@ -158,7 +158,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef R123_USE_ASM_GNU
-#define R123_USE_ASM_GNU (defined(__x86_64__)||defined(__i386__))
+#if (defined(__x86_64__)||defined(__i386__))
+#define R123_USE_ASM_GNU 1
+#else
+#define R123_USE_ASM_GNU 0
+#endif
 #endif
 
 #ifndef R123_USE_CPUID_MSVC
@@ -219,7 +223,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef R123_USE_MULHILO64_MULHI_INTRIN
-#define R123_USE_MULHILO64_MULHI_INTRIN (defined(__powerpc64__))
+#if (defined(___powerpc64__))
+#define R123_USE_MULHILO64_MULHI_INTRIN 1
+#else
+#define R123_USE_MULHILO64_MULHI_INTRIN 0
+#endif
 #endif
 
 #ifndef R123_MULHILO64_MULHI_INTRIN

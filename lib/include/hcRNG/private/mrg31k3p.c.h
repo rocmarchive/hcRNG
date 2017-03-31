@@ -18,14 +18,14 @@
 #define mrg31k3p_NORM_float  4.6566126e-10
 #include <hc_math.hpp>
 // hcrngMrg31k3p_A1p72 and hcrngMrg31k3p_A2p72 jump 2^72 steps forward
-static
+[[hc]] static
 unsigned int hcrngMrg31k3p_A1p72[3][3] = { 
     {1516919229,  758510237, 499121365},
     {1884998244, 1516919229, 335398200},
     {601897748,  1884998244, 358115744}
 };
 
-static
+[[hc]] static
 unsigned int hcrngMrg31k3p_A2p72[3][3] = { 
     {1228857673, 1496414766,  954677935},
     {1133297478, 1407477216, 1496414766},
