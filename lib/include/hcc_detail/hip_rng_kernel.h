@@ -21,9 +21,7 @@ THE SOFTWARE.
 */
 #pragma once
 
-#include <hcRNG/hcRNG.h>
-#include <hcRNG/mrg32k3a.h>
-#include <hcRNG/philox432.h>
+#include <hiprng.h>
 
 #if !defined(QUALIFIERS)
 #define QUALIFIERS static __inline__ __device__
@@ -33,47 +31,61 @@ THE SOFTWARE.
 extern "C" {
 #endif*/
 
-typedef hcrngState_t hiprngState_t;  
-typedef hcrngStateMRG32k3a_t hiprngStateMRG32k3a_t;
-typedef hcrngStatePhilox4_32_10_t hiprngStatePhilox4_32_10_t;
+typedef hiprngGenerator_t hiprngStateMRG32k3a_t;
+typedef hiprngGenerator_t hiprngStatePhilox4_32_10_t; 
 typedef void *hiprngStateXORWOW_t;
 
-/*QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ){
-  return curand_init(seed, subsequence, offset, state);
+QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ){
+  
+  hiprngCreateGenerator(state, HIPRNG_RNG_PSEUDO_MRG32K3A);
+  hiprngSetPseudoRandomGeneratorSeed(*state, seed);
 }
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
-  return curand_init(seed, subsequence, offset, state);
+  
+  hiprngCreateGenerator(state, HIPRNG_RNG_PSEUDO_PHILOX432);
+  hiprngSetPseudoRandomGeneratorSeed(*state, seed);
 }
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
-  return curand_init(seed, subsequence, offset, state);
+  //NOT SUPPORTED
 }
 
 QUALIFIERS float hiprng_normal ( hiprngStateMRG32k3a_t* state ){
-  return curand_normal(state);
+  float outputPtr;
+  hiprngGenerateNormal(*state, &outputPtr, 1, 0, 1);
+  return outputPtr;
 }
 
 QUALIFIERS float hiprng_normal ( hiprngStatePhilox4_32_10_t* state ){
-  return curand_normal(state);
+  float outputPtr;
+  hiprngGenerateNormal(*state, &outputPtr, 1, 0, 1);
+  return outputPtr;
 }
 
 QUALIFIERS float hiprng_normal ( hiprngStateXORWOW_t* state ){
-  return curand_normal(state);
+  //NOT SUPPORTED
+  float outputPtr;
+  return outputPtr;
 }
 
 QUALIFIERS float hiprng_uniform ( hiprngStateMRG32k3a_t* state ){
-  return curand_uniform(state);
+  float outputPtr;
+  hiprngGenerateUniform(*state, &outputPtr, 1);
+  return outputPtr;
 }
 
 QUALIFIERS float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state ){
-  return curand_uniform(state);
+  float outputPtr;
+  hiprngGenerateUniform(*state, &outputPtr, 1);
+  return outputPtr;
 }
 
 QUALIFIERS float hiprng_uniform ( hiprngStateXORWOW_t* state ){
-  return curand_uniform(state);
+  //NOT SUPPORTED
+  float outputPtr;
+  return outputPtr;
 }
-*/
 
 /*
 #ifdef __cplusplus
