@@ -72,6 +72,26 @@ static hcrngStatus validateSeed(const hcrngMrg32k3aStreamState* seed)
 	return HCRNG_SUCCESS;
 }
 
+static hcrngStatus validateSeed(const hcrngMrg32k3aStreamState* seed) __attribute__((hc))
+{
+        // Check that the seeds have valid values
+        for (size_t i = 0; i < 3; ++i)
+                if (seed->g1[i] >= Mrg32k3a_M1)
+                        return HCRNG_INVALID_SEED;
+
+        for (size_t i = 0; i < 3; ++i)
+                if (seed->g2[i] >= Mrg32k3a_M2)
+                        return HCRNG_INVALID_SEED;
+
+        if (seed->g1[0] == 0 && seed->g1[1] == 0 && seed->g1[2] == 0)
+                return HCRNG_INVALID_SEED;
+
+        if (seed->g2[0] == 0 && seed->g2[1] == 0 && seed->g2[2] == 0)
+                return HCRNG_INVALID_SEED;
+
+        return HCRNG_SUCCESS;
+}
+
 hcrngMrg32k3aStreamCreator* hcrngMrg32k3aCopyStreamCreator(const hcrngMrg32k3aStreamCreator* creator, hcrngStatus* err)
 {
 	hcrngStatus err_ = HCRNG_SUCCESS;
@@ -129,9 +149,21 @@ hcrngStatus hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator
 	return err;
 }
 
-__device__ void hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator, const hcrngMrg32k3aStreamState* baseState)
+hcrngStatus hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator, const hcrngMrg32k3aStreamState* baseState) __attribute__((hc))
 {
-	creator->initialState = creator->nextState = *baseState;
+	if (creator == NULL)
+                return HCRNG_INVALID_STREAM_CREATOR;
+        if (baseState == NULL)
+                return HCRNG_INVALID_VALUE;
+
+        hcrngStatus err = validateSeed(baseState);
+
+        if (err == HCRNG_SUCCESS) {
+                // initialize new creator
+                creator->initialState = creator->nextState = *baseState;
+        }
+
+        return err;
 }
 
 hcrngStatus hcrngMrg32k3aChangeStreamsSpacing(hcrngMrg32k3aStreamCreator* creator, int e, int c)
@@ -190,6 +222,32 @@ hcrngMrg32k3aStream* hcrngMrg32k3aAllocStreams(size_t count, size_t* bufSize, hc
 	return buf;
 }
 
+hcrngMrg32k3aStream* hcrngMrg32k3aAllocStreams(size_t count, size_t* bufSize, hcrngStatus* err) __attribute__((hc))
+{
+        hcrngStatus err_ = HCRNG_SUCCESS;
+        size_t bufSize_ = count * sizeof(hcrngMrg32k3aStream);
+
+
+        hcrngMrg32k3aStream* buf = (hcrngMrg32k3aStream*)malloc(bufSize_);
+
+        if (buf == NULL) {
+                // allocation failed
+                err_ = HCRNG_OUT_OF_RESOURCES;
+                bufSize_ = 0;
+        }
+
+        // set buffer size if needed
+        if (bufSize != NULL)
+                *bufSize = bufSize_;
+
+        // set error status if needed
+        if (err != NULL)
+                *err = err_;
+
+        return buf;
+}
+
+
 hcrngStatus hcrngMrg32k3aDestroyStreams(hcrngMrg32k3aStream* streams)
 {
 	if (streams != NULL)
@@ -217,6 +275,26 @@ static hcrngStatus Mrg32k3aCreateStream(hcrngMrg32k3aStreamCreator* creator, hcr
 	return HCRNG_SUCCESS;
 }
 
+static hcrngStatus Mrg32k3aCreateStream(hcrngMrg32k3aStreamCreator* creator, hcrngMrg32k3aStream* buffer) __attribute__((hc))
+{
+        //Check params
+        if (buffer == NULL)
+                return HCRNG_INVALID_VALUE;
+
+        // use default creator if not given
+        if (creator == NULL)
+                creator = &defaultStreamCreator_Mrg32k3a;
+
+        // initialize stream
+        buffer->current = buffer->initial = buffer->substream = creator->nextState;
+
+        // advance next state in stream creator
+        modMatVec(creator->nuA1, creator->nextState.g1, creator->nextState.g1, Mrg32k3a_M1);
+        modMatVec(creator->nuA2, creator->nextState.g2, creator->nextState.g2, Mrg32k3a_M2);
+
+        return HCRNG_SUCCESS;
+}
+
 hcrngStatus hcrngMrg32k3aCreateOverStreams(hcrngMrg32k3aStreamCreator* creator, size_t count, hcrngMrg32k3aStream* streams)
 {
 	// iterate over all individual stream buffers
@@ -230,6 +308,21 @@ hcrngStatus hcrngMrg32k3aCreateOverStreams(hcrngMrg32k3aStreamCreator* creator, 
 	}
 
 	return HCRNG_SUCCESS;
+}
+
+hcrngStatus hcrngMrg32k3aCreateOverStreams(hcrngMrg32k3aStreamCreator* creator, size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc))
+{
+        // iterate over all individual stream buffers
+        for (size_t i = 0; i < count; i++) {
+
+                hcrngStatus err = Mrg32k3aCreateStream(creat r, &streams[i]);
+
+                // abort on error
+                if (err != HCRNG_SUCCESS)
+                        return err;
+        }
+
+        return HCRNG_SUCCESS;
 }
 
 hcrngMrg32k3aStream* hcrngMrg32k3aCreateStreams(hcrngMrg32k3aStreamCreator* creator, size_t count, size_t* bufSize, hcrngStatus* err)
@@ -248,6 +341,24 @@ hcrngMrg32k3aStream* hcrngMrg32k3aCreateStreams(hcrngMrg32k3aStreamCreator* crea
 		*err = err_;
 
 	return streams;
+}
+
+hcrngMrg32k3aStream* hcrngMrg32k3aCreateStreams(hcrngMrg32k3aStreamCreator* creator, size_t count, size_t* bufSize, hcrngStatus* err) __attribute__((hc))
+{
+        hcrngStatus err_;
+        size_t bufSize_;
+        hcrngMrg32k3aStream* streams = hcrngMrg32k3aAllocStreams(count, &bufSize_, &err_);
+
+        if (err_ == HCRNG_SUCCESS)
+                err_ = hcrngMrg32k3aCreateOverStreams(creator, count, streams);
+
+        if (bufSize != NULL)
+                *bufSize = bufSize_;
+
+        if (err != NULL)
+                *err = err_;
+
+        return streams;
 }
 
 hcrngMrg32k3aStream* hcrngMrg32k3aCopyStreams(size_t count, const hcrngMrg32k3aStream* streams, hcrngStatus* err)
@@ -395,6 +506,41 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount, hcrngMr
         return status;
 }
 
+hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(size_t streamCount, hcrngMrg32k3aStream* streams,
+        size_t numberCount, float* outBuffer, int streamlength, size_t streams_per_thread) __attribute__((hc))
+{
+#define HCRNG_SINGLE_PRECISION
+        //Check params
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount % streamCount != 0)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+          int gid = tidx.global[0];
+          if(gid < (streamCount/streams_per_thread)) {
+           for(int i =0; i < numberCount/streamCount; i++) {
+              if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
+               hcrngMrg32k3aForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              if ((i > 0) && (streamlength < 0) && (i % streamlength == 0)) {
+               hcrngMrg32k3aRewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              for (int j = 0; j < streams_per_thread; j++)
+               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngMrg32k3aRandomU01(&streams[streams_per_thread * gid + j]);
+              }
+           }
+        }).wait();
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
 
 hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(size_t streamCount, hcrngMrg32k3aStream *streams,
 	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
