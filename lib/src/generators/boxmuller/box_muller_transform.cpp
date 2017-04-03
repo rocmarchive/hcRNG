@@ -2,7 +2,7 @@
 using namespace hc;
 #define BLOCK_SIZE 256
 
-hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float mu, float sigma, float* Randomnum, size_t numberCount) {
+hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float mu, float sigma, float* Randomnum, size_t numberCount) __attribute__((hc, cpu)){
     const float two_pi = 2.0 * 3.14159265358979323846;
     long size = (numberCount/2 + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
     hc::extent<1> grdExt(size);
@@ -39,7 +39,7 @@ hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float m
 }
 
 */
-hcrngStatus box_muller_transform_double(hc::accelerator_view &accl_view, double mu, double sigma, double* Randomnum, size_t numberCount) {
+hcrngStatus box_muller_transform_double(hc::accelerator_view &accl_view, double mu, double sigma, double* Randomnum, size_t numberCount) __attribute__((hc, cpu)){
     const double two_pi = 2.0 * 3.14159265358979323846;
     long size = (numberCount/2 + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
     hc::extent<1> grdExt(size);

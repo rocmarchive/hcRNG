@@ -563,6 +563,27 @@ hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(size_t streamCount, hcrngMrg3
         return status;
 }
 
+hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(size_t streamCount, hcrngMrg32k3aStream *streams,
+        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread) __attribute__((hc))
+{
+#define HCRNG_SINGLE_PRECISION 
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount % streamCount != 0)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = hcrngMrg32k3aDeviceRandomU01Array_single(streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+                status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+                return status;
+            }
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
+
 hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(size_t streamCount, hcrngMrg32k3aStream* streams,
         size_t numberCount, double* outBuffer, int streamlength, size_t streams_per_thread)
 {
