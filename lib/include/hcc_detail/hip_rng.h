@@ -74,6 +74,16 @@ __device__ void hiprngMrg32k3aInitGenerator(hiprngMrg32k3aGenerator_t* generator
 
 __device__ void hiprngPhilox432InitGenerator(hiprngPhilox432Generator_t* generator, unsigned long long seed);
 
+__device__ void hiprngMrg32k3aGenerateUniform(hiprngMrg32k3aGenerator_t generator, float* outputPtr, size_t num);
+
+__device__ void hiprngPhilox432GenerateUniform(hiprngPhilox432Generator_t generator, float* outputPtr, size_t num);
+
+__device__ void hiprngMrg32k3aGenerateNormal(hiprngMrg32k3aGenerator_t generator, float* outputPtr,
+                                                   size_t num, float mean, float stddev);
+
+__device__ void hiprngPhilox432GenerateNormal(hiprngPhilox432Generator_t generator, float* outputPtr,
+                                                   size_t num, float mean, float stddev);
+
 #ifdef __cplusplus
 }
 #endif

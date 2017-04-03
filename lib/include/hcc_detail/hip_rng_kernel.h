@@ -37,15 +37,11 @@ typedef hiprngGenerator_t hiprngStatePhilox4_32_10_t;
 typedef void *hiprngStateXORWOW_t;
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ){
-  
-  hiprngCreateGenerator(state, HIPRNG_RNG_PSEUDO_MRG32K3A);
-  hiprngSetPseudoRandomGeneratorSeed(*state, seed);
+  hiprngMrg32k3aInitGenerator(state, seed);
 }
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
-  
-  hiprngCreateGenerator(state, HIPRNG_RNG_PSEUDO_PHILOX432);
-  hiprngSetPseudoRandomGeneratorSeed(*state, seed);
+  hiprngPhilox432InitGenerator(state, seed);
 }
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
@@ -54,13 +50,13 @@ QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subseq
 
 QUALIFIERS float hiprng_normal ( hiprngStateMRG32k3a_t* state ){
   float outputPtr;
-  hiprngGenerateNormal(*state, &outputPtr, 1, 0, 1);
+  hiprngMrg32k3aGenerateNormal(*state, &outputPtr, 1, 0, 1);
   return outputPtr;
 }
 
 QUALIFIERS float hiprng_normal ( hiprngStatePhilox4_32_10_t* state ){
   float outputPtr;
-  hiprngGenerateNormal(*state, &outputPtr, 1, 0, 1);
+  hiprngPhilox432GenerateNormal(*state, &outputPtr, 1, 0, 1);
   return outputPtr;
 }
 
@@ -72,13 +68,13 @@ QUALIFIERS float hiprng_normal ( hiprngStateXORWOW_t* state ){
 
 QUALIFIERS float hiprng_uniform ( hiprngStateMRG32k3a_t* state ){
   float outputPtr;
-  hiprngGenerateUniform(*state, &outputPtr, 1);
+  hiprngMrg32k3aGenerateUniform(*state, &outputPtr, 1);
   return outputPtr;
 }
 
 QUALIFIERS float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state ){
   float outputPtr;
-  hiprngGenerateUniform(*state, &outputPtr, 1);
+  hiprngPhilox432GenerateUniform(*state, &outputPtr, 1);
   return outputPtr;
 }
 
