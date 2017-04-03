@@ -16,7 +16,7 @@ using namespace std;
 #include "hcRNG/private/philox432.c.h"
 /*! @brief Check the validity of a seed for Philox432
 */
-static hcrngStatus validateSeed(const hcrngPhilox432StreamState* seed)
+static hcrngStatus validateSeed(const hcrngPhilox432StreamState* seed) __attribute__((hc,cpu))
 {
 	return HCRNG_SUCCESS;
 }
@@ -78,9 +78,22 @@ hcrngStatus hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creat
 	return err;
 }
 
-__device__ void hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creator, const hcrngPhilox432StreamState* baseState)
+hcrngStatus hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creator, const hcrngPhilox432StreamState* baseState) __attribute__((hc))
 {
-	creator->initialState = creator->nextState = *baseState;
+        //Check params
+        if (creator == NULL)
+                return HCRNG_INVALID_STREAM_CREATOR;
+        if (baseState == NULL)
+                return HCRNG_INVALID_VALUE;
+
+        hcrngStatus err = validateSeed(baseState);
+
+        if (err == HCRNG_SUCCESS) {
+                // initialize new creator
+                creator->initialState = creator->nextState = *baseState;
+        }
+
+        return err;
 }
 
 hcrngStatus hcrngPhilox432ChangeStreamsSpacing(hcrngPhilox432StreamCreator* creator, int e, int c)
@@ -137,6 +150,31 @@ hcrngPhilox432Stream* hcrngPhilox432AllocStreams(size_t count, size_t* bufSize, 
 	return buf;
 }
 
+hcrngPhilox432Stream* hcrngPhilox432AllocStreams(size_t count, size_t* bufSize, hcrngStatus* err) __attribute__((hc))
+{
+        hcrngStatus err_ = HCRNG_SUCCESS;
+        size_t bufSize_ = count * sizeof(hcrngPhilox432Stream);
+
+        // allocate streams
+        hcrngPhilox432Stream* buf = (hcrngPhilox432Stream*)malloc(bufSize_);
+
+        if (buf == NULL) {
+                // allocation failed
+                err_ = HCRNG_OUT_OF_RESOURCES;
+                bufSize_ = 0;
+        }
+
+        // set buffer size if needed
+        if (bufSize != NULL)
+                *bufSize = bufSize_;
+
+        // set error status if needed
+        if (err != NULL)
+                *err = err_;
+
+        return buf;
+}
+
 hcrngStatus hcrngPhilox432DestroyStreams(hcrngPhilox432Stream* streams)
 {
 	if (streams != NULL)
@@ -163,6 +201,25 @@ static hcrngStatus Philox432CreateStream(hcrngPhilox432StreamCreator* creator, h
 	return HCRNG_SUCCESS;
 }
 
+static hcrngStatus Philox432CreateStream(hcrngPhilox432StreamCreator* creator, hcrngPhilox432Stream* buffer) __attribute__((hc))
+{
+        //Check params
+        if (buffer == NULL)
+                return HCRNG_INVALID_VALUE;
+
+        // use default creator if not given
+        if (creator == NULL)
+                creator = &defaultStreamCreator_Philox432;
+
+        // initialize stream
+        buffer->current = buffer->initial = buffer->substream = creator->nextState;
+
+        //Advance next state in stream creator
+        creator->nextState.ctr = hcrngPhilox432Add(creator->nextState.ctr, creator->JumpDistance);
+
+        return HCRNG_SUCCESS;
+}
+
 hcrngStatus hcrngPhilox432CreateOverStreams(hcrngPhilox432StreamCreator* creator, size_t count, hcrngPhilox432Stream* streams)
 {
 	// iterate over all individual stream buffers
@@ -176,6 +233,21 @@ hcrngStatus hcrngPhilox432CreateOverStreams(hcrngPhilox432StreamCreator* creator
 	}
 
 	return HCRNG_SUCCESS;
+}
+
+hcrngStatus hcrngPhilox432CreateOverStreams(hcrngPhilox432StreamCreator* creator, size_t count, hcrngPhilox432Stream* streams)  __attribute__((hc))
+{
+        // iterate over all individual stream buffers
+        for (size_t i = 0; i < count; i++) {
+
+                hcrngStatus err = Philox432CreateStream(creator, &streams[i]);
+
+                // abort on error
+                if (err != HCRNG_SUCCESS)
+                        return err;
+        }
+
+        return HCRNG_SUCCESS;
 }
 
 hcrngPhilox432Stream* hcrngPhilox432CreateStreams(hcrngPhilox432StreamCreator* creator, size_t count, size_t* bufSize, hcrngStatus* err)
@@ -194,6 +266,24 @@ hcrngPhilox432Stream* hcrngPhilox432CreateStreams(hcrngPhilox432StreamCreator* c
 		*err = err_;
 
 	return streams;
+}
+
+hcrngPhilox432Stream* hcrngPhilox432CreateStreams(hcrngPhilox432StreamCreator* creator, size_t count, size_t* bufSize, hcrngStatus* err) __attribute__((hc))
+{
+        hcrngStatus err_;
+        size_t bufSize_;
+        hcrngPhilox432Stream* streams = hcrngPhilox432AllocStreams(count, &bufSize_, &err_);
+
+        if (err_ == HCRNG_SUCCESS)
+                err_ = hcrngPhilox432CreateOverStreams(creator, count, streams);
+
+        if (bufSize != NULL)
+                *bufSize = bufSize_;
+
+        if (err != NULL)
+                *err = err_;
+
+        return streams;
 }
 
 hcrngPhilox432Stream* hcrngPhilox432CopyStreams(size_t count, const hcrngPhilox432Stream* streams, hcrngStatus* err)
@@ -469,6 +559,42 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngP
         return status;
 }
 
+hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngPhilox432Stream* streams,
+        size_t numberCount, float* outBuffer, int streamlength, size_t streams_per_thread)  __attribute__((hc))
+{
+#define HCRNG_SINGLE_PRECISION
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
+        //Check params
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount % streamCount != 0)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+           int gid = tidx.global[0];
+           if(gid < (streamCount/streams_per_thread)) {
+           for(int i =0; i < numberCount/streamCount; i++) {
+              if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
+               hcrngPhilox432ForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              if ((i > 0) && (streamlength < 0) && (i % streamlength == 0)) {
+               hcrngPhilox432RewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
+              }
+              for (int j = 0; j < streams_per_thread; j++)
+               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomU01(&streams[streams_per_thread * gid + j]);
+              }
+           }
+        }).wait();
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
+
 hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhilox432Stream *streams,
 	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
 {
@@ -490,6 +616,26 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhi
         return status;
 }
 
+hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhilox432Stream *streams,
+        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread) __attribute__((hc))
+{
+#define HCRNG_SINGLE_PRECISION
+        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount % streamCount != 0)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_single(streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+                status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+                return status;
+                }
+#undef HCRNG_SINGLE_PRECISION
+        return status;
+}
 
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hcrngPhilox432Stream* streams,
         size_t numberCount, double* outBuffer, int streamlength, size_t streams_per_thread)
