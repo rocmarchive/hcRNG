@@ -129,6 +129,11 @@ hcrngStatus hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator
 	return err;
 }
 
+__device__ void hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator, const hcrngMrg32k3aStreamState* baseState)
+{
+	creator->initialState = creator->nextState = *baseState;
+}
+
 hcrngStatus hcrngMrg32k3aChangeStreamsSpacing(hcrngMrg32k3aStreamCreator* creator, int e, int c)
 {
 	//Check params

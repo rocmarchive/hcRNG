@@ -78,6 +78,11 @@ hcrngStatus hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creat
 	return err;
 }
 
+__device__ void hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creator, const hcrngPhilox432StreamState* baseState)
+{
+	creator->initialState = creator->nextState = *baseState;
+}
+
 hcrngStatus hcrngPhilox432ChangeStreamsSpacing(hcrngPhilox432StreamCreator* creator, int e, int c)
 {
 	//Check params

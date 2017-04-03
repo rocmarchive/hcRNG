@@ -27,7 +27,8 @@ THE SOFTWARE.
 #define QUALIFIERS static __inline__ __device__
 #endif
 
-/*#ifdef __cplusplus
+/*
+#ifdef __cplusplus
 extern "C" {
 #endif*/
 
@@ -90,5 +91,5 @@ QUALIFIERS float hiprng_uniform ( hiprngStateXORWOW_t* state ){
 /*
 #ifdef __cplusplus
 }
-#endif*/
-
+#endif
+*/

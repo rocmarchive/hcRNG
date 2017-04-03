@@ -2,7 +2,7 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8.8) 
 MESSAGE(STATUS "CMAKE VERSION ${CMAKE_VERSION}")
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 FILE (GLOB HIPSRCS *.cpp) 
 
@@ -28,9 +28,9 @@ IF(${PLATFORM} MATCHES "hcc")
 
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "bin/")
   FOREACH(test_file ${HIPSRCS})
-    SET_PROPERTY(SOURCE ${test_file} ../gtest_main.cpp ../gtest-all.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} -DGTEST_HAS_TR1_TUPLE=0 -D__HIP_PLATFORM_HCC__")
+    SET_PROPERTY(SOURCE ${test_file} ../../gtest_main.cpp ../../gtest-all.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} -DGTEST_HAS_TR1_TUPLE=0 -D__HIP_PLATFORM_HCC__")
     get_filename_component (name_without_extension ${test_file} NAME_WE)
-    ADD_EXECUTABLE(${name_without_extension} ${test_file} ../gtest_main.cpp ../gtest-all.cpp)
+    ADD_EXECUTABLE(${name_without_extension} ${test_file} ../../gtest_main.cpp ../../gtest-all.cpp)
     SET_PROPERTY(TARGET ${name_without_extension} APPEND_STRING PROPERTY LINK_FLAGS " ${HCC_LDFLAGS} ${LINK}")
   ENDFOREACH()
 ENDIF()

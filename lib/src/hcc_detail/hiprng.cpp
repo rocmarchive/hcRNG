@@ -116,6 +116,36 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
+
+__device__ void hiprngMrg32k3aInitGenerator(hiprngMrg32k3aGenerator_t* generator, unsigned long long seed) {
+  *generator = (hcrngMrg32k3aStreamCreator*)malloc(sizeof(hcrngMrg32k3aStreamCreator));
+  *(hcrngMrg32k3aStreamCreator*)*generator = defaultStreamCreator_Mrg32k3a;
+  unsigned int tempMrg32k3a = seed;
+  if(seed != 0) {
+      hcrngMrg32k3aStreamState baseState;
+    for (size_t i = 0; i < 3; ++i)
+      baseState.g1[i] =  seed;
+    for (size_t i = 0; i < 3; ++i)
+      baseState.g2[i] =  seed;
+    hcrngMrg32k3aSetBaseCreatorState((hcrngMrg32k3aStreamCreator*)generator, &baseState);
+  }
+}
+
+__device__ void hiprngPhilox432InitGenerator(hiprngPhilox432Generator_t* generator, unsigned long long seed) {
+  *generator = (hcrngPhilox432StreamCreator*)malloc(sizeof(hcrngPhilox432StreamCreator));
+  *(hcrngPhilox432StreamCreator*)*generator = defaultStreamCreator_Philox432;
+  unsigned int tempPhilox432 = seed;
+  if(tempPhilox432 != 0) {
+      hcrngPhilox432StreamState baseState;
+      baseState.ctr.H.msb = tempPhilox432;
+      baseState.ctr.H.lsb = tempPhilox432;
+      baseState.ctr.L.msb = tempPhilox432;
+      baseState.ctr.L.lsb = tempPhilox432;
+      baseState.deckIndex = 0;
+      hcrngPhilox432SetBaseCreatorState((hcrngPhilox432StreamCreator*)generator, &baseState);
+  }
+}
+
 #undef SetSeed
 #undef SetSeedLfsr113
 #undef SetSeedPhilox432
@@ -178,9 +208,6 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
 }
 #undef GenerateUniform
-
-
-
 
   #define GenerateUniformDouble(gt)\
   hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \

@@ -107,6 +107,7 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
 	*  @see hcrngSetBaseCreatorState()
 	*/
 	HCRNGAPI hcrngStatus hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator, const hcrngMrg32k3aStreamState* baseState);
+	__device__ void hcrngMrg32k3aSetBaseCreatorState(hcrngMrg32k3aStreamCreator* creator, const hcrngMrg32k3aStreamState* baseState);
 
 	/*! @copybrief hcrngChangeStreamsSpacing()
 	*  @see hcrngChangeStreamsSpacing()

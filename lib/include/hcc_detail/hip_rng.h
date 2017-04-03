@@ -67,7 +67,12 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    size_t num, float mean, float stddev) ;
 hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev);
+
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
+
+__device__ void hiprngMrg32k3aInitGenerator(hiprngMrg32k3aGenerator_t* generator, unsigned long long seed);
+
+__device__ void hiprngPhilox432InitGenerator(hiprngPhilox432Generator_t* generator, unsigned long long seed);
 
 #ifdef __cplusplus
 }
