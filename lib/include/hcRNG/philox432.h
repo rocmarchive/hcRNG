@@ -107,7 +107,6 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	*  @see hcrngSetBaseCreatorState()
 	*/
 	HCRNGAPI hcrngStatus hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creator, const hcrngPhilox432StreamState* baseState);
-        __device__ void hcrngPhilox432SetBaseCreatorState(hcrngPhilox432StreamCreator* creator, const hcrngPhilox432StreamState* baseState);
 	/*! @copybrief hcrngChangeStreamsSpacing()
 	*  @see hcrngChangeStreamsSpacing()
 	*/

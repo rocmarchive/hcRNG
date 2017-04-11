@@ -27,11 +27,14 @@ THE SOFTWARE.
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/lfsr113.h>
 #include <hcRNG/philox432.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef void *hiprngGenerator_t;
+typedef hcrngMrg32k3aStreamCreator *hiprngMrg32k3aGenerator_t;
+//typedef hcrngPhilox432StreamCreator *hiprngPhilox432Generator_t;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
@@ -70,19 +73,46 @@ hiprngStatus_t hiprngGenerateNormalDouble(
 
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
 
-__device__ void hiprngMrg32k3aInitGenerator(hiprngMrg32k3aGenerator_t* generator, unsigned long long seed);
+__device__ inline void hiprngMrg32k3aInitGenerator(hiprngMrg32k3aGenerator_t* generator, unsigned long long seed) {
+  *generator =(hcrngMrg32k3aStreamCreator*) __hip_hc_malloc(sizeof(hcrngMrg32k3aStreamCreator));
+  *(hcrngMrg32k3aStreamCreator*)*generator = defaultStreamCreator_Mrg32k3a;
+  unsigned int tempMrg32k3a = seed;
+  if(tempMrg32k3a != 0) {
+      hcrngMrg32k3aStreamState baseState;
+    for (size_t i = 0; i < 3; ++i)
+      baseState.g1[i] =  tempMrg32k3a;
+    for (size_t i = 0; i < 3; ++i)
+      baseState.g2[i] =  tempMrg32k3a;
+   hcrngMrg32k3aSetBaseCreatorState((hcrngMrg32k3aStreamCreator*)generator, &baseState);
+  }
+}
 
-__device__ void hiprngPhilox432InitGenerator(hiprngPhilox432Generator_t* generator, unsigned long long seed);
 
-__device__ void hiprngMrg32k3aGenerateUniform(hiprngMrg32k3aGenerator_t generator, float* outputPtr, size_t num);
+//__device__ void hiprngPhilox432InitGenerator(hiprngPhilox432Generator_t* generator, unsigned long long seed);
 
-__device__ void hiprngPhilox432GenerateUniform(hiprngPhilox432Generator_t generator, float* outputPtr, size_t num);
+__device__ inline void hiprngMrg32k3aGenerateUniform(hiprngMrg32k3aGenerator_t generator, float* outputPtr, size_t num)
+{
+  hcrngMrg32k3aStream *streamsMrg32k3a = hcrngMrg32k3aCreateStreams((hcrngMrg32k3aStreamCreator*)generator, num, NULL, NULL);
+  hcrngMrg32k3aStream *streams_bufferMrg32k3a;
+  hipMalloc((void **)&streams_bufferMrg32k3a, num * sizeof(hcrngMrg32k3aStream));
+  hipMemcpy(streams_bufferMrg32k3a, streamsMrg32k3a, num * sizeof(hcrngMrg32k3aStream), hipMemcpyHostToDevice);
+  free(streamsMrg32k3a);
+  hcrngStatus hcStatusMrg32k3a = hcrngMrg32k3aDeviceRandomU01Array_single(
+       num, streams_bufferMrg32k3a, num, outputPtr);
+  hipFree(streams_bufferMrg32k3a);
+}
 
-__device__ void hiprngMrg32k3aGenerateNormal(hiprngMrg32k3aGenerator_t generator, float* outputPtr,
-                                                   size_t num, float mean, float stddev);
+//__device__ void hiprngPhilox432GenerateUniform(hiprngPhilox432Generator_t generator, float* outputPtr, size_t num);
 
-__device__ void hiprngPhilox432GenerateNormal(hiprngPhilox432Generator_t generator, float* outputPtr,
-                                                   size_t num, float mean, float stddev);
+//__device__ void hiprngMrg32k3aGenerateNormal(hiprngMrg32k3aGenerator_t generator, float* outputPtr,
+//                                                   size_t num, float mean, float stddev);
+
+//__device__ void hiprngPhilox432GenerateNormal(hiprngPhilox432Generator_t generator, float* outputPtr,
+//                                                   size_t num, float mean, float stddev);
+
+//__device__ void dummy();//{
+//   int a=10;
+//}
 
 #ifdef __cplusplus
 }

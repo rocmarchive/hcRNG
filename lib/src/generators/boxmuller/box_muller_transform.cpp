@@ -2,12 +2,12 @@
 using namespace hc;
 #define BLOCK_SIZE 256
 
-hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float mu, float sigma, float* Randomnum, size_t numberCount) __attribute__((hc, cpu)){
+/*hcrngStatus box_muller_transform_single(float mu, float sigma, float* Randomnum, size_t numberCount) {
     const float two_pi = 2.0 * 3.14159265358979323846;
     long size = (numberCount/2 + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
     hc::extent<1> grdExt(size);
     hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
-    hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+    hc::parallel_for_each(t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
       float z0, z1;
       int gid = tidx.global[0];
       if (gid < numberCount/2)
@@ -19,7 +19,7 @@ hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float m
       }
     }).wait();
   return HCRNG_SUCCESS;
-}
+}*/
 
 /*
 hcrngStatus box_muller_transform_single(hc::accelerator_view &accl_view, float mu, float sigma, float* Randomnum, size_t numberCount) {

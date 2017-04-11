@@ -27,24 +27,23 @@ THE SOFTWARE.
 #define QUALIFIERS static __inline__ __device__
 #endif
 
-/*
 #ifdef __cplusplus
 extern "C" {
-#endif*/
+#endif
 
-typedef hiprngGenerator_t hiprngStateMRG32k3a_t;
-typedef hiprngGenerator_t hiprngStatePhilox4_32_10_t; 
-typedef void *hiprngStateXORWOW_t;
+typedef hiprngMrg32k3aGenerator_t hiprngStateMRG32k3a_t;
+//typedef hiprngPhilox432Generator_t hiprngStatePhilox4_32_10_t; 
+//typedef void *hiprngStateXORWOW_t;
 
 QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateMRG32k3a_t* state ){
   hiprngMrg32k3aInitGenerator(state, seed);
 }
 
-QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
-  hiprngPhilox432InitGenerator(state, seed);
-}
+//QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStatePhilox4_32_10_t* state ){
+//  hiprngPhilox432InitGenerator(state, seed);
+//}
 
-QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
+/*QUALIFIERS void hiprng_init ( unsigned long long seed, unsigned long long subsequence, unsigned long long offset, hiprngStateXORWOW_t* state ){
   //NOT SUPPORTED
 }
 
@@ -64,7 +63,7 @@ QUALIFIERS float hiprng_normal ( hiprngStateXORWOW_t* state ){
   //NOT SUPPORTED
   float outputPtr;
   return outputPtr;
-}
+}*/
 
 QUALIFIERS float hiprng_uniform ( hiprngStateMRG32k3a_t* state ){
   float outputPtr;
@@ -72,7 +71,7 @@ QUALIFIERS float hiprng_uniform ( hiprngStateMRG32k3a_t* state ){
   return outputPtr;
 }
 
-QUALIFIERS float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state ){
+/*QUALIFIERS float hiprng_uniform ( hiprngStatePhilox4_32_10_t* state ){
   float outputPtr;
   hiprngPhilox432GenerateUniform(*state, &outputPtr, 1);
   return outputPtr;
@@ -83,9 +82,8 @@ QUALIFIERS float hiprng_uniform ( hiprngStateXORWOW_t* state ){
   float outputPtr;
   return outputPtr;
 }
+*/
 
-/*
 #ifdef __cplusplus
 }
 #endif
-*/

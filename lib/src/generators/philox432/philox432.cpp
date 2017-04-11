@@ -563,8 +563,8 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngP
         size_t numberCount, float* outBuffer, int streamlength, size_t streams_per_thread)  __attribute__((hc))
 {
 #define HCRNG_SINGLE_PRECISION
-        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        accelerator_view accl_view = (acc[1].get_default_view());
+        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        //accelerator_view accl_view = (acc[1].get_default_view());
         //Check params
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
@@ -576,7 +576,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngP
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
         hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
-        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+        hc::parallel_for_each(t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
@@ -590,7 +590,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngP
                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomU01(&streams[streams_per_thread * gid + j]);
               }
            }
-        }).wait();
+        });
 #undef HCRNG_SINGLE_PRECISION
         return status;
 }
@@ -620,8 +620,8 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhi
         size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread) __attribute__((hc))
 {
 #define HCRNG_SINGLE_PRECISION
-        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        accelerator_view accl_view = (acc[1].get_default_view());
+        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        //accelerator_view accl_view = (acc[1].get_default_view());
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
         if (numberCount < 1)
@@ -630,7 +630,7 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(size_t streamCount, hcrngPhi
                 return HCRNG_INVALID_VALUE;
         hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_single(streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
-                status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+                status = box_muller_transform_single(mu, sigma, outBuffer, numberCount);
                 return status;
                 }
 #undef HCRNG_SINGLE_PRECISION

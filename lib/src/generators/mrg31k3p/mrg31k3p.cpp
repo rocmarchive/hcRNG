@@ -406,7 +406,7 @@ hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(size_t streamCount, hcrngMrg3
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
         hcrngStatus status = hcrngMrg31k3pDeviceRandomU01Array_single(streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
-	     status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+	     status = box_muller_transform_single(mu, sigma, outBuffer, numberCount);
              return status;
              }
 #undef HCRNG_SINGLE_PRECISION
