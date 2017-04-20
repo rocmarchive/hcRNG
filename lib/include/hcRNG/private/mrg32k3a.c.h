@@ -29,7 +29,7 @@ unsigned long hcrngMrg32k3a_A2p76[3][3] = {
 	{ 3859662829, 4292754251, 3708466080 }
 };
 
-hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) __attribute__((hc, cpu)) 
+hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* destStreams, const hcrngMrg32k3aStream* srcStreams) [[hc, cpu]] 
 {
         //Check params
         if (!destStreams)
@@ -45,7 +45,7 @@ hcrngStatus hcrngMrg32k3aCopyOverStreams(size_t count, hcrngMrg32k3aStream* dest
 
 /*! @brief Advance the rng one step and returns z such that 1 <= z <= Mrg32k3a_M1
 */
-static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentState) __attribute__((hc, cpu))
+static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentState) [[hc, cpu]]
 {
 
 	unsigned long* g1 = currentState->g1;
@@ -83,11 +83,11 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	fptype hcrngMrg32k3aRandomU01_##fptype(hcrngMrg32k3aStream* stream) __attribute__((hc, cpu)) { \
+	fptype hcrngMrg32k3aRandomU01_##fptype(hcrngMrg32k3aStream* stream) [[hc, cpu]] { \
 	    return hcrngMrg32k3aNextState(&stream->current) * Mrg32k3a_NORM_##fptype; \
 	} \
 	\
-        fptype hcrngMrg32k3aRandomN_##fptype(hcrngMrg32k3aStream* stream1, hcrngMrg32k3aStream* stream2, fptype mu, fptype sigma) __attribute__((hc,cpu)) { \
+        fptype hcrngMrg32k3aRandomN_##fptype(hcrngMrg32k3aStream* stream1, hcrngMrg32k3aStream* stream2, fptype mu, fptype sigma) [[hc, cpu]] { \
             static fptype z0, z1, i;\
             i++;\
             const fptype two_pi = 2.0 * 3.14159265358979323846;\
@@ -102,25 +102,25 @@ static unsigned long hcrngMrg32k3aNextState(hcrngMrg32k3aStreamState* currentSta
 	    return z0 * sigma + mu; \
 	} \
 	\
-        int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream,  int i, int j) __attribute__((hc, cpu)) { \
+        int hcrngMrg32k3aRandomInteger_##fptype(hcrngMrg32k3aStream* stream,  int i, int j) [[hc, cpu]] { \
 	    return i + (int)((j - i + 1) * hcrngMrg32k3aRandomU01_##fptype(stream)); \
 	} \
 	\
-        unsigned int hcrngMrg32k3aRandomUnsignedInteger_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j) __attribute__((hc, cpu)) { \
+        unsigned int hcrngMrg32k3aRandomUnsignedInteger_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j) [[hc, cpu]] { \
             return i + (unsigned int)((j - i + 1) * hcrngMrg32k3aRandomU01_##fptype(stream)); \
         } \
-	hcrngStatus hcrngMrg32k3aRandomU01Array_##fptype(hcrngMrg32k3aStream* stream, size_t count, fptype* buffer) __attribute__((hc, cpu)) { \
+	hcrngStatus hcrngMrg32k3aRandomU01Array_##fptype(hcrngMrg32k3aStream* stream, size_t count, fptype* buffer) [[hc, cpu]] { \
 		for (size_t i = 0; i < count; i++)  \
 			buffer[i] = hcrngMrg32k3aRandomU01_##fptype(stream); \
 		return HCRNG_SUCCESS; \
 	} \
 	\
-	hcrngStatus hcrngMrg32k3aRandomIntegerArray_##fptype(hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer) __attribute__((hc, cpu)) { \
+	hcrngStatus hcrngMrg32k3aRandomIntegerArray_##fptype(hcrngMrg32k3aStream* stream, int i, int j, size_t count, int* buffer) [[hc, cpu]] { \
 		for (size_t k = 0; k < count; k++) \
 			buffer[k] = hcrngMrg32k3aRandomInteger_##fptype(stream, i, j); \
 		return HCRNG_SUCCESS; \
 	}\
-       hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) __attribute__((hc, cpu)) { \
+       hcrngStatus hcrngMrg32k3aRandomUnsignedIntegerArray_##fptype(hcrngMrg32k3aStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) [[hc, cpu]] { \
                 for (size_t k = 0; k < count; k++) \
                   buffer[k] = hcrngMrg32k3aRandomUnsignedInteger_##fptype(stream, i, j); \
                 return HCRNG_SUCCESS; \
@@ -140,7 +140,7 @@ IMPLEMENT_GENERATE_FOR_TYPE(double)
 
 
 
-hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
+hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* streams) [[hc, cpu]]
 {
         if (!streams)
                 return HCRNG_INVALID_VALUE;
@@ -152,7 +152,7 @@ hcrngStatus hcrngMrg32k3aRewindStreams(size_t count, hcrngMrg32k3aStream* stream
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
+hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* streams) [[hc, cpu]]
 {
         if (!streams)
                 return HCRNG_INVALID_VALUE;
@@ -164,7 +164,7 @@ hcrngStatus hcrngMrg32k3aRewindSubstreams(size_t count, hcrngMrg32k3aStream* str
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) __attribute__((hc, cpu))
+hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStream* streams) [[hc, cpu]]
 {
         if (!streams)
                 return HCRNG_INVALID_VALUE;
@@ -178,7 +178,7 @@ hcrngStatus hcrngMrg32k3aForwardToNextSubstreams(size_t count, hcrngMrg32k3aStre
 	return HCRNG_SUCCESS;
 }
 
-hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) __attribute__((hc, cpu))
+hcrngStatus hcrngMrg32k3aMakeOverSubstreams(hcrngMrg32k3aStream* stream, size_t count, hcrngMrg32k3aStream* substreams) [[hc, cpu]]
 {
 	for (size_t i = 0; i < count; i++) {
 		hcrngStatus err;

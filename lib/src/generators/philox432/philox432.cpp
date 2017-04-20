@@ -445,7 +445,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(size_t streamCount, hcrngP
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
         hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
-        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
@@ -502,7 +502,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(size_t streamCount, hcrngP
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
         hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
-        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) __attribute__((hc, cpu)) {
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
            int gid = tidx.global[0];
            if(gid < (streamCount/streams_per_thread)) {
            for(int i =0; i < numberCount/streamCount; i++) {
