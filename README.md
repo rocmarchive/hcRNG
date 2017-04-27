@@ -1,6 +1,6 @@
 ## A. Introduction: ##
 
-The hcRNG library is an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime. The computational resources of underlying AMD heterogenous compute gets exposed and exploited through the HCC C++ frontend. Refer [here](https://bitbucket.org/multicoreware/hcc/wiki/Home) for more details on HCC compiler.
+The hcRNG library is an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime. The computational resources of underlying AMD heterogenous compute gets exposed and exploited through the HCC C++ frontend. Refer [here](https://github.com/RadeonOpenCompute/hcc) for more details on HCC compiler.
 
 The following list enumerates the current set of RNG generators that are supported so far.
 
