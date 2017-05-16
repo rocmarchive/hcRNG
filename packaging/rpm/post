@@ -1,0 +1,1 @@
+echo /opt/rocm/hcrng/lib > /etc/ld.so.conf.d/hcrng-rocm-dev.conf && ldconfig
