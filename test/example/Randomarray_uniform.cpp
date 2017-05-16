@@ -47,9 +47,9 @@ int main()
 
         //Invoke random number generators in device (here strean_length and streams_per_thread arguments are default) 
 #ifdef HCRNG_SINGLE_PRECISION
-        status = hcrngMrg31k3pDeviceRandomU01Array_single(streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
 #else
-        status = hcrngMrg31k3pDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg31k3pDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
 #endif
         if(status) std::cout << "TEST FAILED" << std::endl;
         accl_view.copy(outBufferDevice, Random1, numberCount * sizeof(fp_type));

@@ -58,9 +58,10 @@ int main()
         size_t streams_per_thread = 2;
        
         //Enumerate the list of accelerators
-        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        accelerator_view accl_view = (acc[1].create_view());
- 
+        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        //accelerator_view accl_view = (acc[1].create_view());
+ 	std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+	accelerator_view accl_view = (acc[1].get_default_view());
         //Allocate Host pointers 
         fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
         fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * numberCount);
@@ -72,9 +73,9 @@ int main()
 
         //Invoke Random number generator function in Device
 #ifdef HCRNG_SINGLE_PRECISION        	
-        status = hcrngMrg31k3pDeviceRandomNArray_single(streamCount, streams_buffer, numberCount,0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngMrg31k3pDeviceRandomNArray_single(accl_view, streamCount, streams_buffer, numberCount,0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
 #else
-      	status = hcrngMrg31k3pDeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0,  outBufferDevice_substream, stream_length, streams_per_thread);
+      	status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0,  outBufferDevice_substream, stream_length, streams_per_thread);
 #endif       	
         //Status check
         if(status) std::cout << "TEST FAILED" << std::endl;

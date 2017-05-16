@@ -156,13 +156,17 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
-       num, streams_buffer##gt, num, outputPtr);\
+       *accl_view, num, streams_buffer##gt, num, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num) {
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
+
   if(rngtyp == 0){
     GenerateUniform(Mrg31k3p)
   }
@@ -189,12 +193,17 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
-       num, streams_buffer##gt, num, outputPtr);\
+       *accl_view, num, streams_buffer##gt, num, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniformDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num) {
+
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
+
   if(rngtyp == 0){
     GenerateUniformDouble(Mrg31k3p)
   }
@@ -219,7 +228,7 @@ hiprngStatus_t hiprngGenerateUniformDouble(
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
-       num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+       *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
@@ -227,6 +236,11 @@ hiprngStatus_t hiprngGenerateUniformDouble(
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num, float mean, float stddev) {
+
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
+
   if(rngtyp == 0){
     GenerateNormal(Mrg31k3p)
   }
@@ -251,7 +265,7 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
-       num, streams_buffer##gt, num, mean, stddev, outputPtr);\
+       *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
@@ -259,6 +273,10 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
 
 hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
+
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
 
   if(rngtyp == 0){
     GenerateNormalDouble(Mrg31k3p)

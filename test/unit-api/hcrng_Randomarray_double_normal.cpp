@@ -19,8 +19,11 @@ typedef double fp_type;
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg31k3p_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
+     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     accelerator_view accl_view = (acc[1].create_view());
+     accelerator_view accl_view = (acc[1].get_default_view());
+
      //Allocate Host pointers 
      fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
      fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
@@ -33,39 +36,41 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg31k3p_normal )
      accl_view.copy(streams, streams_buffer, STREAM_COUNT* sizeof(hcrngMrg31k3pStream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH = 0)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH > 0)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH < 0)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
    
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and streamcount < 1)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, 0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount < 1)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngMrg31k3pDeviceRandomNArray_double(STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
+     status = hcrngMrg31k3pDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE); 
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg32k3a_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
+     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     accelerator_view accl_view = (acc[1].create_view());
+     accelerator_view accl_view = (acc[1].get_default_view());
      //Allocate Host pointers 
      fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
      fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
@@ -78,39 +83,41 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Mrg32k3a_normal )
      accl_view.copy(streams, streams_buffer, STREAM_COUNT* sizeof(hcrngMrg32k3aStream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0,  outBuffer);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0,  outBuffer);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH = 0)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH > 0)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH < 0)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and streamcount < 1)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, 0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount < 1)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngMrg32k3aDeviceRandomNArray_double(STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
+     status = hcrngMrg32k3aDeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Lfsr113_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
+     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     accelerator_view accl_view = (acc[1].create_view());
+     accelerator_view accl_view = (acc[1].get_default_view());
      //Allocate Host pointers
      fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
      fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
@@ -123,39 +130,41 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Lfsr113_normal ) 
      accl_view.copy(streams, streams_buffer, STREAM_COUNT * sizeof(hcrngLfsr113Stream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH = 0)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH > 0)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH < 0)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and streamcount < 1)
-     status = hcrngLfsr113DeviceRandomNArray_double(0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, 0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount < 1)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngLfsr113DeviceRandomNArray_double(STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
+     status = hcrngLfsr113DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Philox432_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
+     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     accelerator_view accl_view = (acc[1].create_view());
+     accelerator_view accl_view = (acc[1].get_default_view());
      //Allocate Host pointers
      fp_type *Random1 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
      fp_type *Random2 = (fp_type*) malloc(sizeof(fp_type) * NUMBER_COUNT);
@@ -168,30 +177,30 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_double_Philox432_normal 
      accl_view.copy(streams, streams_buffer, STREAM_COUNT * sizeof(hcrngPhilox432Stream));
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH = 0)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_1, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH > 0)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_2, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (SUBSTREAM_LENGTH < 0)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer, SUBSTREAM_LENGTH_3, STREAMS_PER_THREAD);
      EXPECT_EQ(status, HCRNG_SUCCESS);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and streamcount < 1)
-     status = hcrngPhilox432DeviceRandomNArray_double(0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, 0 , streams_buffer, NUMBER_COUNT, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount < 1)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer, 0 , 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngPhilox432DeviceRandomNArray_double(STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
+     status = hcrngPhilox432DeviceRandomNArray_double(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 }

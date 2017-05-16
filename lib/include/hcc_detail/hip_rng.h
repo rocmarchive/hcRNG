@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/lfsr113.h>
 #include <hcRNG/philox432.h>
+#include <hip/hip_hcc.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

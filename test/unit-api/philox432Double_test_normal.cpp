@@ -40,13 +40,15 @@ TEST(philox432Double_test_normal, Functional_check_philox432Double_normal)
         size_t streams_per_thread = 2;
         double *Random1 = (double*) malloc(sizeof(double) * numberCount);
         double *Random2 = (double*) malloc(sizeof(double) * numberCount);
-        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        accelerator_view accl_view = (acc[1].create_view());
+        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        //accelerator_view accl_view = (acc[1].create_view());
+	std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
         double *outBufferDevice = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
         hcrngPhilox432Stream *streams = hcrngPhilox432CreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngPhilox432Stream *streams_buffer = hc::am_alloc(sizeof(hcrngPhilox432Stream) * streamCount, acc[1], 0);
         accl_view.copy(streams, streams_buffer, streamCount* sizeof(hcrngPhilox432Stream));
-        status = hcrngPhilox432DeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
+        status = hcrngPhilox432DeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice);
         EXPECT_EQ(status, 0);
         accl_view.copy(outBufferDevice, Random1, numberCount * sizeof(double));
         for (size_t i = 0; i < numberCount; i++)
@@ -57,7 +59,7 @@ TEST(philox432Double_test_normal, Functional_check_philox432Double_normal)
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
         double *outBufferDevice_substream = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
-        status = hcrngPhilox432DeviceRandomNArray_double(streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngPhilox432DeviceRandomNArray_double(accl_view, streamCount, streams_buffer, numberCount, 0.0, 1.0, outBufferDevice_substream, stream_length, streams_per_thread);
         EXPECT_EQ(status, 0);
         accl_view.copy(outBufferDevice_substream, Random3, numberCount * sizeof(double));
         multistream_fill_array_normal(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);

@@ -7,6 +7,8 @@
 #define LFSR113_H
 #include "hcRNG.h"
 #include <stdio.h>
+#include <hc.hpp>
+using namespace hc;
 
 #ifdef __cplusplus
 //extern "C" {
@@ -225,17 +227,17 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 	/** \internal
 	 *  @brief Helper function for hcrngLfsr113DeviceRandomU01Array()
 	 */
-	HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(size_t streamCount, hcrngLfsr113Stream* streams,
+	HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(hc::accelerator_view accl_view, size_t streamCount, hcrngLfsr113Stream* streams,
 		size_t numberCount, float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(size_t streamCount, hcrngLfsr113Stream* streams,
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(hc::accelerator_view accl_view, size_t streamCount, hcrngLfsr113Stream* streams,
                 size_t numberCount, double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
  */
  
 //Normal distribution
-        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_single(size_t streamCount, hcrngLfsr113Stream *streams,
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngLfsr113Stream *streams,
 	        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_double(size_t streamCount, hcrngLfsr113Stream *streams,
+        HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngLfsr113Stream *streams,
 	        size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);	
 
 	/*! @copybrief hcrngWriteStreamInfo()

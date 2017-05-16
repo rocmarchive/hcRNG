@@ -41,13 +41,15 @@ TEST(mrg32k3aDouble_test_uniform, Functional_check_mrg32k3aDouble_uniform)
         size_t streams_per_thread = 2;
         double *Random1 = (double*) malloc(sizeof(double) * numberCount);
         double *Random2 = (double*) malloc(sizeof(double) * numberCount);
-        std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        accelerator_view accl_view = (acc[1].create_view());
+        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        //accelerator_view accl_view = (acc[1].create_view());
+	std::vector<hc::accelerator>acc = hc::accelerator::get_all();
+        accelerator_view accl_view = (acc[1].get_default_view());
         double *outBufferDevice = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
         hcrngMrg32k3aStream *streams = hcrngMrg32k3aCreateStreams(NULL, streamCount, &streamBufferSize, NULL);
         hcrngMrg32k3aStream *streams_buffer = hc::am_alloc(sizeof(hcrngMrg32k3aStream) * streamCount, acc[1], 0);
         accl_view.copy(streams, streams_buffer, streamCount* sizeof(hcrngMrg32k3aStream));
-        status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice);
+        status = hcrngMrg32k3aDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice);
         EXPECT_EQ(status, 0);
         accl_view.copy(outBufferDevice, Random1, numberCount * sizeof(double));
         for (size_t i = 0; i < numberCount; i++)
@@ -58,7 +60,7 @@ TEST(mrg32k3aDouble_test_uniform, Functional_check_mrg32k3aDouble_uniform)
         double *Random3 = (double*) malloc(sizeof(double) * numberCount);
         double *Random4 = (double*) malloc(sizeof(double) * numberCount);
         double *outBufferDevice_substream = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
-        status = hcrngMrg32k3aDeviceRandomU01Array_double(streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
+        status = hcrngMrg32k3aDeviceRandomU01Array_double(accl_view, streamCount, streams_buffer, numberCount, outBufferDevice_substream, stream_length, streams_per_thread);
         EXPECT_EQ(status, 0);
         accl_view.copy(outBufferDevice_substream, Random3, numberCount * sizeof(double));
         multistream_fill_array_uniform(streams_per_thread, streamCount/streams_per_thread, numberCount/streamCount, stream_length, streams, Random4);
