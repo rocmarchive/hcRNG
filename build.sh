@@ -95,6 +95,7 @@ set +e
 # MAKE BUILD DIR
 mkdir -p $current_work_dir/build
 mkdir -p $current_work_dir/build/lib
+mkdir $current_work_dir/build/packaging 
 set -e
 
 # SET BUILD DIR
