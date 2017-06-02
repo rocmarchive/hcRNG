@@ -40,8 +40,6 @@ TEST(lfsr113Single_test_normal, Functional_check_lfsr113Single_normal)
         size_t streams_per_thread = 2;
         float *Random1 = (float*) malloc(sizeof(float) * numberCount);
         float *Random2 = (float*) malloc(sizeof(float) * numberCount);
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].create_view());
 	std::vector<hc::accelerator>acc = hc::accelerator::get_all();
         accelerator_view accl_view = (acc[1].get_default_view());
         float *outBufferDevice = hc::am_alloc(sizeof(float) * numberCount, acc[1], 0);

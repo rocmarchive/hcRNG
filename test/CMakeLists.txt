@@ -16,7 +16,6 @@ IF(${HIP_SUPPORT} MATCHES "on")
 ENDIF()
 
 IF(${PLATFORM} MATCHES "hcc")
-  add_subdirectory(example)
   add_subdirectory(unit-api)
 ENDIF()
 

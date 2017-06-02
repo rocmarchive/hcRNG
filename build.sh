@@ -77,6 +77,9 @@ while [ $# -gt 0 ]; do
     --install)
       install="1"
       ;;
+   --examples=*)
+      examples="${1#*=}"
+      ;;
     --help) print_help;;
     *)
       printf "************************************************************\n"
@@ -133,13 +136,10 @@ if [ "$platform" = "hcc" ]; then
     cd $build_dir/test/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC $current_work_dir/test/
     make -j
 
-    #Move to test folder
-    cd $current_work_dir/test/
-    #Invoke test script
-     printf "* UNIT API TESTS *\n"
-     printf "******************\n"
-    ./test.sh
-    
+   printf "* UNIT API TESTS *\n"
+   printf "******************\n"
+   ${current_work_dir}/build/test/unit-api/bin/unittest 
+
     if [ $HIP_SUPPORT = "on" ]; then
       chmod +x $current_work_dir/test/unit-hip/test.sh
       cd $current_work_dir/test/unit-hip/
@@ -149,6 +149,14 @@ if [ "$platform" = "hcc" ]; then
       ./test.sh
     fi
   fi
+fi
+
+#EXAMPLES
+#Invoke examples script if --examples=on
+  if [ "$examples" = "on" ]; then
+    chmod +x $current_work_dir/examples/build.sh
+    cd $current_work_dir/examples/
+    ./build.sh
 fi
 
 if [ "$platform" = "nvcc" ]; then

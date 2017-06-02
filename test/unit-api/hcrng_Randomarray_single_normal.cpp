@@ -8,6 +8,7 @@
 #include <hc_am.hpp>
 #include <hc.hpp>
 using namespace hc;
+
 #define STREAM_COUNT 10
 #define NUMBER_COUNT 100 /*Should be a multiple of streamCount */
 #define SUBSTREAM_LENGTH_1 0 /* do not use substreams */
@@ -20,8 +21,6 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg31k3p_normal )
      hcrngStatus status, err;
      size_t streamBufferSize;
 
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -68,8 +67,6 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg31k3p_normal )
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg32k3a_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -116,8 +113,6 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg32k3a_normal )
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Lfsr113_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -164,8 +159,6 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Lfsr113_normal ) 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Philox432_normal ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 

@@ -26,10 +26,10 @@ int main()
         bool ispassed = 1;
         size_t streamBufferSize;
         // Number oi streams
-        size_t streamCount = 10;
         //Number of random numbers to be generated
         //numberCount must be a multiple of streamCount
-        size_t numberCount = 100; 
+        size_t numberCount = 99; 
+        size_t streamCount = numberCount/2;
 
         //Enumerate the list of accelerators
         std::vector<hc::accelerator>acc = hc::accelerator::get_all();

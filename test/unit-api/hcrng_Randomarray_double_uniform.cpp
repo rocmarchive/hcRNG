@@ -7,6 +7,7 @@
 #include <hc_am.hpp>
 #include <hc.hpp>
 using namespace hc;
+
 #define STREAM_COUNT 10
 #define NUMBER_COUNT 100 /*Should be a multiple of streamCount */
 #define SUBSTREAM_LENGTH_1 0 /* do not use substreams */
@@ -18,8 +19,6 @@ typedef double fp_type;
 TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Mrg31k3p_uniform ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -68,8 +67,6 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Mrg31k3p_uniform
 TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Mrg32k3a_uniform ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -117,8 +114,6 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Mrg32k3a_uniform
 TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Lfsr113_uniform ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -167,8 +162,6 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Lfsr113_uniform 
 TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Philox432_uniform ) {
      hcrngStatus status, err;
      size_t streamBufferSize;
-     //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-     //accelerator_view accl_view = (acc[1].create_view());
      std::vector<hc::accelerator>acc = hc::accelerator::get_all();
      accelerator_view accl_view = (acc[1].get_default_view());
 
@@ -210,7 +203,4 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_double_Philox432_unifor
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
      status = hcrngPhilox432DeviceRandomU01Array_double(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
-
-
-
 }

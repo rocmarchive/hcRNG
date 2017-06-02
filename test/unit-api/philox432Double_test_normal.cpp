@@ -40,8 +40,6 @@ TEST(philox432Double_test_normal, Functional_check_philox432Double_normal)
         size_t streams_per_thread = 2;
         double *Random1 = (double*) malloc(sizeof(double) * numberCount);
         double *Random2 = (double*) malloc(sizeof(double) * numberCount);
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].create_view());
 	std::vector<hc::accelerator>acc = hc::accelerator::get_all();
         accelerator_view accl_view = (acc[1].get_default_view());
         double *outBufferDevice = hc::am_alloc(sizeof(double) * numberCount, acc[1], 0);
