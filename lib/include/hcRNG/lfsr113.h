@@ -7,8 +7,6 @@
 #define LFSR113_H
 #include "hcRNG.h"
 #include <stdio.h>
-#include <hc.hpp>
-using namespace hc;
 
 #ifdef __cplusplus
 //extern "C" {
@@ -18,6 +16,12 @@ using namespace hc;
 *  The state is a seed consisting of six unsigned 32-bit integers.
 *  @see hcrngStreamState
 */
+
+namespace hc {
+  class accelerator;
+  class accelerator_view;
+};
+
 typedef struct {
 	/*! @brief Seed for the first LFSR component
 	*/

@@ -23,7 +23,6 @@ THE SOFTWARE.
 
 #include <cuda_runtime_api.h>
 #include <curand.h>
-//#include <hip/hip_runtime_api.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,22 +33,30 @@ typedef cudaStream_t hipStream_t;
 
 hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type);
+
 hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed);
+
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream);
+
 hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset);
+
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                                    unsigned int* outputPtr,
                                                    size_t num);
+
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num);
+
 hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
                                                    double* outputPtr,
                                                    size_t num);
+
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num, float mean, float stddev) ;
+
 hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
                                                    double* outputPtr,
                                                    size_t num, double mean, double stddev);

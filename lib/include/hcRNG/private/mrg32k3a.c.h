@@ -11,7 +11,6 @@
 #define Mrg32k3a_NORM_double 2.328306549295727688e-10
 #define Mrg32k3a_NORM_float  2.3283064e-10
 
-#include <hc.hpp>
 #include <hc_math.hpp>
 
 // hcrngMrg32k3a_A1p76 and hcrngMrg32k3a_A2p76 jump 2^76 steps forward

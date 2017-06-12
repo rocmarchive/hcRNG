@@ -7,8 +7,6 @@
 #define PHILOX432_H
 #include "hcRNG.h"
 #include <stdio.h>
-#include <hc.hpp>
-using namespace hc;
 
 #ifdef __cplusplus 
 //extern "C" {
@@ -18,6 +16,11 @@ using namespace hc;
 *  The state is a seed consisting of a 128bits counter
 *  @see hcrngStreamState
 */
+
+namespace hc {
+  class accelerator;
+  class accelerator_view;
+};
 
 typedef struct hcrngPhilox432SB_ {
 	unsigned int msb, lsb;   //most significant bits, and the least significant bits

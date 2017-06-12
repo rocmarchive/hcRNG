@@ -7,14 +7,18 @@
 #define MRG32K3A_H
 #include "hcRNG.h"
 #include <stdio.h>
-#include <hc.hpp>
-using namespace hc;
 
 #ifdef __cplusplus
 
 //extern "C" {
 
 #endif
+
+namespace hc {
+  class accelerator;
+  class accelerator_view;
+};
+
 /*  @brief State type of a Mrg32k3a stream
 *  The state is a seed consisting of six unsigned 32-bit integers.
 *  @see hcrngStreamState

@@ -45,7 +45,8 @@ extern "C" {
  *  and hcBLAS, where the homologous types are name hcfftStatus and
  *  hcblasStatus, respectively.
  */
-typedef enum hcrngStatus_ {
+typedef enum hcrngStatus_ : short
+{
     HCRNG_SUCCESS                  = 0,
     HCRNG_OUT_OF_RESOURCES         = -1,
     HCRNG_INVALID_VALUE            = -2,
@@ -55,6 +56,7 @@ typedef enum hcrngStatus_ {
     HCRNG_FUNCTION_NOT_IMPLEMENTED = -6
 } hcrngStatus;
 
+static int rngtyp;
 
 /*#ifdef __cplusplus
 extern "C" {

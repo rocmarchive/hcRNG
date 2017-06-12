@@ -19,7 +19,7 @@ if (NOT DEFINED HIP_PATH)
 endif()
 
 execute_process(COMMAND ${HIP_PATH}/bin/hipconfig --platform OUTPUT_VARIABLE HIP_PLATFORM)
-MESSAGE ("HIP_PATH=" ${HIP_PATH})
+MESSAGE (STATUS "HIP_PATH :  ${HIP_PATH}")
 
 # Build hcblas and hipblas from source on AMD platform
 IF (${PLATFORM} MATCHES "hcc")

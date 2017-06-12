@@ -20,28 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 #pragma once
-#include <iostream>
-#include <hip/hip_runtime_api.h>
+
 #include <hcRNG/hcRNG.h>
-#include <hcRNG/mrg31k3p.h>
-#include <hcRNG/mrg32k3a.h>
-#include <hcRNG/lfsr113.h>
-#include <hcRNG/philox432.h>
+#include <hip/hip_runtime_api.h>
 #include <hip/hip_hcc.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// Forward declarations
+//enum hcrngStatus: short;
 typedef void *hiprngGenerator_t;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
-const char* hiprngGetErrorString();
-const char* hiprngGetLibraryRoot();
+//const char* hiprngGetErrorString();
+//const char* hiprngGetLibraryRoot();
 
-hiprngStatus_t hiprngSetErrorString(int err, const char* msg,
-                                                  ...);
-static int rngtyp; 
+//hiprngStatus_t hiprngSetErrorString(int err, const char* msg,
+//                                                  ...);
+//static int rngtyp; 
 
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream);
       
@@ -56,6 +55,7 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                               unsigned int* outputPtr,
                                                   size_t num);
+
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num);
@@ -68,6 +68,7 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    size_t num, float mean, float stddev) ;
 hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev);
+
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
 
 #ifdef __cplusplus

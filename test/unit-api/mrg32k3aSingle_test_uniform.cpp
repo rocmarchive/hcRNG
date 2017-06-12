@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <assert.h>
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/hcRNG.h>
 #include <hc.hpp>
