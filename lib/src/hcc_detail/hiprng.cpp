@@ -31,8 +31,30 @@ hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
 }
 
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
-  return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
+  
+  hc::accelerator_view *pAcclView;
+  hipError_t err = hipHccGetAcceleratorView(stream, &pAcclView);
+  if (err != hipSuccess)
+  {
+    return HIPRNG_INVALID_VALUE;
+  }  
+  
+  if(rngtyp == 0) {
+    return hipHCRNGStatusToHIPStatus(hcrngMrg31k3pSetAcclView((hcrngMrg31k3pStreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+  }
+  else if(rngtyp == 1) {
+    return hipHCRNGStatusToHIPStatus(hcrngMrg32k3aSetAcclView((hcrngMrg32k3aStreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+  }
+  else if(rngtyp == 2) {
+    return hipHCRNGStatusToHIPStatus(hcrngLfsr113SetAcclView((hcrngLfsr113StreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+  }
+  else if(rngtyp == 3) {
+    return hipHCRNGStatusToHIPStatus(hcrngPhilox432SetAcclView((hcrngPhilox432StreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+  }
+
+  return hipHCRNGStatusToHIPStatus(HCRNG_INVALID_RNG_TYPE);
 }
+
 hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
   return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
 }  

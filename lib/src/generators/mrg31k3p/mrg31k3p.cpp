@@ -50,6 +50,22 @@ static unsigned int invA2[3][3] = {
 	{ 252696625, 252696624, 0 }
 };
 
+hcrngStatus hcrngMrg31k3pSetAcclView(hcrngMrg31k3pStreamCreator* creator, hc::accelerator_view accl_view, void* stream) {
+  creator->currentAcclView = &accl_view;
+  creator->currentStream = stream;
+  return HCRNG_SUCCESS;
+}
+
+hcrngStatus hcrngMrg31k3pGetAcclView(hcrngMrg31k3pStreamCreator* creator, hc::accelerator_view *&accl_view, void** stream) {
+  if (creator == nullptr) {
+    return HCRNG_INVALID_STREAM_CREATOR;
+  }
+  accl_view = creator->currentAcclView;
+  stream = &(creator->currentStream);
+  return HCRNG_SUCCESS;
+}
+
+
 /*! @brief Check the validity of a seed for MRG31k3p
  */
 static hcrngStatus validateSeed(const hcrngMrg31k3pStreamState* seed)

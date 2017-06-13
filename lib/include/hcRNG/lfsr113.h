@@ -55,6 +55,12 @@ typedef struct hcrngLfsr113Stream_ hcrngLfsr113Stream;
 struct hcrngLfsr113StreamCreator_ {
         hcrngLfsr113StreamState initialState;
         hcrngLfsr113StreamState nextState;
+
+        bool initialized;
+        hc::accelerator *currentAccl;
+        hc::accelerator_view *currentAcclView;
+        // StreamInfo
+        void* currentStream;
 };
 
 
@@ -77,6 +83,9 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
         { BASE_CREATOR_STATE_LFSR113 }
 };
 
+        HCRNGAPI hcrngStatus hcrngLfsr113SetAcclView(hcrngLfsr113StreamCreator* creator, hc::accelerator_view accl_view, void* stream = nullptr);
+
+	HCRNGAPI hcrngStatus hcrngLfsr113GetAcclView(hcrngLfsr113StreamCreator* creator, hc::accelerator_view *&accl_view, void** stream);
 
 
 	/*! @copybrief hcrngCopyStreamCreator()

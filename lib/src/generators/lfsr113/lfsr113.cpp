@@ -15,6 +15,22 @@ using namespace std;
 // code that is common to host and device
 #include "../include/hcRNG/private/lfsr113.c.h"
 
+
+hcrngStatus hcrngLfsr113SetAcclView(hcrngLfsr113StreamCreator* creator, hc::accelerator_view accl_view, void* stream) {
+  creator->currentAcclView = &accl_view;
+  creator->currentStream = stream;
+  return HCRNG_SUCCESS;
+}
+
+hcrngStatus hcrngLfsr113GetAcclView(hcrngLfsr113StreamCreator* creator, hc::accelerator_view *&accl_view, void** stream) {
+  if (creator == nullptr) {
+    return HCRNG_INVALID_STREAM_CREATOR;
+  }
+  accl_view = creator->currentAcclView;
+  stream = &(creator->currentStream);
+  return HCRNG_SUCCESS;
+}
+
 /*! @brief Check the validity of a seed for Lfsr113
 */
 static hcrngStatus validateSeed(const hcrngLfsr113StreamState* seed)

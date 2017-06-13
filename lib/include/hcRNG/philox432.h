@@ -65,6 +65,12 @@ struct hcrngPhilox432StreamCreator_ {
         hcrngPhilox432StreamState initialState;
         hcrngPhilox432StreamState nextState;
         hcrngPhilox432Counter JumpDistance;
+
+	bool initialized;
+        hc::accelerator *currentAccl;
+        hc::accelerator_view *currentAcclView;
+        // StreamInfo
+        void* currentStream;
 };
 
 
@@ -91,6 +97,9 @@ typedef struct hcrngPhilox432StreamCreator_ hcrngPhilox432StreamCreator;
 */
 static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE };
 
+	HCRNGAPI hcrngStatus hcrngPhilox432SetAcclView(hcrngPhilox432StreamCreator* creator, hc::accelerator_view accl_view, void* stream = nullptr);
+
+	HCRNGAPI hcrngStatus hcrngPhilox432GetAcclView(hcrngPhilox432StreamCreator* creator, hc::accelerator_view *&accl_view, void** stream);
 
 	/*! @copybrief hcrngCopyStreamCreator()
 	*  @see hcrngCopyStreamCreator()

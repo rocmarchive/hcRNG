@@ -14,6 +14,23 @@ using namespace std;
 #define BLOCK_SIZE 256
 // code that is common to host and device
 #include "hcRNG/private/philox432.c.h"
+
+hcrngStatus hcrngPhilox432SetAcclView(hcrngPhilox432StreamCreator* creator, hc::accelerator_view accl_view, void* stream) {
+  creator->currentAcclView = &accl_view;
+  creator->currentStream = stream;
+  return HCRNG_SUCCESS;
+}
+
+hcrngStatus hcrngPhilox432GetAcclView(hcrngPhilox432StreamCreator* creator, hc::accelerator_view *&accl_view, void** stream) {
+  if (creator == nullptr) {
+    return HCRNG_INVALID_STREAM_CREATOR;
+  }
+  accl_view = creator->currentAcclView;
+  stream = &(creator->currentStream);
+  return HCRNG_SUCCESS;
+}
+
+
 /*! @brief Check the validity of a seed for Philox432
 */
 static hcrngStatus validateSeed(const hcrngPhilox432StreamState* seed)

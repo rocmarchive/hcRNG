@@ -63,6 +63,12 @@ struct hcrngMrg32k3aStreamCreator_ {
         */
         unsigned long nuA1[3][3];
         unsigned long nuA2[3][3];
+
+	bool initialized;
+        hc::accelerator *currentAccl;
+        hc::accelerator_view *currentAcclView;
+        // StreamInfo
+        void* currentStream;
 };
 
 /*! @brief Default initial seed of the first stream
@@ -94,6 +100,11 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
         BASE_CREATOR_JUMP_MATRIX_1_MRG32K3A,
         BASE_CREATOR_JUMP_MATRIX_2_MRG32K3A
 };
+
+	hcrngStatus hcrngMrg32k3aSetAcclView(hcrngMrg32k3aStreamCreator* creator, hc::accelerator_view accl_view, void* stream = nullptr);
+
+	hcrngStatus hcrngMrg32k3aGetAcclView(hcrngMrg32k3aStreamCreator* creator, hc::accelerator_view *&accl_view, void** stream);
+
 	/*! @copybrief hcrngCopyStreamCreator()
 	*  @see hcrngCopyStreamCreator()
 	*/
