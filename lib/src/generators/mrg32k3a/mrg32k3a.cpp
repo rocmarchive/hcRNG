@@ -380,8 +380,8 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(hc::accelerator_view accl_v
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
 	if (numberCount < 1)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        /*if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);*/
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -389,7 +389,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(hc::accelerator_view accl_v
         hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
           int gid = tidx.global[0];
           if(gid < (streamCount/streams_per_thread)) {
-           for(int i =0; i < numberCount/streamCount; i++) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
               if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
                hcrngMrg32k3aForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
@@ -397,7 +397,10 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(hc::accelerator_view accl_v
                hcrngMrg32k3aRewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
               for (int j = 0; j < streams_per_thread; j++)
-               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngMrg32k3aRandomU01(&streams[streams_per_thread * gid + j]);
+              {
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngMrg32k3aRandomU01(&streams[streams_per_thread * gid + j]);
+              }
               }
            }
         }).wait();
@@ -437,8 +440,8 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view accl_v
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
         if (numberCount < 1)
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
+        /*if (numberCount % streamCount != 0)
+                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);*/
         hcrngStatus status = HCRNG_SUCCESS;
         long size = (streamCount/streams_per_thread + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -446,7 +449,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view accl_v
         hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
            int gid = tidx.global[0];
            if(gid < streamCount/streams_per_thread) {
-           for(int i =0; i < numberCount/streamCount; i++) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
               if ((i > 0) && (streamlength > 0) && (i % streamlength == 0)) {
                hcrngMrg32k3aForwardToNextSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
@@ -454,7 +457,8 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(hc::accelerator_view accl_v
                hcrngMrg32k3aRewindSubstreams(streams_per_thread, &streams[streams_per_thread * gid]);
               }
               for (int j = 0; j < streams_per_thread; j++)
-               outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngMrg32k3aRandomU01(&streams[streams_per_thread * gid + j]);
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngMrg32k3aRandomU01(&streams[streams_per_thread * gid + j]);
               }
            }
         }).wait();

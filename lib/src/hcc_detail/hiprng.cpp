@@ -5,6 +5,8 @@
 #include <hcRNG/lfsr113.h>
 #include <hcRNG/philox432.h>
 
+#define STREAM_COUNT 16384
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -183,7 +185,7 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
-       *accl_view, num, streams_buffer##gt, num, outputPtr);\
+       *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
 
@@ -220,7 +222,7 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
   hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
   free(streams##gt);\
   hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
-       *accl_view, num, streams_buffer##gt, num, outputPtr);\
+       *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
   hipFree(streams_buffer##gt);\
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
