@@ -58,8 +58,8 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_single_Mrg31k3p_uniform
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE); 
+     //status = hcrngMrg31k3pDeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
+     //EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
 }
 
@@ -104,8 +104,8 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_single_Mrg32k3a_uniform
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngMrg32k3aDeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     //status = hcrngMrg32k3aDeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
+     //EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
 }
 
@@ -150,8 +150,8 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_single_Lfsr113_uniform 
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngLfsr113DeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     //status = hcrngLfsr113DeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
+     //EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
 }
 
@@ -196,7 +196,7 @@ TEST(hcrng_Randomarray_uniform, Return_Check_Randomarray_single_Philox432_unifor
      EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
-     status = hcrngPhilox432DeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     //status = hcrngPhilox432DeviceRandomU01Array_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, outBuffer);
+     //EXPECT_EQ(status, HCRNG_INVALID_VALUE);
 
 }
