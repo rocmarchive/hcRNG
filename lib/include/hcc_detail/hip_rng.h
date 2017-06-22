@@ -24,6 +24,10 @@ THE SOFTWARE.
 #include <hcRNG/hcRNG.h>
 #include <hip/hip_runtime_api.h>
 #include <hip/hip_hcc.h>
+#include <hcRNG/mrg31k3p.h>
+#include <hcRNG/mrg32k3a.h>
+#include <hcRNG/lfsr113.h>
+#include <hcRNG/philox432.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +36,16 @@ extern "C" {
 // Forward declarations
 //enum hcrngStatus: short;
 typedef void *hiprngGenerator_t;
+
+hcrngMrg31k3pStream *streams_bufferMrg31k3p;
+hcrngMrg32k3aStream *streams_bufferMrg32k3a;
+hcrngLfsr113Stream *streams_bufferLfsr113;
+hcrngPhilox432Stream *streams_bufferPhilox432;
+
+hcrngMrg31k3pStream *streamsMrg31k3p;
+hcrngMrg32k3aStream *streamsMrg32k3a;
+hcrngLfsr113Stream *streamsLfsr113;
+hcrngPhilox432Stream *streamsPhilox432;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
