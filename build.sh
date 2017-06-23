@@ -56,13 +56,15 @@ cat <<-HELP
 =============================================================================================================================
 This script is invoked to build hcRNG library and test sources. Please provide the following arguments:
 
-  ${green}--test${reset}    Test to enable the library testing. 
+  ${green}--test${reset}     Test to enable the library testing (on/off) 
+  ${green}--install${reset}  Install the shared library and include the header files under /opt/rocm/hcrng  Requires sudo perms.
+  ${green}--examples${reset} To build and run the example files in examples folder (on/off)  (ONLY SUPPORTED ON AMD PLATFORM)
 
-=============================================================================================================================
-Usage: ./build.sh --test=on (or off) 
 =============================================================================================================================
 Example: 
 (1) ${green}./build.sh --test=on ${reset}
+(1) ${green}./build.sh --install ${reset}
+(1) ${green}./build.sh --examples=on ${reset}
 
 =============================================================================================================================
 HELP
@@ -108,7 +110,6 @@ cd $build_dir
 
 
 if [ "$platform" = "hcc" ]; then
-  
   # Cmake and make libhcRNG: Install hcRNG
   cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
   make package
@@ -149,7 +150,6 @@ if [ "$platform" = "hcc" ]; then
       ./test.sh
     fi
   fi
-fi
 
 #EXAMPLES
 #Invoke examples script if --examples=on
@@ -157,6 +157,7 @@ fi
     chmod +x $current_work_dir/examples/build.sh
     cd $current_work_dir/examples/
     ./build.sh
+  fi
 fi
 
 if [ "$platform" = "nvcc" ]; then

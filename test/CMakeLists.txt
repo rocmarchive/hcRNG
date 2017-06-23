@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 # HIP_PATH
 IF(NOT DEFINED $ENV{HIP_PATH})
   SET(HIP_PATH "/opt/rocm/hip")
@@ -12,10 +12,10 @@ SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake  "${HIP_PATH}/cmake")
 EXECUTE_PROCESS(COMMAND ${HIP_PATH}/bin/hipconfig -P OUTPUT_VARIABLE PLATFORM)
 
 IF(${HIP_SUPPORT} MATCHES "on")
-  add_subdirectory(unit-hip)
+  ADD_SUBDIRECTORY(unit-hip)
 ENDIF()
 
 IF(${PLATFORM} MATCHES "hcc")
-  add_subdirectory(unit-api)
+  ADD_SUBDIRECTORY(unit-api)
 ENDIF()
 

@@ -9,8 +9,6 @@ red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
 
-echo "${green}HIP UNIT TESTS${reset}"
-
 test_common_file=($current_work_dir/common/*.cpp)
 numtests=${#test_common_file[@]}
 
@@ -37,11 +35,11 @@ numtests=${#test_common_file[@]}
     else
       if grep -q FAILED "$Log_file";
       then
-        echo "${red}hip_${test_common}            ----- [ FAILED ]${reset}"
+        echo "${red}hip_${test_common}   ----- [ FAILED ]${reset}"
         mv "${working_dir1}/gtestlog.txt" "${errlogdir}/${test_common}.txt" 
       elif grep -q PASSED "$Log_file";
       then
-        echo "${green}hip_${test_common}          ----- [ PASSED ]${reset}"
+        echo "${green}hip_${test_common}  ----- [ PASSED ]${reset}"
         rm -f $working_dir1/gtestlog.txt
       fi
     fi
@@ -73,11 +71,11 @@ numtests=${#test_normal_file[@]}
     else
       if grep -q FAILED "$Log_file";
       then
-        echo "${red}hip_${test_normal}            ----- [ FAILED ]${reset}"
+        echo "${red}hip_${test_normal}  ----- [ FAILED ]${reset}"
         mv "${working_dir1}/gtestlog.txt" "${errlogdir}/${test_normal}.txt" 
       elif grep -q PASSED "$Log_file";
       then
-        echo "${green}hip_${test_normal}          ----- [ PASSED ]${reset}"
+        echo "${green}hip_${test_normal}  ----- [ PASSED ]${reset}"
         rm -f $working_dir1/gtestlog.txt
       fi
     fi
@@ -109,11 +107,11 @@ numtests=${#test_uniform_file[@]}
     else
       if grep -q FAILED "$Log_file";
       then
-        echo "${red}hip_${test_uniform}            ----- [ FAILED ]${reset}"
+        echo "${red}hip_${test_uniform}  ----- [ FAILED ]${reset}"
         mv "${working_dir1}/gtestlog.txt" "${errlogdir}/${test_uniform}.txt" 
       elif grep -q PASSED "$Log_file";
       then
-        echo "${green}hip_${test_uniform}          ----- [ PASSED ]${reset}"
+        echo "${green}hip_${test_uniform} ----- [ PASSED ]${reset}"
         rm -f $working_dir1/gtestlog.txt
       fi
     fi

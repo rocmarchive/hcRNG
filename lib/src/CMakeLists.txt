@@ -1,4 +1,3 @@
-
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8.8) 
 MESSAGE(STATUS "CMAKE VERSION ${CMAKE_VERSION}")
 
@@ -7,47 +6,46 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../../cma
 #Setting a Project name
 SET(PROJECT_NAME "hcrng")
 SET(PROJECT_NAME_EXT "hiprng")
-PROJECT (${PROJECT_NAME})
-MESSAGE(STATUS "PROJECT NAME    : ${PROJECT_NAME}")
-
 SET(HIP_SUPPORT $ENV{HIP_SUPPORT})
 
 # Find HIP
-set (HIP_PATH $ENV{HIP_PATH})
-if (NOT DEFINED HIP_PATH)
-      set (HIP_PATH /opt/rocm/hip)
-endif()
-
-execute_process(COMMAND ${HIP_PATH}/bin/hipconfig --platform OUTPUT_VARIABLE HIP_PLATFORM)
-MESSAGE (STATUS "HIP_PATH :  ${HIP_PATH}")
+SET(HIP_PATH $ENV{HIP_PATH})
+IF(${HIP_SUPPORT} MATCHES "on") 
+  IF(NOT DEFINED HIP_PATH)
+    SET(HIP_PATH /opt/rocm/hip)
+  ENDIF()
+  EXECUTE_PROCESS(COMMAND ${HIP_PATH}/bin/hipconfig --platform OUTPUT_VARIABLE HIP_PLATFORM)
+  MESSAGE (STATUS "HIP_PATH :  ${HIP_PATH}")
+ENDIF()
 
 # Build hcblas and hipblas from source on AMD platform
-IF (${PLATFORM} MATCHES "hcc")
-
+IF(${PLATFORM} MATCHES "hcc")
+  PROJECT(${PROJECT_NAME})
+  MESSAGE(STATUS "PROJECT NAME : ${PROJECT_NAME}")
   # Find HCC compiler
   FIND_PACKAGE(HC++ 1.0 REQUIRED)
 
   ADD_SUBDIRECTORY(generators)
   #Setting a variable for source files
-  SET (SRCS ${RNGSRC})
+  SET(SRCS ${RNGSRC})
 
-  execute_process(COMMAND ${HCC_CONFIG} --install --cxxflags
+  EXECUTE_PROCESS(COMMAND ${HCC_CONFIG} --install --cxxflags
                             OUTPUT_VARIABLE HCC_CXXFLAGS)
-  execute_process(COMMAND ${HCC_CONFIG} --install --ldflags --shared
+  EXECUTE_PROCESS(COMMAND ${HCC_CONFIG} --install --ldflags --shared
                             OUTPUT_VARIABLE HCC_LDFLAGS)
   
-  string(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
-  string(STRIP "${HCC_LDFLAGS}" HCC_LDFLAGS)
-  set (HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../include")
-  set (HCC_LDFLAGS "${HCC_LDFLAGS}")
+  STRING(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
+  STRING(STRIP "${HCC_LDFLAGS}" HCC_LDFLAGS)
+  SET(HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../include")
+  SET(HCC_LDFLAGS "${HCC_LDFLAGS}")
   
-  IF (${HIP_SUPPORT} MATCHES "on") 
-    set (HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${HIP_PATH}/include -D__HIP_PLATFORM_HCC__=")
-    set (HCC_LDFLAGS "${HCC_LDFLAGS} -L${HIP_PATH}/lib -lhip_hcc")
+  IF(${HIP_SUPPORT} MATCHES "on") 
+    SET(HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${HIP_PATH}/include -D__HIP_PLATFORM_HCC__=")
+    SET(HCC_LDFLAGS "${HCC_LDFLAGS} -L${HIP_PATH}/lib -lhip_hcc")
   ENDIF()
 
   FOREACH(src_file ${SRCS})
-          SET_PROPERTY(SOURCE ${src_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} ")
+    SET_PROPERTY(SOURCE ${src_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${HCC_CXXFLAGS} ")
   ENDFOREACH()
 
   ADD_LIBRARY("${PROJECT_NAME}" SHARED ${SRCS})
@@ -59,10 +57,9 @@ IF (${PLATFORM} MATCHES "hcc")
     ARCHIVE DESTINATION lib
     PERMISSIONS WORLD_READ WORLD_WRITE WORLD_EXECUTE
   )
-
   INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/" DESTINATION include)
   
-  IF (${HIP_SUPPORT} MATCHES "on") 
+  IF(${HIP_SUPPORT} MATCHES "on") 
     SET(HIPRNGSRCS ${RNGSRC} ${CMAKE_CURRENT_SOURCE_DIR}/hcc_detail/hiprng.cpp)
 
     # Setting header dependencies for hiprng library generation
@@ -84,16 +81,18 @@ IF (${PLATFORM} MATCHES "hcc")
 
     INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/" DESTINATION include)
   ENDIF()
-ELSEIF (${PLATFORM} MATCHES "nvcc")
+ELSEIF(${PLATFORM} MATCHES "nvcc")
+  PROJECT (${PROJECT_NAME})
+  MESSAGE(STATUS "PROJECT NAME : ${PROJECT_NAME_EXT}")
   MESSAGE(STATUS "Building hiprng.cpp")
 
   SET(HIPRNGSRCS ${CMAKE_CURRENT_SOURCE_DIR}/nvcc_detail/hiprng.cpp)
 
-  set (CXXFLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/../include -I${HIP_PATH}/include -I/usr/local/cuda/include -D__HIP_PLATFORM_NVCC__=")
-  set (LDFLAGS "-L/usr/local/cuda/lib64 -L/usr/local/cuda/lib")
+  SET(CXXFLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/../include -I${HIP_PATH}/include -I/usr/local/cuda/include -D__HIP_PLATFORM_NVCC__=")
+  SET(LDFLAGS "-L/usr/local/cuda/lib64 -L/usr/local/cuda/lib")
 
   FOREACH(src_file ${HIPRNGSRCS})
-          SET_PROPERTY(SOURCE ${src_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${CXXFLAGS} ")
+    SET_PROPERTY(SOURCE ${src_file} APPEND_STRING PROPERTY COMPILE_FLAGS " ${CXXFLAGS} ")
   ENDFOREACH()
   ADD_LIBRARY("${PROJECT_NAME_EXT}_nvcc" SHARED ${HIPRNGSRCS})
   SET_PROPERTY(TARGET "${PROJECT_NAME_EXT}_nvcc" APPEND_STRING PROPERTY LINK_FLAGS " ${LDFLAGS} ")
