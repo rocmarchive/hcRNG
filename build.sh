@@ -1,20 +1,20 @@
 #!/bin/bash -e 
-# This script is invoked to install the hcRNG library and test sources
+# This script is invoked to build the hcRNG library and test sources
 
 # CHECK FOR COMPILER PATH
 if [ ! -z $HCC_HOME ]
 then
-  platform="hcc"
   if [ -x "$HCC_HOME/bin/clang++" ]
   then
-    cmake_c_compiler=$HCC_HOME/bin/clang
-    cmake_cxx_compiler=$HCC_HOME/bin/clang++
+    platform="hcc"
+    cmake_c_compiler="$HCC_HOME/bin/clang"
+    cmake_cxx_compiler="$HCC_HOME/bin/clang++"
   fi
 elif [ -x "/opt/rocm/hcc/bin/clang++" ]
 then
   platform="hcc"
-  cmake_c_compiler=/opt/rocm/hcc/bin/clang
-  cmake_cxx_compiler=/opt/rocm/hcc/bin/clang++
+  cmake_c_compiler="/opt/rocm/hcc/bin/clang"
+  cmake_cxx_compiler="/opt/rocm/hcc/bin/clang++"
 elif [ -x "/usr/local/cuda/bin/nvcc" ];
 then
   platform="nvcc"
@@ -37,6 +37,7 @@ fi
 current_work_dir=$PWD
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$current_work_dir/build/lib/src
+#TODO:check if export necessary
 if [ ! -z $HIP_PATH ]
 then
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HIP_PATH/lib
@@ -48,6 +49,8 @@ fi
 red=`tput setaf 1`
 green=`tput setaf 2`
 reset=`tput sgr0`
+copt="-O3"
+verbose=""
 install=0
 
 # Help menu
@@ -57,8 +60,10 @@ cat <<-HELP
 This script is invoked to build hcRNG library and test sources. Please provide the following arguments:
 
   ${green}--test${reset}     Test to enable the library testing (on/off) 
+  ${green}--debug${reset}    Compile with debug info (-g)
+  ${green}--verbose${reset}  Run make with VERBOSE=1
   ${green}--install${reset}  Install the shared library and include the header files under /opt/rocm/hcrng  Requires sudo perms.
-  ${green}--examples${reset} To build and run the example files in examples folder (on/off)  (ONLY SUPPORTED ON AMD PLATFORM)
+  ${green}--examples${reset} To build and run the example files in examples folder (on/off) (ONLY SUPPORTED ON AMD PLATFORM)
 
 =============================================================================================================================
 Example: 
@@ -75,6 +80,12 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --test=*)
       testing="${1#*=}"
+      ;;
+    --debug)
+      copt="-g"
+      ;;
+    --verbose)
+      verbose="VERBOSE=1"
       ;;
     --install)
       install="1"
@@ -99,8 +110,8 @@ fi
 set +e
 # MAKE BUILD DIR
 mkdir -p $current_work_dir/build
-mkdir -p $current_work_dir/build/lib
-mkdir $current_work_dir/build/packaging 
+#mkdir $current_work_dir/build/lib
+mkdir -p $current_work_dir/build/packaging 
 set -e
 
 # SET BUILD DIR
@@ -112,25 +123,22 @@ cd $build_dir
 if [ "$platform" = "hcc" ]; then
   # Cmake and make libhcRNG: Install hcRNG
   cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
-  make package
-  make
+  make package $verbose
+  make $verbose
  
   if [ "$install" = "1" ]; then
     sudo make install
   fi
   cd $build_dir/packaging/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir/packaging/
 
-  #Test=OFF (Build library and tests)
+  #Test=OFF (Build library)
   if ( [ -z $testing ] ) || ( [ "$testing" = "off" ] ); then
-    echo "${green}HCRNG Installation Completed!${reset}"
+    echo "${green}hcRNG Build Completed!${reset}"
   # Test=ON (Build and test the library)
   elif ( [ "$testing" = "on" ] ); then
     set +e
     # MAKE BUILD DIR
-    mkdir $current_work_dir/build/test
-    mkdir -p $current_work_dir/build/test/unit-hip/common/bin/
-    mkdir -p $current_work_dir/build/test/unit-hip/normal/bin/
-    mkdir -p $current_work_dir/build/test/unit-hip/uniform/bin/
+    mkdir -p $current_work_dir/build/test
     set -e
 
     # Build Tests
@@ -161,7 +169,7 @@ if [ "$platform" = "hcc" ]; then
 fi
 
 if [ "$platform" = "nvcc" ]; then
-  # Cmake and make libhipRNG: Install hipRNG
+  # Cmake and make libhipRNG: Build hipRNG
   cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
   make package
   make
@@ -170,7 +178,7 @@ if [ "$platform" = "nvcc" ]; then
     sudo make install
   fi
   cd $build_dir/packaging/ && cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir/packaging/
-  echo "${green}HIPRNG Build Completed!${reset}"
+  echo "${green}hipRNG Build Completed!${reset}"
   
   if ( [ "$testing" = "on" ] ); then
     set +e

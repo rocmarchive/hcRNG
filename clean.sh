@@ -45,8 +45,8 @@ rm -rf $current_work_dir/build
 
 # Remove files under /opt/rocm/hcrng
 if [ "$deepclean" = "1" ]; then
-     rm -rf /opt/rocm/hcrng
-     rm -f /opt/rocm/lib/libhcrng.so  
-     rm -f /opt/rocm/lib/libhiprng.so
+  sudo rm -rf /opt/rocm/hcrng
+  sudo rm -f /opt/rocm/lib/libhcrng.so  
+  sudo rm -f /opt/rocm/lib/libhiprng.so
 fi
 
