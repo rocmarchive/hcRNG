@@ -242,16 +242,11 @@ hiprngStatus_t hiprngGenerateUniformDouble(
 #undef GenerateUniformDouble
 
 #define GenerateNormal(gt)\
-hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-hcrng##gt##Stream *streams_buffer##gt;\
-hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
-hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-free(streams##gt);\
+hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt);\
+hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
-       *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-hipFree(streams_buffer##gt);\
+       *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
-
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
@@ -278,17 +273,11 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
 #undef GenerateNormal
 
 #define GenerateNormalDouble(gt)\
-hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-hcrng##gt##Stream *streams_buffer##gt;\
-hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
-hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-free(streams##gt);\
+hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt);\
+hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
-       *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-hipFree(streams_buffer##gt);\
+       *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
-
-
 
 hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
