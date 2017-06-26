@@ -91,43 +91,43 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
 }
 
 #define SetSeed(gt) \
-    if(temp##gt != 0) {\
-      hcrng##gt##StreamState baseState;\
-    for (size_t i = 0; i < 3; ++i)\
-      baseState.g1[i] =  temp##gt;\
-    for (size_t i = 0; i < 3; ++i)\
-      baseState.g2[i] =  temp##gt;\
-    return hipHCRNGStatusToHIPStatus(\
-       hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, &baseState));\
-   }\
-   else\
-      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
+  if(temp##gt != 0) {\
+    hcrng##gt##StreamState baseState;\
+  for (size_t i = 0; i < 3; ++i)\
+    baseState.g1[i] =  temp##gt;\
+  for (size_t i = 0; i < 3; ++i)\
+    baseState.g2[i] =  temp##gt;\
+  return hipHCRNGStatusToHIPStatus(\
+     hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, &baseState));\
+  }\
+  else\
+    return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
 #define SetSeedLfsr113() \
-    if(tempLfsr113 != 0) {\
-      hcrngLfsr113StreamState baseState;\
-    for (size_t i = 0; i < 4; ++i)\
-      baseState.g[i] =  tempLfsr113;\
-    return hipHCRNGStatusToHIPStatus(\
-       hcrngLfsr113SetBaseCreatorState((hcrngLfsr113StreamCreator*)generator, &baseState));\
-   }\
-   else\
-      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
+  if(tempLfsr113 != 0) {\
+    hcrngLfsr113StreamState baseState;\
+  for (size_t i = 0; i < 4; ++i)\
+    baseState.g[i] =  tempLfsr113;\
+  return hipHCRNGStatusToHIPStatus(\
+     hcrngLfsr113SetBaseCreatorState((hcrngLfsr113StreamCreator*)generator, &baseState));\
+  }\
+  else\
+    return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
      
 #define SetSeedPhilox432() \
-    if(tempPhilox432 != 0) {\
-      hcrngPhilox432StreamState baseState;\
-      baseState.ctr.H.msb = tempPhilox432;\
-      baseState.ctr.H.lsb = tempPhilox432;\
-      baseState.ctr.L.msb = tempPhilox432;\
-      baseState.ctr.L.lsb = tempPhilox432;\
-      baseState.deckIndex = 0;\
-    return hipHCRNGStatusToHIPStatus(\
-       hcrngPhilox432SetBaseCreatorState((hcrngPhilox432StreamCreator*)generator, &baseState));\
-    }\
-   else\
-      return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
+  if(tempPhilox432 != 0) {\
+    hcrngPhilox432StreamState baseState;\
+    baseState.ctr.H.msb = tempPhilox432;\
+    baseState.ctr.H.lsb = tempPhilox432;\
+    baseState.ctr.L.msb = tempPhilox432;\
+    baseState.ctr.L.lsb = tempPhilox432;\
+    baseState.deckIndex = 0;\
+  return hipHCRNGStatusToHIPStatus(\
+      hcrngPhilox432SetBaseCreatorState((hcrngPhilox432StreamCreator*)generator, &baseState));\
+  }\
+  else\
+    return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 
 hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
@@ -153,15 +153,14 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 #undef SetSeedLfsr113
 #undef SetSeedPhilox432
 
-
-  #define Generate(gt)\
-  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  unsigned int *outHost##gt = (unsigned int*)malloc(num * sizeof(unsigned int));\
-  hcrngStatus hcStatus##gt = hcrng##gt##RandomUnsignedIntegerArray(streams##gt, 1, 4294967294, num, outHost##gt);\
-  hipMemcpy(outputPtr, outHost##gt, num * sizeof(unsigned int), hipMemcpyHostToDevice);\
-  free(streams##gt);\
-  free(outHost##gt);\
-  return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
+#define Generate(gt)\
+hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+unsigned int *outHost##gt = (unsigned int*)malloc(num * sizeof(unsigned int));\
+hcrngStatus hcStatus##gt = hcrng##gt##RandomUnsignedIntegerArray(streams##gt, 1, 4294967294, num, outHost##gt);\
+hipMemcpy(outputPtr, outHost##gt, num * sizeof(unsigned int), hipMemcpyHostToDevice);\
+free(streams##gt);\
+free(outHost##gt);\
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                               unsigned int* outputPtr,
@@ -182,12 +181,12 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
 }
 #undef Generate
 
-  #define GenerateUniform(gt)\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
+#define GenerateUniform(gt)\
+hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
+hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
        *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
-  return hipHCRNGStatusToHIPStatus(hcStatus##gt); 
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
@@ -212,15 +211,12 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
 }
 #undef GenerateUniform
 
-
-
-
-  #define GenerateUniformDouble(gt)\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
+#define GenerateUniformDouble(gt)\
+hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
+hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
        *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
-  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniformDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num) {
@@ -243,19 +239,18 @@ hiprngStatus_t hiprngGenerateUniformDouble(
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
 }
-  #undef GenerateUniformDouble
+#undef GenerateUniformDouble
 
-
-  #define GenerateNormal(gt)\
-  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt;\
-  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
-  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-  free(streams##gt);\
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
+#define GenerateNormal(gt)\
+hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+hcrng##gt##Stream *streams_buffer##gt;\
+hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+free(streams##gt);\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
        *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-  hipFree(streams_buffer##gt);\
-  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+hipFree(streams_buffer##gt);\
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
@@ -280,19 +275,18 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
 }
-  #undef GenerateNormal
+#undef GenerateNormal
 
-
-  #define GenerateNormalDouble(gt)\
-  hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
-  hcrng##gt##Stream *streams_buffer##gt;\
-  hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
-  hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
-  free(streams##gt);\
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
+#define GenerateNormalDouble(gt)\
+hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+hcrng##gt##Stream *streams_buffer##gt;\
+hipMalloc((void **)&streams_buffer##gt, num * sizeof(hcrng##gt##Stream));\
+hipMemcpy(streams_buffer##gt, streams##gt, num * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+free(streams##gt);\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
        *accl_view, num, streams_buffer##gt, num, mean, stddev, outputPtr);\
-  hipFree(streams_buffer##gt);\
-  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+hipFree(streams_buffer##gt);\
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 
 
@@ -319,11 +313,10 @@ hiprngStatus_t hiprngGenerateNormalDouble(
 }
 #undef GenerateNormalDouble
 
-  #define Destroy(gt)\
-  free(streams##gt);\
-  hipFree(streams_buffer##gt);\
-  return hipHCRNGStatusToHIPStatus(hcrng##gt##DestroyStreamCreator((hcrng##gt##StreamCreator*)generator));
-
+#define Destroy(gt)\
+free(streams##gt);\
+hipFree(streams_buffer##gt);\
+return hipHCRNGStatusToHIPStatus(hcrng##gt##DestroyStreamCreator((hcrng##gt##StreamCreator*)generator));
 
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
   
@@ -342,7 +335,7 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 
- #undef Destroy
+#undef Destroy
 
 #ifdef __cplusplus
 }
