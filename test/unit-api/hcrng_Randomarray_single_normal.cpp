@@ -61,7 +61,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg31k3p_normal )
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
      status = hcrngMrg31k3pDeviceRandomNArray_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE); 
+     EXPECT_EQ(status, HCRNG_SUCCESS); 
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg32k3a_normal ) {
@@ -107,7 +107,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Mrg32k3a_normal )
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
      status = hcrngMrg32k3aDeviceRandomNArray_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     EXPECT_EQ(status, HCRNG_SUCCESS);
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Lfsr113_normal ) {
@@ -153,7 +153,7 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Lfsr113_normal ) 
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
      status = hcrngLfsr113DeviceRandomNArray_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     EXPECT_EQ(status, HCRNG_SUCCESS);
 }
 
 TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Philox432_normal ) {
@@ -199,5 +199,5 @@ TEST(hcrng_Randomarray_normal, Return_Check_Randomarray_single_Philox432_normal 
 
      //Invoke Random number generator function in Device (here last 2 arguments are default arguments and numbercount is not a multiple of streamcount)
      status = hcrngPhilox432DeviceRandomNArray_single(accl_view, STREAM_COUNT, streams_buffer , NUMBER_COUNT + 1, 0.0, 1.0, outBuffer);
-     EXPECT_EQ(status, HCRNG_INVALID_VALUE);
+     EXPECT_EQ(status, HCRNG_SUCCESS);
 }

@@ -333,8 +333,6 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(hc::accelerator_view accl_vi
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
 	if (numberCount < 1)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        /*if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);*/
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -369,8 +367,6 @@ hcrngStatus hcrngLfsr113DeviceRandomNArray_single(hc::accelerator_view accl_view
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
 	if (numberCount < 1)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
         hcrngStatus status = hcrngLfsr113DeviceRandomU01Array_single(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
 	    	status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
@@ -390,8 +386,6 @@ hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(hc::accelerator_view accl_vi
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
         if (numberCount < 1)
                 return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        /*if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);*/
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -424,8 +418,6 @@ hcrngStatus hcrngLfsr113DeviceRandomNArray_double(hc::accelerator_view accl_view
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
 	if (numberCount < 1)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
-        if (numberCount % streamCount != 0)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount must be a multiple of streamCount", __func__);
         hcrngStatus status = hcrngLfsr113DeviceRandomU01Array_double(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
 	    	status = box_muller_transform_double(accl_view, mu, sigma, outBuffer, numberCount);
