@@ -67,7 +67,7 @@ enum hiprngRngType_t {
 // on NVCC path:
 
 #if defined(__HIP_PLATFORM_HCC__) and not defined(__HIP_PLATFORM_NVCC__)
-#include <hcc_detail/hip_rng.h>
+#include "hcc_detail/hip_rng.h"
 #elif defined(__HIP_PLATFORM_NVCC__) and not defined(__HIP_PLATFORM_HCC__)
 #include <nvcc_detail/hip_rng.h>
 #else
