@@ -154,11 +154,10 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 #undef SetSeedPhilox432
 
 #define Generate(gt)\
-hcrng##gt##Stream *streams##gt = hcrng##gt##CreateStreams((hcrng##gt##StreamCreator*)generator, num, NULL, NULL); \
+hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
 unsigned int *outHost##gt = (unsigned int*)malloc(num * sizeof(unsigned int));\
 hcrngStatus hcStatus##gt = hcrng##gt##RandomUnsignedIntegerArray(streams##gt, 1, 4294967294, num, outHost##gt);\
 hipMemcpy(outputPtr, outHost##gt, num * sizeof(unsigned int), hipMemcpyHostToDevice);\
-free(streams##gt);\
 free(outHost##gt);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
