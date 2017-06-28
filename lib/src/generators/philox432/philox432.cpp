@@ -552,3 +552,99 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view accl_vi
                 }
         return status;
 }
+
+hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        size_t numberCount, int a, int b, int *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
+           int gid = tidx.global[0];
+           if(gid < streamCount/streams_per_thread) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
+              for (int j = 0; j < streams_per_thread; j++)
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomInteger(&streams[streams_per_thread * gid + j], a, b);
+              }
+           }
+        }).wait();
+        return status;
+}
+
+hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        size_t numberCount, int a, int b, int *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
+           int gid = tidx.global[0];
+           if(gid < streamCount/streams_per_thread) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
+              for (int j = 0; j < streams_per_thread; j++)
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomInteger(&streams[streams_per_thread * gid + j], a, b);
+              }
+           }
+        }).wait();
+        return status;
+}
+
+hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
+           int gid = tidx.global[0];
+           if(gid < streamCount/streams_per_thread) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
+              for (int j = 0; j < streams_per_thread; j++)
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomUnsignedInteger(&streams[streams_per_thread * gid + j], a, b);
+              }
+           }
+        }).wait();
+        return status;
+}
+
+hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
+           int gid = tidx.global[0];
+           if(gid < streamCount/streams_per_thread) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
+              for (int j = 0; j < streams_per_thread; j++)
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngPhilox432RandomUnsignedInteger(&streams[streams_per_thread * gid + j], a, b);
+              }
+           }
+        }).wait();
+        return status;
+}

@@ -261,6 +261,19 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
         HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
 	        size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+                size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+                size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+                size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+        HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
+                size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
 	/*! @copybrief hcrngWriteStreamInfo()
 	*  @see hcrngWriteStreamInfo()
 	*/

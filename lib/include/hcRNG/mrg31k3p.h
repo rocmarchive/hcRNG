@@ -271,6 +271,18 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(hc::accelerator_view
 HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
 	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 	
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+        size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+        size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
+HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
+        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+
 /*! @copybrief hcrngWriteStreamInfo()
  *  @see hcrngWriteStreamInfo()
  */
