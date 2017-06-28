@@ -160,7 +160,7 @@ static hcrngStatus Philox432CreateStream(hcrngPhilox432StreamCreator* creator, h
 {
 	//Check params
 	if (buffer == NULL)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): buffer cannot be NULL", __func__);
+		return HCRNG_INVALID_VALUE;
 
 	// use default creator if not given
 	if (creator == NULL)
@@ -215,7 +215,7 @@ hcrngPhilox432Stream* hcrngPhilox432CopyStreams(size_t count, const hcrngPhilox4
 
 	//Check params
 	if (streams == NULL)
-		err_ = hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): stream cannot be NULL", __func__);
+		err_ = HCRNG_INVALID_VALUE;
 
 	if (err_ == HCRNG_SUCCESS)
 		dest = hcrngPhilox432AllocStreams(count, NULL, &err_);
@@ -454,9 +454,9 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(hc::accelerator_view accl_
 
 	//Check params
 	if (streamCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -489,9 +489,9 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(hc::accelerator_view accl_vi
         //accelerator_view accl_view = (acc[1].get_default_view());
 
 	if (streamCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
         hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_single(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
 	    	status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
@@ -510,9 +510,9 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view accl_
         //accelerator_view accl_view = (acc[1].get_default_view());
 
         if (streamCount < 1)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+                return HCRNG_INVALID_VALUE;
         if (numberCount < 1)
-                return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+                return HCRNG_INVALID_VALUE;
         hcrngStatus status = HCRNG_SUCCESS;
         long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
         hc::extent<1> grdExt(size);
@@ -542,9 +542,9 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view accl_vi
         //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
         //accelerator_view accl_view = (acc[1].get_default_view());
 	if (streamCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): streamCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)
-		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): numberCount cannot be less than 1", __func__);
+		return HCRNG_INVALID_VALUE;
         hcrngStatus status = hcrngPhilox432DeviceRandomU01Array_double(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
         if (status == HCRNG_SUCCESS){
 	    	status = box_muller_transform_double(accl_view, mu, sigma, outBuffer, numberCount);
