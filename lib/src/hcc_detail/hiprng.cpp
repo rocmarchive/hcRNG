@@ -155,15 +155,18 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 
 #define Generate(gt)\
 hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-unsigned int *outHost##gt = (unsigned int*)malloc(num * sizeof(unsigned int));\
-hcrngStatus hcStatus##gt = hcrng##gt##RandomUnsignedIntegerArray(streams##gt, 1, 4294967294, num, outHost##gt);\
-hipMemcpy(outputPtr, outHost##gt, num * sizeof(unsigned int), hipMemcpyHostToDevice);\
-free(outHost##gt);\
+hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
+        *accl_view, STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                               unsigned int* outputPtr,
                                                   size_t num) {
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
+
   if(rngtyp == 0){
     Generate(Mrg31k3p)
   }
