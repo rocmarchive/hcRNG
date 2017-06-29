@@ -57,10 +57,7 @@ extern "C" {
 typedef hcrngStateMtgp32 hiprngStateMtgp32_t;
 typedef hcrngStateMtgp32 hiprngStateMtgp32;
 
-typedef struct MTGP32_KERNEL_PARAMS_T {
-  hiprngStateMtgp32 *state;
-  hipStream_t currentStream;
-}mtgp32_kernel_params_t;
+typedef mtgp32_kernel_params mtgp32_kernel_params_t;
 
 
 // Forward declarations
