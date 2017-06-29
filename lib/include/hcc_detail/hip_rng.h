@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <hcRNG/mrg32k3a.h>
 #include <hcRNG/lfsr113.h>
 #include <hcRNG/philox432.h>
+#include <hcRNG/mtgp32.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,35 +53,9 @@ extern "C" {
  * mask This is a mask to make the dimension of state space have
  * just Mersenne Prime. This is redundant.
  */
-typedef struct MTGP32_PARAMS_FAST_T {
-  int mexp;     /* Mersenne exponent. This is redundant. */
-  int pos;      /* pick up position. */
-  int sh1;      /* shift value 1. 0 < sh1 < 32. */
-  int sh2;      /* shift value 2. 0 < sh2 < 32. */
-  uint32_t tbl[16];         /* a small matrix. */
-  uint32_t tmp_tbl[16];     /* a small matrix for tempering. */
-  uint32_t flt_tmp_tbl[16]; /* a small matrix for tempering and converting to float. */
-  uint32_t mask;            /* This is a mask for state space */
-  unsigned char poly_sha1[21]; /**< SHA1 digest */
-} mtgp32_params_fast_t;
 
-// Structure of hiprngStateMtgp32
-typedef struct hiprngStateMtgp32 {
-  uint32_t* offset;     // size: USER_GROUP_NUM
-  uint32_t* index;      // size: USER_GROUP_NUM
-  uint32_t* d_status;   // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
-  // mtgp32 kernel params
-  uint32_t* mexp_tbl;   // size: 1. Redundant
-  uint32_t* param_tbl;  // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* temper_tbl; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* single_temper_tbl; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* pos_tbl;    // size: MTGP32_TN
-  uint32_t* sh1_tbl;    // size: MTGP32_TN
-  uint32_t* sh2_tbl;    // size: MTGP32_TN
-  uint32_t* mask;       // size: 1
-} hiprngStateMtgp32;
-
-typedef hiprngStateMtgp32 hiprngStateMtgp32_t;
+typedef hcrngStateMtgp32 hiprngStateMtgp32_t;
+typedef hcrngStateMtgp32 hiprngStateMtgp32;
 
 typedef struct MTGP32_KERNEL_PARAMS_T {
   hiprngStateMtgp32 *state;

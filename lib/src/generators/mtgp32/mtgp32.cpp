@@ -52,8 +52,8 @@ void mtgp32_init_state(uint32_t array[], const mtgp32_params_fast_t* para,
 
 
 // C-style
-void HipRandStateMtgp32_init(hc::accelerator_view accl_view,
-                             HipRandStateMtgp32* s) {
+void hcrngStateMtgp32_init(hc::accelerator_view accl_view,
+                             hcrngStateMtgp32* s) {
   // kernel params
   // get target accelerator
   hc::accelerator accl = accl_view.get_accelerator();
@@ -89,7 +89,7 @@ void HipRandStateMtgp32_init(hc::accelerator_view accl_view,
     s->member = NULL;          \
   }
 // TODO: Big memory leak and cause device buffer allocation fail if exits abnormally
-void HipRandStateMtgp32_release(HipRandStateMtgp32* s) {
+void hcrngStateMtgp32_release(hcrngStateMtgp32* s) {
   FREE_MEMBER(s, param_tbl);
   FREE_MEMBER(s, temper_tbl);
   FREE_MEMBER(s, single_temper_tbl);
@@ -109,7 +109,7 @@ void HipRandStateMtgp32_release(HipRandStateMtgp32* s) {
 int mtgp32_init_params_kernel(
     hc::accelerator_view accl_view,
     const mtgp32_params_fast_t* params,
-    HipRandStateMtgp32*& s)
+    hcrngStateMtgp32*& s)
 {
   const uint32_t* av_param_tbl = (s->param_tbl);
   const uint32_t* av_temper_tbl = (s->temper_tbl);
@@ -153,10 +153,10 @@ int mtgp32_init_params_kernel(
   return 0;
 }
 
-// Initialize HipRandStateMtgp32 by seed
+// Initialize hcrngStateMtgp32 by seed
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
-    const HipRandStateMtgp32* s,
+    const hcrngStateMtgp32* s,
     unsigned long seed)
 {
   seed = seed ^ (seed >> 32);

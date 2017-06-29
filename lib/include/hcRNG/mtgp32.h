@@ -29,21 +29,21 @@ using namespace hc;
 #define BLOCK_SIZE 256
 #define MAX_NUM_BLOCKS 64
 
-// Structure of HipRandStateMtgp32
-typedef struct HipRandStateMtgp32 {
-  uint32_t* offset;     // size: USER_GROUP_NUM
-  uint32_t* index;      // size: USER_GROUP_NUM
-  uint32_t* d_status;   // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
+// Structure of hcrngStateMtgp32
+typedef struct hcrngStateMtgp32 {
+  uint32_t offset[USER_GROUP_NUM]; // size: USER_GROUP_NUM
+  uint32_t index[USER_GROUP_NUM];  // size: USER_GROUP_NUM
+  uint32_t d_status[USER_GROUP_NUM * MTGP32_STATE_SIZE]; // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
   // mtgp32 kernel params
-  uint32_t* mexp_tbl;   // size: 1. Redundant
-  uint32_t* param_tbl;  // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* temper_tbl; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* single_temper_tbl; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t* pos_tbl;    // size: MTGP32_TN
-  uint32_t* sh1_tbl;    // size: MTGP32_TN
-  uint32_t* sh2_tbl;    // size: MTGP32_TN
-  uint32_t* mask;       // size: 1
-} HipRandStateMtgp32;
+  uint32_t mexp_tbl[HcRAND_GROUP_NUM];                      // size: 1. Redundant
+  uint32_t param_tbl[HcRAND_GROUP_NUM * MTGP32_TN];         // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN];        // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t single_temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN]; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t pos_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh1_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh2_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t mask[1];             // size: 1
+} hcrngStateMtgp32;
 
 // host array
 typedef struct HOSTRandStateMtgp32 {
@@ -61,20 +61,20 @@ typedef struct HOSTRandStateMtgp32 {
   uint32_t mask[1];             // size: 1
 } HOSTRandStateMtgp32;
 
-void HipRandStateMtgp32_init(
-    hc::accelerator_view accl_view, HipRandStateMtgp32* s);
-void HipRandStateMtgp32_release(HipRandStateMtgp32* s);
-void HipRandStateMtgp32_copy_D2H(void* src, void* dst);
-void HipRandStateMtgp32_copy_H2D(void* src, void* dst);
+void hcrngStateMtgp32_init(
+    hc::accelerator_view accl_view, hcrngStateMtgp32* s);
+void hcrngStateMtgp32_release(hcrngStateMtgp32* s);
+void hcrngStateMtgp32_copy_D2H(void* src, void* dst);
+void hcrngStateMtgp32_copy_H2D(void* src, void* dst);
 
 // Device APIs
 int mtgp32_init_params_kernel(
     hc::accelerator_view accl_view,
     const mtgp32_params_fast_t* params,
-    HipRandStateMtgp32*& s);
+    hcrngStateMtgp32*& s);
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
-    const HipRandStateMtgp32* s,
+    const hcrngStateMtgp32* s,
     unsigned long seed);
 /**
  * The function of the recursion formula calculation.
@@ -378,7 +378,7 @@ static
 inline
 void user_log_normal_kernel(
     hc::accelerator_view accl_view,
-    HipRandStateMtgp32 *s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     double mean,
     double stddev)
@@ -433,7 +433,7 @@ template <typename UnaryFunction, typename T>
 inline
 void user_uniform_kernel(
     hc::accelerator_view accl_view,
-    HipRandStateMtgp32 *s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     int size,
     UnaryFunction f)
@@ -483,7 +483,7 @@ void user_uniform_kernel(
 template <typename UnaryFunction, typename T>
 void user_normal_kernel(
     hc::accelerator_view accl_view,
-    HipRandStateMtgp32 *s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     int size,
     UnaryFunction f)
