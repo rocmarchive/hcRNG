@@ -62,7 +62,7 @@ void hcrngStateMtgp32_copy_H2D(void* src, void* dst);
 int mtgp32_init_params_kernel(
     hc::accelerator_view accl_view,
     const mtgp32_params_fast_t* params,
-    hcrngStateMtgp32*& s);
+    mtgp32_kernel_params*& s);
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
     const hcrngStateMtgp32* s,

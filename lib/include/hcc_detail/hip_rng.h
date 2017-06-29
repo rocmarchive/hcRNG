@@ -116,6 +116,19 @@ hiprngStatus_t hiprngMakeMTGP32Constants (const mtgp32_params_fast_t params[], m
 
 hiprngStatus_t hiprngMakeMTGP32KernelState (hiprngStateMtgp32_t* s, mtgp32_params_fast_t params[], mtgp32_kernel_params_t* k, int  n, unsigned long long seed );
 
+/*__host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p )
+    Set up constant parameters for the mtgp32 generator.
+    Parameters
+
+    params
+        - Pointer to an array of type mtgp32_params_fast_t in host memory 
+    p
+        - pointer to a structure of type mtgp32_kernel_params_t in device memory.
+*/
+
+
+__host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p );
+
 
 
 #ifdef __cplusplus

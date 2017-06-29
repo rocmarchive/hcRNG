@@ -108,16 +108,16 @@ void hcrngStateMtgp32_release(hcrngStateMtgp32* s) {
 int mtgp32_init_params_kernel(
     hc::accelerator_view accl_view,
     const mtgp32_params_fast_t* params,
-    hcrngStateMtgp32*& s)
+    mtgp32_kernel_params*& s)
 {
-  const uint32_t* av_param_tbl = (s->k->param_tbl);
-  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
-  const uint32_t* av_single_temper_tbl = (s->k->single_temper_tbl);
-  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
-  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
-  const uint32_t* av_mask = (s->k->mask);
-  const uint32_t* av_mexp_tbl = (s->k->mexp_tbl);
+  const uint32_t* av_param_tbl = (s->param_tbl);
+  const uint32_t* av_temper_tbl = (s->temper_tbl);
+  const uint32_t* av_single_temper_tbl = (s->single_temper_tbl);
+  const uint32_t* av_pos_tbl = (s->pos_tbl);
+  const uint32_t* av_sh1_tbl = (s->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->sh2_tbl);
+  const uint32_t* av_mask = (s->mask);
+  const uint32_t* av_mexp_tbl = (s->mexp_tbl);
   // Prepare data source
   uint32_t vec_param[HcRAND_GROUP_NUM * MTGP32_TS] = {0x0};
   uint32_t vec_temper[HcRAND_GROUP_NUM * MTGP32_TS] = {0x0};
