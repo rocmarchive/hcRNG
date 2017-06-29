@@ -29,8 +29,8 @@ TEST(hiprng_common, hip_SetStream_Mrg32k3a) {
   status = hiprngCreateGenerator(&gen, HIPRNG_RNG_PSEUDO_MRG32K3A);
   EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
-//  status =  hiprngSetStream(&gen, hipStreamDefault);
-//  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
+  status =  hiprngSetStream(&gen, hipStreamDefault);
+  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
   hiprngDestroyGenerator(gen);
 }
@@ -44,8 +44,8 @@ TEST(hiprng_common, hip_SetStream_Lfsr113) {
   status = hiprngCreateGenerator(&gen, HIPRNG_RNG_PSEUDO_LFSR113);
   EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
- // status =  hiprngSetStream(&gen, hipStreamDefault);
-//  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
+  status =  hiprngSetStream(&gen, hipStreamDefault);
+  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
   hiprngDestroyGenerator(gen);
 }
@@ -59,8 +59,8 @@ TEST(hiprng_common, hip_SetStream_Philox432) {
   status = hiprngCreateGenerator(&gen, HIPRNG_RNG_PSEUDO_PHILOX432);
   EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
-//  status =  hiprngSetStream(&gen, hipStreamDefault);
-//  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
+  status =  hiprngSetStream(&gen, hipStreamDefault);
+  EXPECT_EQ(status, HIPRNG_STATUS_SUCCESS);
 
   hiprngDestroyGenerator(gen);
 }
