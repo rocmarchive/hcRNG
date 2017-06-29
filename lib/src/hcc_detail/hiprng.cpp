@@ -305,8 +305,14 @@ hiprngStatus_t hiprngGenerateNormalDouble(
 #undef GenerateNormalDouble
 
 #define Destroy(gt)\
-free(streams##gt);\
-hipFree(streams_buffer##gt);\
+if (streams##gt != NULL){\
+  free(streams##gt);\
+  streams##gt = NULL;\
+}\
+if (streams_buffer##gt != NULL){\
+  hipFree(streams_buffer##gt);\
+  streams_buffer##gt = NULL;\
+}\
 return hipHCRNGStatusToHIPStatus(hcrng##gt##DestroyStreamCreator((hcrng##gt##StreamCreator*)generator));
 
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
