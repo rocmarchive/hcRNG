@@ -29,37 +29,28 @@ using namespace hc;
 #define BLOCK_SIZE 256
 #define MAX_NUM_BLOCKS 64
 
+
+// mtgp32_kernel_params
+typedef struct mtgp32_kernel_params {
+  uint32_t offset[USER_GROUP_NUM]; // size: USER_GROUP_NUM
+  uint32_t index[USER_GROUP_NUM];  // size: USER_GROUP_NUM
+  uint32_t d_status[USER_GROUP_NUM * MTGP32_STATE_SIZE]; // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
+  // mtgp32 kernel params
+  uint32_t mexp_tbl[HcRAND_GROUP_NUM];                      // size: 1. Redundant
+  uint32_t param_tbl[HcRAND_GROUP_NUM * MTGP32_TN];         // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN];        // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t single_temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN]; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t pos_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh1_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh2_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t mask[1];             // size: 1
+} mtgp32_kernel_params;
+
+
 // Structure of hcrngStateMtgp32
 typedef struct hcrngStateMtgp32 {
-  uint32_t offset[USER_GROUP_NUM]; // size: USER_GROUP_NUM
-  uint32_t index[USER_GROUP_NUM];  // size: USER_GROUP_NUM
-  uint32_t d_status[USER_GROUP_NUM * MTGP32_STATE_SIZE]; // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
-  // mtgp32 kernel params
-  uint32_t mexp_tbl[HcRAND_GROUP_NUM];                      // size: 1. Redundant
-  uint32_t param_tbl[HcRAND_GROUP_NUM * MTGP32_TN];         // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN];        // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t single_temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN]; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t pos_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t sh1_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t sh2_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t mask[1];             // size: 1
+  mtgp32_kernel_params* k;  // points to all kernel parameters
 } hcrngStateMtgp32;
-
-// host array
-typedef struct HOSTRandStateMtgp32 {
-  uint32_t offset[USER_GROUP_NUM]; // size: USER_GROUP_NUM
-  uint32_t index[USER_GROUP_NUM];  // size: USER_GROUP_NUM
-  uint32_t d_status[USER_GROUP_NUM * MTGP32_STATE_SIZE]; // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
-  // mtgp32 kernel params
-  uint32_t mexp_tbl[HcRAND_GROUP_NUM];                      // size: 1. Redundant
-  uint32_t param_tbl[HcRAND_GROUP_NUM * MTGP32_TN];         // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN];        // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t single_temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN]; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
-  uint32_t pos_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t sh1_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t sh2_tbl[MTGP32_TN];  // size: MTGP32_TN
-  uint32_t mask[1];             // size: 1
-} HOSTRandStateMtgp32;
 
 void hcrngStateMtgp32_init(
     hc::accelerator_view accl_view, hcrngStateMtgp32* s);
@@ -391,15 +382,15 @@ void user_log_normal_kernel(
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->param_tbl);
-  const uint32_t* av_temper_tbl = (s->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->sh2_tbl);
-  const uint32_t* av_offset = (s->offset);
-  const uint32_t* av_index = (s->index);
-  const uint32_t* av_pos_tbl = (s->pos_tbl);
-  const uint32_t* av_mask = (s->mask);
-  const uint32_t* av_d_status = (s->d_status);
+  const uint32_t* av_param_tbl = (s->k->param_tbl);
+  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
+  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
+  const uint32_t* av_offset = (s->k->offset);
+  const uint32_t* av_index = (s->k->index);
+  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
+  const uint32_t* av_mask = (s->k->mask);
+  const uint32_t* av_d_status = (s->k->d_status);
 
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
@@ -445,15 +436,15 @@ void user_uniform_kernel(
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->param_tbl);
-  const uint32_t* av_temper_tbl = (s->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->sh2_tbl);
-  const uint32_t* av_offset = (s->offset);
-  const uint32_t* av_index = (s->index);
-  const uint32_t* av_pos_tbl = (s->pos_tbl);
-  const uint32_t* av_mask = (s->mask);
-  const uint32_t* av_d_status = (s->d_status);
+  const uint32_t* av_param_tbl = (s->k->param_tbl);
+  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
+  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
+  const uint32_t* av_offset = (s->k->offset);
+  const uint32_t* av_index = (s->k->index);
+  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
+  const uint32_t* av_mask = (s->k->mask);
+  const uint32_t* av_d_status = (s->k->d_status);
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
@@ -495,15 +486,15 @@ void user_normal_kernel(
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->param_tbl);
-  const uint32_t* av_temper_tbl = (s->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->sh2_tbl);
-  const uint32_t* av_offset = (s->offset);
-  const uint32_t* av_index = (s->index);
-  const uint32_t* av_pos_tbl = (s->pos_tbl);
-  const uint32_t* av_mask = (s->mask);
-  const uint32_t* av_d_status = (s->d_status);
+  const uint32_t* av_param_tbl = (s->k->param_tbl);
+  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
+  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
+  const uint32_t* av_offset = (s->k->offset);
+  const uint32_t* av_index = (s->k->index);
+  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
+  const uint32_t* av_mask = (s->k->mask);
+  const uint32_t* av_d_status = (s->k->d_status);
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];

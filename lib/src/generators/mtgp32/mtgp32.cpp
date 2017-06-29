@@ -54,39 +54,38 @@ void mtgp32_init_state(uint32_t array[], const mtgp32_params_fast_t* para,
 // C-style
 void hcrngStateMtgp32_init(hc::accelerator_view accl_view,
                              hcrngStateMtgp32* s) {
-  // kernel params
+/*  // kernel params
   // get target accelerator
   hc::accelerator accl = accl_view.get_accelerator();
   uint32_t* arrP = hc::am_alloc((HcRAND_GROUP_NUM * MTGP32_TS * sizeof(uint32_t)), accl, 0);
-  s->param_tbl = arrP;
+  s->k->param_tbl = arrP;
   uint32_t* arrT = hc::am_alloc((HcRAND_GROUP_NUM * MTGP32_TS * sizeof(uint32_t)), accl, 0);
-  s->temper_tbl = arrT;
+  s->k->temper_tbl = arrT;
   uint32_t* arrS = hc::am_alloc((HcRAND_GROUP_NUM * MTGP32_TS * sizeof(uint32_t)), accl, 0);
-  s->single_temper_tbl = arrS;
+  s->k->single_temper_tbl = arrS;
   uint32_t* arrPos = hc::am_alloc(HcRAND_GROUP_NUM * sizeof(uint32_t), accl, 0);
-  s->pos_tbl = arrPos;
+  s->k->pos_tbl = arrPos;
   uint32_t* arrSh1 = hc::am_alloc(HcRAND_GROUP_NUM * sizeof(uint32_t), accl, 0);
-  s->sh1_tbl = arrSh1;
+  s->k->sh1_tbl = arrSh1;
   uint32_t* arrSh2 = hc::am_alloc(HcRAND_GROUP_NUM * sizeof(uint32_t), accl, 0);
-  s->sh2_tbl = arrSh2;
+  s->k->sh2_tbl = arrSh2;
   uint32_t* arrMask = hc::am_alloc(1 * sizeof(uint32_t), accl, 0);
-  s->mask = arrMask;
+  s->k->mask = arrMask;
   // Redundant member
   uint32_t* arrMexp = hc::am_alloc((HcRAND_GROUP_NUM * sizeof(uint32_t)), accl, 0);
-  s->mexp_tbl = arrMexp;
+  s->k->mexp_tbl = arrMexp;
   // states
   uint32_t* arrStatus = hc::am_alloc((USER_GROUP_NUM * MTGP32_STATE_SIZE * sizeof(uint32_t)), accl, 0);
-  s->d_status = arrStatus;
+  s->k->d_status = arrStatus;
   uint32_t* arrOffset = hc::am_alloc((USER_GROUP_NUM * sizeof(uint32_t)), accl, 0);
-  s->offset = arrOffset;
+  s->k->offset = arrOffset;
   uint32_t* arrIndex = hc::am_alloc((USER_GROUP_NUM * sizeof(uint32_t)), accl, 0);
-  s->index = arrIndex;
+  s->k->index = arrIndex;*/
 }
 
 #define FREE_MEMBER(s, member) \
-  if (s->member) {             \
-    hc::am_free(s->member);  \
-    s->member = NULL;          \
+  if (s->k->member) {             \
+    hc::am_free(s->k->member);  \
   }
 // TODO: Big memory leak and cause device buffer allocation fail if exits abnormally
 void hcrngStateMtgp32_release(hcrngStateMtgp32* s) {
@@ -111,14 +110,14 @@ int mtgp32_init_params_kernel(
     const mtgp32_params_fast_t* params,
     hcrngStateMtgp32*& s)
 {
-  const uint32_t* av_param_tbl = (s->param_tbl);
-  const uint32_t* av_temper_tbl = (s->temper_tbl);
-  const uint32_t* av_single_temper_tbl = (s->single_temper_tbl);
-  const uint32_t* av_pos_tbl = (s->pos_tbl);
-  const uint32_t* av_sh1_tbl = (s->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->sh2_tbl);
-  const uint32_t* av_mask = (s->mask);
-  const uint32_t* av_mexp_tbl = (s->mexp_tbl);
+  const uint32_t* av_param_tbl = (s->k->param_tbl);
+  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
+  const uint32_t* av_single_temper_tbl = (s->k->single_temper_tbl);
+  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
+  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
+  const uint32_t* av_mask = (s->k->mask);
+  const uint32_t* av_mexp_tbl = (s->k->mexp_tbl);
   // Prepare data source
   uint32_t vec_param[HcRAND_GROUP_NUM * MTGP32_TS] = {0x0};
   uint32_t vec_temper[HcRAND_GROUP_NUM * MTGP32_TS] = {0x0};
@@ -161,11 +160,11 @@ int mtgp32_init_seed_kernel(
 {
   seed = seed ^ (seed >> 32);
   int nGroups = USER_GROUP_NUM;
-  const uint32_t* av_param_tbl = (s->param_tbl);
-  uint32_t* av_offset = (s->offset);
-  uint32_t* av_index = (s->index);
-  const uint32_t* av_mexp_tbl = (s->mexp_tbl);
-  uint32_t* av_d_status = (s->d_status);
+  const uint32_t* av_param_tbl = (s->k->param_tbl);
+  uint32_t* av_offset = (s->k->offset);
+  uint32_t* av_index = (s->k->index);
+  const uint32_t* av_mexp_tbl = (s->k->mexp_tbl);
+  uint32_t* av_d_status = (s->k->d_status);
   hc::extent<1> ext(nGroups);
   hc::parallel_for_each(accl_view, ext, [=](hc::index<1> idx) [[hc]] {
     const int id = idx[0];
