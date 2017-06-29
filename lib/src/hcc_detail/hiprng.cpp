@@ -358,9 +358,11 @@ __host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t p
 
   // Invoke the init params kernel
   int ret = mtgp32_init_params_kernel(current_default_accl_view, params, p); 
-  if (ret != 0) return HIPRNG_STATUS_ALLOCATION_FAILED;
+  if (ret != 0) return HIPRNG_STATUS_INITIALIZATION_FAILED;
   return HIPRNG_STATUS_SUCCESS;
 }
+
+
 
 #undef Destroy
 
