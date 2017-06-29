@@ -363,6 +363,27 @@ __host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t p
 }
 
 
+__host__ hiprngStatus_t hiprngMakeMTGP32KernelState(hiprngStateMtgp32_t *s,
+                                            mtgp32_params_fast_t params[],
+                                            mtgp32_kernel_params_t *k,
+                                            int n,
+                                            unsigned long long seed) {
+  // TODO: Currently getting default accl_view from current device ID. Got to use the streamId set by user using hiprngSetStream
+  int device_id;
+  hipError_t err = hipGetDevice(&device_id); 
+  if (err != hipSuccess) return HIPRNG_STATUS_ALLOCATION_FAILED;
+  hc::accelerator current_accl; 
+  err = hipHccGetAccelerator(device_id, &current_accl);
+  if (err != hipSuccess) return HIPRNG_STATUS_ALLOCATION_FAILED;
+  hc::accelerator_view current_default_accl_view = current_accl.get_default_view();
+
+  // Invoke the init_seed kernel
+  int ret = mtgp32_init_seed_kernel(current_default_accl_view, s, k, n, seed); 
+  if (ret != 0) return HIPRNG_STATUS_INITIALIZATION_FAILED;
+  return HIPRNG_STATUS_SUCCESS;
+}
+
+
 
 #undef Destroy
 

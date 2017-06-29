@@ -49,6 +49,9 @@ typedef struct mtgp32_kernel_params {
 
 // Structure of hcrngStateMtgp32
 typedef struct hcrngStateMtgp32 {
+  uint32_t s[MTGP32_STATE_SIZE];
+  uint32_t offset;
+  uint32_t pIdx;
   mtgp32_kernel_params* k;  // points to all kernel parameters
 } hcrngStateMtgp32;
 
@@ -65,7 +68,9 @@ int mtgp32_init_params_kernel(
     mtgp32_kernel_params*& s);
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
-    const hcrngStateMtgp32* s,
+    hcrngStateMtgp32* state,
+    const mtgp32_kernel_params* p,
+    int n,
     unsigned long seed);
 /**
  * The function of the recursion formula calculation.

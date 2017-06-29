@@ -155,16 +155,18 @@ int mtgp32_init_params_kernel(
 // Initialize hcrngStateMtgp32 by seed
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
-    const hcrngStateMtgp32* s,
+    hcrngStateMtgp32* state,
+    mtgp32_kernel_params* p,
+    int n,
     unsigned long seed)
 {
   seed = seed ^ (seed >> 32);
-  int nGroups = USER_GROUP_NUM;
-  const uint32_t* av_param_tbl = (s->k->param_tbl);
-  uint32_t* av_offset = (s->k->offset);
-  uint32_t* av_index = (s->k->index);
-  const uint32_t* av_mexp_tbl = (s->k->mexp_tbl);
-  uint32_t* av_d_status = (s->k->d_status);
+  int nGroups = n;
+  uint32_t* av_param_tbl = (p->param_tbl);
+  uint32_t* av_offset = &(p->offset[0]);
+  uint32_t* av_index = &(p->index[0]);
+  uint32_t* av_mexp_tbl = (p->mexp_tbl);
+  uint32_t* av_d_status = &(p->d_status[0]);
   hc::extent<1> ext(nGroups);
   hc::parallel_for_each(accl_view, ext, [=](hc::index<1> idx) [[hc]] {
     const int id = idx[0];
@@ -198,10 +200,15 @@ int mtgp32_init_seed_kernel(
 
     for (i = 1; i < size; i++) {
       status[i] ^= UINT32_C(1812433253) * (status[i - 1] ^ (status[i - 1] >> 30)) + i;
+      state[id].s[i] = status[i];
     }
 
     av_offset[id] = 0;
     av_index[id] = id;
+   
+    // Initialize the state space now
+    state[id].offset = av_offset[id];
+    state[id].pIdx = av_index[id];
   }).wait();
   return 0;
 }
