@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 #pragma once
 
-#include <hcRNG/hcRNG.h>
+#include "../hcRNG/hcRNG.h"
 #include <hip/hip_runtime_api.h>
 #include <hip/hip_hcc.h>
-#include <hcRNG/mrg31k3p.h>
-#include <hcRNG/mrg32k3a.h>
-#include <hcRNG/lfsr113.h>
-#include <hcRNG/philox432.h>
+#include "../hcRNG/mrg31k3p.h"
+#include "../hcRNG/mrg32k3a.h"
+#include "../hcRNG/lfsr113.h"
+#include "../hcRNG/philox432.h"
 
 #ifdef __cplusplus
 extern "C" {
