@@ -3,24 +3,11 @@
 * @brief Implementation of functions defined in hcRNG.h
 */
 #include "hcRNG/hcRNG.h"
-#include <iostream>
-#include <hc.hpp>
-#include "hc_short_vector.hpp"
-
-//using namespace hc;
-using namespace hc;
-using namespace hc::short_vector;
-using namespace std;
-
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <unistd.h>
 #define CASE_ERR_(code,msg) case code: base = msg; break
 #define CASE_ERR(code)      CASE_ERR_(HCRNG_ ## code, MSG_ ## code)
 
-
-//tern char errorString[1024];
 char errorString[1024]                          = "";
 static const char MSG_DEFAULT[]                 = "unknown status";
 static const char MSG_SUCCESS[]                 = "success";

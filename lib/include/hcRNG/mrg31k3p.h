@@ -8,12 +8,6 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
-#ifdef __cplusplus 
-
-//extern "C" {
-
-#endif 
-
 namespace hc {
   class accelerator;
   class accelerator_view;
@@ -288,8 +282,5 @@ HCRNGAPI hcrngStatus hcrngMrg31k3pDeviceRandomUnsignedIntegerArray_double(hc::ac
  */
 HCRNGAPI hcrngStatus hcrngMrg31k3pWriteStreamInfo(const hcrngMrg31k3pStream* stream, FILE *file);
 
-#ifdef __cplusplus 
-//}
-#endif //__cplusplus
 #endif // MRG31K3P_H
 

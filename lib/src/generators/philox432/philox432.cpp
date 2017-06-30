@@ -1,16 +1,5 @@
 #include "hcRNG/philox432.h"
-#include "hcRNG/hcRNG.h"
 #include "hcRNG/box_muller_transform.h"
-#include <iostream>
-#include <hc.hpp>
-#include "hc_short_vector.hpp"
-
-//using namespace hc;
-using namespace hc;
-using namespace hc::short_vector;
-using namespace std;
-
-#include <stdlib.h>
 #define BLOCK_SIZE 256
 // code that is common to host and device
 #include "hcRNG/private/philox432.c.h"
@@ -255,11 +244,6 @@ hcrngStatus hcrngPhilox432WriteStreamInfo(const hcrngPhilox432Stream* stream, FI
 	if (file == NULL)
 		return hcrngSetErrorString(HCRNG_INVALID_VALUE, "%s(): file cannot be NULL", __func__);
 
-	//The Initial state of the Stream
-	//fprintf(file, "initial : (ctr, index)=( %u %u %u %u , [%u]) [deck = { %u %u %u %u}] \n\n",
-	//	stream->initial.ctr.H.msb, stream->initial.ctr.H.lsb, stream->initial.ctr.L.msb, stream->initial.ctr.L.lsb, stream->initial.deckIndex,
-	//	stream->initial.deck[3], stream->initial.deck[2], stream->initial.deck[1], stream->initial.deck[0]);
-
 	//The Current state of the Stream
 	fprintf(file, "Current : (ctr, index)=( %u %u %u %u , [%u])  [deck = { %u %u %u %u}] \n\n",
 		stream->current.ctr.H.msb, stream->current.ctr.H.lsb, stream->current.ctr.L.msb, stream->current.ctr.L.lsb, stream->current.deckIndex
@@ -269,43 +253,6 @@ hcrngStatus hcrngPhilox432WriteStreamInfo(const hcrngPhilox432Stream* stream, FI
 
 	return HCRNG_SUCCESS;
 }
-
-//hcrngStatus hcrngPhilox432AdvanceStreams(size_t count, hcrngPhilox432Stream* streams, int e, int c)
-//{
-//
-//
-//	hcrngPhilox432Counter Steps = { { 0, 0 }, { 0, 0 } };
-//
-//	//Calculate the Nbr of steps in 128bit counter
-//	unsigned char slotId = abs(e) / 32;
-//	unsigned char remider = abs(e) % 32;
-//
-//	if (e != 0)
-//	{
-//		unsigned int value = (1 << remider) + (e > 0 ? 1 : -1)*c;
-//
-//		if (slotId == 0)
-//			Steps.L.lsb = value;
-//		else if (slotId == 1)
-//			Steps.L.msb = value;
-//		else if (slotId == 2)
-//			Steps.H.lsb = value;
-//		else
-//			Steps.H.msb = value;
-//	}
-//	else
-//		Steps.L.lsb = c; 
-//
-//	//Update the stream counter
-//	for (size_t i = 0; i < count; i++)
-//	{
-//		if (e >= 0)
-//			streams[i].current.ctr = hcrngPhilox432Add(streams[i].current.ctr, Steps);
-//		else streams[i].current.ctr = hcrngPhilox432Substract(streams[i].current.ctr, Steps);
-//	}
-//
-//	return HCRNG_SUCCESS;
-//}
 
 void hcrngPhilox432AdvanceStream_(hcrngPhilox432Stream* stream, int e, int c)
 {
@@ -449,8 +396,6 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(hc::accelerator_view accl_
 	size_t numberCount, float* outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 
 	//Check params
 	if (streamCount < 1)
@@ -485,8 +430,6 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(hc::accelerator_view accl_vi
 	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 
 	if (streamCount < 1)
 		return HCRNG_INVALID_VALUE;
@@ -506,8 +449,6 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view accl_
         size_t numberCount, double* outBuffer, int streamlength, size_t streams_per_thread)
 {
         //Check params
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
@@ -539,8 +480,6 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(hc::accelerator_view accl_
 hcrngStatus hcrngPhilox432DeviceRandomNArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngPhilox432Stream *streams,
 	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength, size_t streams_per_thread)
 {
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 	if (streamCount < 1)
 		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)

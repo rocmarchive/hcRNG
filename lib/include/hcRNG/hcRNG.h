@@ -13,12 +13,6 @@
 /** \internal
  */
 
-#ifdef __cplusplus
-
-extern "C" {
-
-#endif //(__cplusplus)
-
 #ifdef HCRNG_SINGLE_PRECISION
   #define _HCRNG_FPTYPE float
 #else
@@ -58,10 +52,6 @@ typedef enum hcrngStatus_ : short
 
 static int rngtyp;
 
-/*#ifdef __cplusplus
-extern "C" {
-#endif
-*/
 /*! @brief Retrieve the last error message.
  *
  *  The buffer containing the error message is internally allocated and must
@@ -89,16 +79,6 @@ HCRNGAPI const char* hcrngGetLibraryRoot();
  *  @return     The value of err (for convenience).
  */
 hcrngStatus hcrngSetErrorString(int err, const char* msg, ...);
-/*
-#ifdef __cplusplus
-}
-#endif
-*/
-#ifdef __cplusplus
-
-}
-
-#endif //(__cplusplus)
 
 #endif /* HCRNG_H */
 

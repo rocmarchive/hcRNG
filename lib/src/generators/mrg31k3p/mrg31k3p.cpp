@@ -1,15 +1,5 @@
 #include "hcRNG/mrg31k3p.h"
-#include "hcRNG/hcRNG.h"
 #include "hcRNG/box_muller_transform.h"
-#include <hc.hpp>
-#include "hc_short_vector.hpp"
-
-//using namespace hc;
-using namespace hc;
-using namespace hc::short_vector;
-using namespace std;
-
-#include <stdlib.h>
 #define BLOCK_SIZE 256
 #define MODULAR_NUMBER_TYPE unsigned int
 #define MODULAR_FIXED_SIZE 3
@@ -376,8 +366,6 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_single(hc::accelerator_view accl_v
 	size_t numberCount, float *outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 	//Check params
 	if (streamCount < 1)
 		return HCRNG_INVALID_VALUE;
@@ -411,8 +399,6 @@ hcrngStatus hcrngMrg31k3pDeviceRandomNArray_single(hc::accelerator_view accl_vie
 	size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
 {
 #define HCRNG_SINGLE_PRECISION
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 	if (streamCount < 1)
 		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)
@@ -430,8 +416,6 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(hc::accelerator_view accl_v
         size_t numberCount, double *outBuffer, int streamlength, size_t streams_per_thread)
 {
         //Check params
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
         if (numberCount < 1)
@@ -462,8 +446,6 @@ hcrngStatus hcrngMrg31k3pDeviceRandomU01Array_double(hc::accelerator_view accl_v
 hcrngStatus hcrngMrg31k3pDeviceRandomNArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg31k3pStream *streams,
 	size_t numberCount, double mu, double sigma, double *outBuffer, int streamlength, size_t streams_per_thread)
 {
-        //std::vector<hc::accelerator>acc = hc::accelerator::get_all();
-        //accelerator_view accl_view = (acc[1].get_default_view());
 	if (streamCount < 1)
 		return HCRNG_INVALID_VALUE;
 	if (numberCount < 1)

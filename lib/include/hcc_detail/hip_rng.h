@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 #pragma once
 
-#include "../hcRNG/hcRNG.h"
-#include <hip/hip_runtime_api.h>
 #include <hip/hip_hcc.h>
+#include <hip/hip_runtime_api.h>
+#include "../hcRNG/hcRNG.h"
 #include "../hcRNG/mrg31k3p.h"
 #include "../hcRNG/mrg32k3a.h"
 #include "../hcRNG/lfsr113.h"
@@ -33,8 +33,6 @@ THE SOFTWARE.
 extern "C" {
 #endif
 
-// Forward declarations
-//enum hcrngStatus: short;
 typedef void *hiprngGenerator_t;
 
 hcrngMrg31k3pStream *streams_bufferMrg31k3p = NULL;
@@ -48,13 +46,6 @@ hcrngLfsr113Stream *streamsLfsr113 = NULL;
 hcrngPhilox432Stream *streamsPhilox432 = NULL;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
-
-//const char* hiprngGetErrorString();
-//const char* hiprngGetLibraryRoot();
-
-//hiprngStatus_t hiprngSetErrorString(int err, const char* msg,
-//                                                  ...);
-//static int rngtyp; 
 
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream);
       

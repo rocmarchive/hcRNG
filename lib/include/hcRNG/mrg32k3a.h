@@ -8,12 +8,6 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
-#ifdef __cplusplus
-
-//extern "C" {
-
-#endif
-
 namespace hc {
   class accelerator;
   class accelerator_view;
@@ -282,7 +276,4 @@ static hcrngMrg32k3aStreamCreator defaultStreamCreator_Mrg32k3a = {
         HCRNGAPI hcrngStatus hcrngMrg32k3aDeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngMrg32k3aStream *streams,
                 size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
-#ifdef __cplusplus
-//}
-#endif //__cplusplus
 #endif // MRG32K3A_H

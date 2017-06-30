@@ -8,10 +8,6 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
-#ifdef __cplusplus 
-//extern "C" {
-#endif
-
 /*  @brief State type of a Philox432 stream
 *  The state is a seed consisting of a 128bits counter
 *  @see hcrngStreamState
@@ -279,7 +275,4 @@ static  hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = { BASE_CREA
 	*/
 	HCRNGAPI hcrngStatus hcrngPhilox432WriteStreamInfo(const hcrngPhilox432Stream* stream, FILE *file);
 
-#ifdef __cplusplus 
-//}
-#endif // __cplusplus
 #endif // PHILOX432_H

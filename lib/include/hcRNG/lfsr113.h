@@ -8,10 +8,6 @@
 #include "hcRNG.h"
 #include <stdio.h>
 
-#ifdef __cplusplus
-//extern "C" {
-#endif 
-
 /*  @brief State type of a Lfsr113 stream
 *  The state is a seed consisting of six unsigned 32-bit integers.
 *  @see hcrngStreamState
@@ -270,7 +266,4 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
 	*/
 	HCRNGAPI hcrngStatus hcrngLfsr113WriteStreamInfo(const hcrngLfsr113Stream* stream, FILE *file);
 
-#ifdef __cplusplus
-//}
-#endif //__cplusplus
 #endif // LFSR113_H
