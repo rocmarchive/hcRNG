@@ -57,35 +57,42 @@ hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned lo
   return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
 }  
 
-#define stream(gt) \
+#define create_generator(gt) \
+   hcrng##gt##StreamCreator streamCreator;\
+   *generator = (hcrng##gt##StreamCreator*)malloc(sizeof(hcrng##gt##StreamCreator));\
+   streamCreator = defaultStreamCreator_##gt;\
+   streamCreator.currentAcclView = accl_view;\
+   *(hcrng##gt##StreamCreator*)*generator = streamCreator;
+
+#define stream_alloc(gt) \
   streams##gt = (hcrng##gt##Stream*)malloc(STREAM_COUNT * sizeof(hcrng##gt##Stream)); \
-  hipMalloc((void **)&streams_buffer##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream));\
+  hipMalloc((void **)&streams_buffer##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream));
 
 hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                                    hiprngRngType_t rng_type) {
+  hipError_t err;
+  hc::accelerator_view *accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
+
   if(rng_type == 0) {
-   *generator = (hcrngMrg31k3pStreamCreator*)malloc(sizeof(hcrngMrg31k3pStreamCreator));
-   *(hcrngMrg31k3pStreamCreator*)*generator = defaultStreamCreator_Mrg31k3p;
+   create_generator(Mrg31k3p);
    rngtyp = 0;
-   stream(Mrg31k3p)
+   stream_alloc(Mrg31k3p)
   }
   else if(rng_type == 1) {
-   *generator = (hcrngMrg32k3aStreamCreator*)malloc(sizeof(hcrngMrg32k3aStreamCreator));
-   *(hcrngMrg32k3aStreamCreator*)*generator = defaultStreamCreator_Mrg32k3a;
+   create_generator(Mrg32k3a);
    rngtyp = 1;
-   stream(Mrg32k3a)
+   stream_alloc(Mrg32k3a)
   }
   else if(rng_type == 2) {
-   *generator = (hcrngLfsr113StreamCreator*)malloc(sizeof(hcrngLfsr113StreamCreator));
-   *(hcrngLfsr113StreamCreator*)*generator = defaultStreamCreator_Lfsr113;
+   create_generator(Lfsr113);
    rngtyp = 2;
-   stream(Lfsr113)
+   stream_alloc(Lfsr113)
   }
  else if(rng_type == 3) {
-   *generator = (hcrngPhilox432StreamCreator*)malloc(sizeof(hcrngPhilox432StreamCreator));
-   *(hcrngPhilox432StreamCreator*)*generator = defaultStreamCreator_Philox432;
+   create_generator(Philox432);
    rngtyp = 3;
-   stream(Philox432)
+   stream_alloc(Philox432)
  }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);  
 }
@@ -152,16 +159,12 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 
 #define Generate(gt)\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
-        *accl_view, STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr);\
+        *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                               unsigned int* outputPtr,
                                                   size_t num) {
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
   if(rngtyp == 0){
     Generate(Mrg31k3p)
   }
@@ -180,16 +183,12 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
 
 #define GenerateUniform(gt)\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
-       *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
+       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num) {
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
   if(rngtyp == 0){
     GenerateUniform(Mrg31k3p)
   }
@@ -208,16 +207,11 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
 
 #define GenerateUniformDouble(gt)\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
-       *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
+       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniformDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num) {
-
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
   if(rngtyp == 0){
     GenerateUniformDouble(Mrg31k3p)
   }
@@ -236,17 +230,12 @@ hiprngStatus_t hiprngGenerateUniformDouble(
 
 #define GenerateNormal(gt)\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
-       *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
+       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                                    float* outputPtr,
                                                    size_t num, float mean, float stddev) {
-
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
   if(rngtyp == 0){
     GenerateNormal(Mrg31k3p)
   }
@@ -265,16 +254,11 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
 
 #define GenerateNormalDouble(gt)\
 hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
-       *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
+       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateNormalDouble(
     hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
-
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
   if(rngtyp == 0){
     GenerateNormalDouble(Mrg31k3p)
   }
