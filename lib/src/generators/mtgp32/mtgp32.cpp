@@ -1,7 +1,10 @@
-#include <hc.hpp>
 #include "hcRNG/mtgp32.h"
+#include <hc.hpp>
+#include <hc_math.hpp>
+#include "hc_am.hpp"
 
 using namespace hc;
+
 
 //for debug purpose
 //#define DEBUG_HcRAND
@@ -160,6 +163,7 @@ int mtgp32_init_seed_kernel(
     int n,
     unsigned long seed)
 {
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr seed kernel starts\n");
   seed = seed ^ (seed >> 32);
   int nGroups = n;
   uint32_t* av_param_tbl = (p->param_tbl);
@@ -210,5 +214,7 @@ int mtgp32_init_seed_kernel(
     state[id].offset = av_offset[id];
     state[id].pIdx = av_index[id];
   }).wait();
+
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr seed kernel ends\n");
   return 0;
 }

@@ -4,12 +4,8 @@
 #pragma once
 
 // FIXME: Better to inline every amp-restricted functions and make it static
-#include <hc.hpp>
-#include <hc_math.hpp>
-#include "hc_am.hpp"
 #include "hcRNG/private/mtgp32-fast.h"
-
-using namespace hc;
+#include "hc.hpp"
 
 #define MTGP32_MEXP 11213
 #define MTGP32_N 351
@@ -69,7 +65,7 @@ int mtgp32_init_params_kernel(
 int mtgp32_init_seed_kernel(
     hc::accelerator_view accl_view,
     hcrngStateMtgp32* state,
-    const mtgp32_kernel_params* p,
+    mtgp32_kernel_params* p,
     int n,
     unsigned long seed);
 /**
@@ -120,35 +116,13 @@ uint32_t temper(uint32_t* temper_tbl, uint32_t V, uint32_t T) [[cpu]][[hc]]
   return V ^ MAT;
 }
 
-/**
- * The tempering and converting function.
- * By using the preset-ted table, converting to IEEE format
- * and tempering are done simultaneously.
- *
- * @param[in] V the output value should be tempered.
- * @param[in] T the tempering helper value.
- * @return the tempered and converted value.
- */
-#if 0
-static
-inline
-uint32_t temper_single(
-  uint32_t* single_temper_tbl, uint32_t V, uint32_t T) [[cpu]][[hc]]
-{
-  uint32_t MAT;
-  uint32_t r;
+#define HcRAND_2POW32_INV (2.3283064e-10f)
+#define HcRAND_SQRT2 (-1.4142135f)
+#define HcRAND_SQRT2_DOUBLE (-1.4142135623730951)
 
-  T ^= T >> 16;
-  T ^= T >> 8;
-  MAT = single_temper_tbl[T & 0x0f]; // from group
-  r = (V >> 9) ^ MAT;
-  return r;
-}
-#endif
 // in one workgroup
-static
-inline
-unsigned int hiprand(
+inline static
+unsigned int hiprng(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -188,18 +162,14 @@ unsigned int hiprand(
   return o;
 }
 
-#define HcRAND_2POW32_INV (2.3283064e-10f)
-#define HcRAND_SQRT2 (-1.4142135f)
-#define HcRAND_SQRT2_DOUBLE (-1.4142135623730951)
-static
-inline
-float _hiprand_uniform(unsigned int x) [[cpu]][[hc]]
+inline static
+float _hiprng_uniform(unsigned int x) [[cpu]][[hc]]
 {
   return x * HcRAND_2POW32_INV + (HcRAND_2POW32_INV/2.0f);
 }
 
-inline
-float hiprand_uniform(
+
+inline float hiprng_uniform(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -211,7 +181,7 @@ float hiprand_uniform(
     const uint32_t* av_d_status,
     const hc::tiled_index<1>& tidx) [[hc]]
 {
-  unsigned int x = hiprand(
+  unsigned int x = hiprng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -222,11 +192,10 @@ float hiprand_uniform(
       av_mask,
       av_d_status,
       tidx);
-  return _hiprand_uniform(x);
+  return _hiprng_uniform(x);
 }
-// http://hg.savannah.gnu.org/hgweb/octave/rev/cb85e836d035
-static
-inline
+
+inline static
 double do_erfcinv(float x, bool refine) [[cpu]][[hc]]
 {
   // Coefficients of rational approximation.
@@ -288,16 +257,15 @@ double do_erfcinv(float x, bool refine) [[cpu]][[hc]]
 }
 
 
-static
-inline
+inline static
 float my_erfcinvf(float x) [[cpu]][[hc]]
 {
   return do_erfcinv (x, false);
 }
 
-static
-inline
-float _hiprand_normal_icdf(unsigned int x) [[cpu]][[hc]]
+inline static
+
+float _hiprng_normal_icdf(unsigned int x) [[cpu]][[hc]]
 {
   float s = HcRAND_SQRT2;
   // Mirror to avoid loss of precision
@@ -310,9 +278,8 @@ float _hiprand_normal_icdf(unsigned int x) [[cpu]][[hc]]
   return s * my_erfcinvf(2.0f * p);
 }
 
-static
-inline
-float hiprand_normal(
+inline static
+float hiprng_normal(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -324,7 +291,7 @@ float hiprand_normal(
     const uint32_t* av_d_status,
     const hc::tiled_index<1>& tidx) [[hc]]
 {
-  unsigned int x = hiprand(
+  unsigned int x = hiprng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -335,12 +302,11 @@ float hiprand_normal(
       av_mask,
       av_d_status,
       tidx);
-  return _hiprand_normal_icdf(x);
+  return _hiprng_normal_icdf(x);
 }
 
-static
-inline
-double hiprand_log_normal(
+inline static
+double hiprng_log_normal(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -354,7 +320,7 @@ double hiprand_log_normal(
     double mean,
     double stddev) [[hc]]
 {
-  unsigned int x = hiprand(
+  unsigned int x = hiprng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -365,24 +331,20 @@ double hiprand_log_normal(
       av_mask,
       av_d_status,
       tidx);
-  return hc::precise_math::exp(mean + ((double)stddev * _hiprand_normal_icdf(x)));
+  return hc::precise_math::exp(mean + ((double)stddev * _hiprng_normal_icdf(x)));
 }
 
 // User defined wrappers
 template<typename T>
-static
-inline
+inline static
 void user_log_normal_kernel(
     hc::accelerator_view accl_view,
     hcrngStateMtgp32 *s,
     T* &av_result,
     double mean,
-    double stddev)
+    double stddev,
+    uint32_t size)
 {
-  hc::accelerator accl = accl_view.get_accelerator();
-  hc::AmPointerInfo resInfo(0, 0, 0, accl, 0, 0);
-  hc::am_memtracker_getinfo(&resInfo, av_result);
-  const int  size = resInfo._sizeBytes/sizeof(T);
   int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
@@ -404,7 +366,7 @@ void user_log_normal_kernel(
     if (groupId >= USER_GROUP_NUM)
       return;
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      double x = hiprand_log_normal(
+      double x = hiprng_log_normal(
           av_param_tbl,
           av_temper_tbl,
           av_sh1_tbl,
@@ -426,17 +388,65 @@ void user_log_normal_kernel(
 
 // User defined wrappers
 template <typename UnaryFunction, typename T>
-inline
-void user_uniform_kernel(
+inline void user_uniform_kernel(
+    hc::accelerator_view accl_view,
+    hcrngStateMtgp32 *&s,
+    T* &av_result,
+    uint32_t size,
+    UnaryFunction f)
+{
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts here \n");
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts here \n");
+/*  int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
+  int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
+  hc::extent<1> ext(blocks*BLOCK_SIZE);
+  hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);*/
+  //const uint32_t* av_param_tbl = (s->k->param_tbl);
+  /*const uint32_t* av_temper_tbl = (s->k->temper_tbl);
+  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
+  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
+  const uint32_t* av_offset = (s->k->offset);
+  const uint32_t* av_index = (s->k->index);
+  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
+  const uint32_t* av_mask = (s->k->mask);
+  const uint32_t* av_d_status = (s->k->d_status);
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts\n");
+  hc::parallel_for_each(
+      accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
+    int threadId = tidx.global[0];
+    int groupId = tidx.tile[0];
+    if (groupId >= USER_GROUP_NUM)
+      return;
+    for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
+      float x = hiprng_uniform(
+          av_param_tbl,
+          av_temper_tbl,
+          av_sh1_tbl,
+          av_sh2_tbl,
+          av_offset,
+          av_index,
+          av_pos_tbl,
+          av_mask,
+          av_d_status,
+          tidx);
+      if (i < size) {
+        double y = f(x);
+        av_result[i] = y;
+      }
+    }
+  }).wait();*/
+  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel ends\n");
+}
+
+
+template <typename UnaryFunction, typename T>
+inline void user_normal_kernel(
     hc::accelerator_view accl_view,
     hcrngStateMtgp32 *s,
     T* &av_result,
-    int size,
+    uint32_t size,
     UnaryFunction f)
 {
-  hc::accelerator accl = accl_view.get_accelerator();
-  hc::AmPointerInfo resInfo(0, 0, 0, accl, 0, 0);
-  hc::am_memtracker_getinfo(&resInfo, av_result);
   int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
@@ -457,7 +467,7 @@ void user_uniform_kernel(
     if (groupId >= USER_GROUP_NUM)
       return;
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      float x = hiprand_uniform(
+      float x = hiprng_normal(
           av_param_tbl,
           av_temper_tbl,
           av_sh1_tbl,
@@ -476,55 +486,6 @@ void user_uniform_kernel(
   }).wait();
 }
 
-template <typename UnaryFunction, typename T>
-void user_normal_kernel(
-    hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *s,
-    T* &av_result,
-    int size,
-    UnaryFunction f)
-{
-  hc::accelerator accl = accl_view.get_accelerator();
-  hc::AmPointerInfo resInfo(0, 0, 0, accl, 0, 0);
-  hc::am_memtracker_getinfo(&resInfo, av_result);
-  int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
-  int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
-  hc::extent<1> ext(blocks*BLOCK_SIZE);
-  hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->k->param_tbl);
-  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
-  const uint32_t* av_offset = (s->k->offset);
-  const uint32_t* av_index = (s->k->index);
-  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
-  const uint32_t* av_mask = (s->k->mask);
-  const uint32_t* av_d_status = (s->k->d_status);
-  hc::parallel_for_each(
-      accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
-    int threadId = tidx.global[0];
-    int groupId = tidx.tile[0];
-    if (groupId >= USER_GROUP_NUM)
-      return;
-    for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      float x = hiprand_normal(
-          av_param_tbl,
-          av_temper_tbl,
-          av_sh1_tbl,
-          av_sh2_tbl,
-          av_offset,
-          av_index,
-          av_pos_tbl,
-          av_mask,
-          av_d_status,
-          tidx);
-      if (i < size) {
-        double y = f(x);
-        av_result[i] = y;
-      }
-    }
-  }).wait();
-}
 
 
 #endif // MTGP32_H_
