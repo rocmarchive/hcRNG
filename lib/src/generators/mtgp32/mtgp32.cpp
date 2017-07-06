@@ -163,7 +163,6 @@ int mtgp32_init_seed_kernel(
     int n,
     unsigned long seed)
 {
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr seed kernel starts\n");
   seed = seed ^ (seed >> 32);
   int nGroups = n;
   uint32_t* av_param_tbl = (p->param_tbl);
@@ -213,8 +212,8 @@ int mtgp32_init_seed_kernel(
     // Initialize the state space now
     state[id].offset = av_offset[id];
     state[id].pIdx = av_index[id];
+    state[id].k = p;
   }).wait();
 
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr seed kernel ends\n");
   return 0;
 }

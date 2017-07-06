@@ -339,7 +339,7 @@ template<typename T>
 inline static
 void user_log_normal_kernel(
     hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *s,
+    hcrngStateMtgp32 *&s,
     T* &av_result,
     double mean,
     double stddev,
@@ -349,15 +349,6 @@ void user_log_normal_kernel(
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->k->param_tbl);
-  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
-  const uint32_t* av_offset = (s->k->offset);
-  const uint32_t* av_index = (s->k->index);
-  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
-  const uint32_t* av_mask = (s->k->mask);
-  const uint32_t* av_d_status = (s->k->d_status);
 
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
@@ -365,6 +356,15 @@ void user_log_normal_kernel(
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
+    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
+    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
+    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
+    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
+    const uint32_t* av_offset = (s[groupId].k->offset); 
+    const uint32_t* av_index = (s[groupId].k->index); 
+    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
+    const uint32_t* av_mask = (s[groupId].k->mask); 
+    const uint32_t* av_d_status = (s[groupId].k->d_status); 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       double x = hiprng_log_normal(
           av_param_tbl,
@@ -395,28 +395,26 @@ inline void user_uniform_kernel(
     uint32_t size,
     UnaryFunction f)
 {
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts here \n");
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts here \n");
-/*  int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
+  int rounded_size = DIVUP(size, BLOCK_SIZE) * BLOCK_SIZE;
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
-  hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);*/
-  //const uint32_t* av_param_tbl = (s->k->param_tbl);
-  /*const uint32_t* av_temper_tbl = (s->k->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
-  const uint32_t* av_offset = (s->k->offset);
-  const uint32_t* av_index = (s->k->index);
-  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
-  const uint32_t* av_mask = (s->k->mask);
-  const uint32_t* av_d_status = (s->k->d_status);
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel starts\n");
+  hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
+    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
+    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
+    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
+    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
+    const uint32_t* av_offset = (s[groupId].k->offset); 
+    const uint32_t* av_index = (s[groupId].k->index); 
+    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
+    const uint32_t* av_mask = (s[groupId].k->mask); 
+    const uint32_t* av_d_status = (s[groupId].k->d_status); 
+
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       float x = hiprng_uniform(
           av_param_tbl,
@@ -434,15 +432,14 @@ inline void user_uniform_kernel(
         av_result[i] = y;
       }
     }
-  }).wait();*/
-  printf("Userrrrrrrrrrrrrrrrrrrrrrrrrrrr uniform kernel ends\n");
+  }).wait();
 }
 
 
 template <typename UnaryFunction, typename T>
 inline void user_normal_kernel(
     hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *s,
+    hcrngStateMtgp32 *&s,
     T* &av_result,
     uint32_t size,
     UnaryFunction f)
@@ -451,21 +448,22 @@ inline void user_normal_kernel(
   int blocks = std::min((int)DIVUP(size, BLOCK_SIZE), MAX_NUM_BLOCKS);
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
-  const uint32_t* av_param_tbl = (s->k->param_tbl);
-  const uint32_t* av_temper_tbl = (s->k->temper_tbl);
-  const uint32_t* av_sh1_tbl = (s->k->sh1_tbl);
-  const uint32_t* av_sh2_tbl = (s->k->sh2_tbl);
-  const uint32_t* av_offset = (s->k->offset);
-  const uint32_t* av_index = (s->k->index);
-  const uint32_t* av_pos_tbl = (s->k->pos_tbl);
-  const uint32_t* av_mask = (s->k->mask);
-  const uint32_t* av_d_status = (s->k->d_status);
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
+    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
+    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
+    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
+    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
+    const uint32_t* av_offset = (s[groupId].k->offset); 
+    const uint32_t* av_index = (s[groupId].k->index); 
+    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
+    const uint32_t* av_mask = (s[groupId].k->mask); 
+    const uint32_t* av_d_status = (s[groupId].k->d_status); 
+
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       float x = hiprng_normal(
           av_param_tbl,
