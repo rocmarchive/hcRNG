@@ -122,7 +122,7 @@ uint32_t temper(uint32_t* temper_tbl, uint32_t V, uint32_t T) [[cpu]][[hc]]
 
 // in one workgroup
 inline static
-unsigned int hiprng(
+unsigned int hcrng(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -132,10 +132,9 @@ unsigned int hiprng(
     const uint32_t* av_pos_tbl,
     const uint32_t* av_mask,
     const uint32_t* av_d_status,
-    const hc::tiled_index<1>& tidx) [[hc]]
+    uint32_t groupId, uint32_t localThreadId) [[hc]]
 {
-  int groupId = tidx.tile[0];
-  unsigned int t = tidx.local[0];
+  unsigned int t = localThreadId;
   unsigned int d = BLOCK_SIZE * 1 * 1;
   //assert( d <= 255);
   uint32_t* pParam_tbl = const_cast<uint32_t*>(&av_param_tbl[groupId * MTGP32_TS + 0 ]);
@@ -154,22 +153,20 @@ unsigned int hiprng(
            av_mask[0]);
   d_status[(t + offset + MTGP32_N) & MTGP32_STATE_MASK] = r;
   o = temper(pTemper_tbl, r, d_status[(t + offset + pos -1) & MTGP32_STATE_MASK]);
-  tidx.barrier.wait();
   if (t == 0) {
     av_offset[groupId] = (av_offset[groupId] + d) & MTGP32_STATE_MASK;
   }
-  tidx.barrier.wait();
   return o;
 }
 
 inline static
-float _hiprng_uniform(unsigned int x) [[cpu]][[hc]]
+float _hcrng_uniform(unsigned int x) [[cpu]][[hc]]
 {
   return x * HcRAND_2POW32_INV + (HcRAND_2POW32_INV/2.0f);
 }
 
 
-inline float hiprng_uniform(
+inline float hcrng_uniform(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -179,9 +176,9 @@ inline float hiprng_uniform(
     const uint32_t* av_pos_tbl,
     const uint32_t* av_mask,
     const uint32_t* av_d_status,
-    const hc::tiled_index<1>& tidx) [[hc]]
+    uint32_t groupId, uint32_t localThreadId) [[hc]]
 {
-  unsigned int x = hiprng(
+  unsigned int x = hcrng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -191,8 +188,8 @@ inline float hiprng_uniform(
       av_pos_tbl,
       av_mask,
       av_d_status,
-      tidx);
-  return _hiprng_uniform(x);
+      groupId, localThreadId);
+  return _hcrng_uniform(x);
 }
 
 inline static
@@ -265,7 +262,7 @@ float my_erfcinvf(float x) [[cpu]][[hc]]
 
 inline static
 
-float _hiprng_normal_icdf(unsigned int x) [[cpu]][[hc]]
+float _hcrng_normal_icdf(unsigned int x) [[cpu]][[hc]]
 {
   float s = HcRAND_SQRT2;
   // Mirror to avoid loss of precision
@@ -279,7 +276,7 @@ float _hiprng_normal_icdf(unsigned int x) [[cpu]][[hc]]
 }
 
 inline static
-float hiprng_normal(
+float hcrng_normal(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -289,9 +286,9 @@ float hiprng_normal(
     const uint32_t* av_pos_tbl,
     const uint32_t* av_mask,
     const uint32_t* av_d_status,
-    const hc::tiled_index<1>& tidx) [[hc]]
+    uint32_t groupId, uint32_t localThreadId) [[hc]]
 {
-  unsigned int x = hiprng(
+  unsigned int x = hcrng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -301,12 +298,12 @@ float hiprng_normal(
       av_pos_tbl,
       av_mask,
       av_d_status,
-      tidx);
-  return _hiprng_normal_icdf(x);
+      groupId, localThreadId);
+  return _hcrng_normal_icdf(x);
 }
 
 inline static
-double hiprng_log_normal(
+double hcrng_log_normal(
     const uint32_t* av_param_tbl,
     const uint32_t* av_temper_tbl,
     const uint32_t* av_sh1_tbl,
@@ -316,11 +313,12 @@ double hiprng_log_normal(
     const uint32_t* av_pos_tbl,
     const uint32_t* av_mask,
     const uint32_t* av_d_status,
-    const hc::tiled_index<1>& tidx,
+    uint32_t groupId,
+    uint32_t localThreadId,
     double mean,
     double stddev) [[hc]]
 {
-  unsigned int x = hiprng(
+  unsigned int x = hcrng(
       av_param_tbl,
       av_temper_tbl,
       av_sh1_tbl,
@@ -330,8 +328,8 @@ double hiprng_log_normal(
       av_pos_tbl,
       av_mask,
       av_d_status,
-      tidx);
-  return hc::precise_math::exp(mean + ((double)stddev * _hiprng_normal_icdf(x)));
+      groupId, localThreadId);
+  return hc::precise_math::exp(mean + ((double)stddev * _hcrng_normal_icdf(x)));
 }
 
 // User defined wrappers
@@ -352,8 +350,9 @@ void user_log_normal_kernel(
 
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
-    int threadId = tidx.global[0];
-    int groupId = tidx.tile[0];
+    uint32_t threadId = tidx.global[0];
+    uint32_t localThreadId = tidx.local[0];
+    uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
     const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
@@ -366,7 +365,7 @@ void user_log_normal_kernel(
     const uint32_t* av_mask = (s[groupId].k->mask); 
     const uint32_t* av_d_status = (s[groupId].k->d_status); 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      double x = hiprng_log_normal(
+      double x = hcrng_log_normal(
           av_param_tbl,
           av_temper_tbl,
           av_sh1_tbl,
@@ -376,7 +375,8 @@ void user_log_normal_kernel(
           av_pos_tbl,
           av_mask,
           av_d_status,
-          tidx,
+          groupId,
+          localThreadId,
           mean,
           stddev);
       if (i < size) {
@@ -402,6 +402,7 @@ inline void user_uniform_kernel(
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
+    int localThreadId = tidx.local[0];
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
@@ -416,7 +417,7 @@ inline void user_uniform_kernel(
     const uint32_t* av_d_status = (s[groupId].k->d_status); 
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      float x = hiprng_uniform(
+      float x = hcrng_uniform(
           av_param_tbl,
           av_temper_tbl,
           av_sh1_tbl,
@@ -426,7 +427,7 @@ inline void user_uniform_kernel(
           av_pos_tbl,
           av_mask,
           av_d_status,
-          tidx);
+          groupId, localThreadId);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
@@ -450,8 +451,9 @@ inline void user_normal_kernel(
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
   hc::parallel_for_each(
       accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
-    int threadId = tidx.global[0];
-    int groupId = tidx.tile[0];
+    uint32_t threadId = tidx.global[0];
+    uint32_t localThreadId = tidx.local[0];
+    uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
     const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
@@ -465,7 +467,7 @@ inline void user_normal_kernel(
     const uint32_t* av_d_status = (s[groupId].k->d_status); 
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      float x = hiprng_normal(
+      float x = hcrng_normal(
           av_param_tbl,
           av_temper_tbl,
           av_sh1_tbl,
@@ -475,7 +477,7 @@ inline void user_normal_kernel(
           av_pos_tbl,
           av_mask,
           av_d_status,
-          tidx);
+          groupId, localThreadId);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
