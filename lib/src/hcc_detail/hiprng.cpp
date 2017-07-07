@@ -335,6 +335,8 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 
+// DEVICE APIS 
+// *****************************************************************************************************************
 /*__host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p )
     Set up constant parameters for the mtgp32 generator.
     Parameters
@@ -385,9 +387,13 @@ __host__ hiprngStatus_t hiprngMakeMTGP32KernelState(hiprngStateMtgp32_t *s,
 
 
 
+
 #undef Destroy
 
 #ifdef __cplusplus
 }
 #endif
+
+
+
 
