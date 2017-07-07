@@ -49,6 +49,9 @@ hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
   else if(rngtyp == 3) {
     return hipHCRNGStatusToHIPStatus(hcrngPhilox432SetAcclView((hcrngPhilox432StreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
   }
+  else if(rngtyp == 4) {
+    return hipHCRNGStatusToHIPStatus(hcrngXorwowSetAcclView((hcrngXorwowStreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+  }
 
   return hipHCRNGStatusToHIPStatus(HCRNG_INVALID_RNG_TYPE);
 }
@@ -94,6 +97,11 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
    rngtyp = 3;
    stream_alloc(Philox432)
  }
+ else if(rng_type == 4) {
+   create_generator(Xorwow);
+   rngtyp = 4;
+   stream_alloc(Xorwow)
+ }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);  
 }
 
@@ -132,6 +140,24 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
   hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
   hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
 
+#define SetSeedXorwow(gt) \
+  if(tempXorwow != 0) {\
+    hcrngXorwowStreamState baseState;\
+    unsigned int s0 = ((unsigned int)seed) ^ 0xaad26b49UL;\
+    unsigned int s1 = (unsigned int)(seed >> 32) ^ 0xf7dcefddUL;\
+    unsigned int t0 = 1099087573UL * s0;\
+    unsigned int t1 = 2591861531UL * s1;\
+    baseState.d = 6615241 + t1 + t0;\
+    baseState.v[0] = 123456789UL + t0;\
+    baseState.v[1] = 362436069UL ^ t0;\
+    baseState.v[2] = 521288629UL + t1;\
+    baseState.v[3] = 88675123UL ^ t1;\
+    baseState.v[4] = 5783321UL + t0;\
+    err =  hcrngXorwowSetBaseCreatorState((hcrngXorwowStreamCreator*)generator, &baseState);\
+  }\
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
+  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+
 hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
     hiprngGenerator_t generator, unsigned long long seed) {
   hcrngStatus err;
@@ -150,6 +176,10 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
   else if(rngtyp == 3){
      unsigned int tempPhilox432 = seed;
      SetSeedPhilox432(Philox432)
+  }
+  else if(rngtyp == 4){
+     unsigned int tempXorwow = seed;
+     SetSeedXorwow(Xorwow)
   }
   return hipHCRNGStatusToHIPStatus(err);
 }
@@ -176,6 +206,9 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
   }
   else if(rngtyp == 3){
     Generate(Philox432)
+  }
+  else if(rngtyp == 4){
+    Generate(Xorwow)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
@@ -299,6 +332,9 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
   }
   else if(rngtyp == 3){
     Destroy(Philox432)
+  }
+  else if(rngtyp == 4){
+    Destroy(Xorwow)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }

@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include "../hcRNG/mrg32k3a.h"
 #include "../hcRNG/lfsr113.h"
 #include "../hcRNG/philox432.h"
+#include "../hcRNG/xorwow.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,11 +40,13 @@ hcrngMrg31k3pStream *streams_bufferMrg31k3p = NULL;
 hcrngMrg32k3aStream *streams_bufferMrg32k3a = NULL;
 hcrngLfsr113Stream *streams_bufferLfsr113 = NULL;
 hcrngPhilox432Stream *streams_bufferPhilox432 = NULL;
+hcrngXorwowStream *streams_bufferXorwow = NULL;
 
 hcrngMrg31k3pStream *streamsMrg31k3p = NULL;
 hcrngMrg32k3aStream *streamsMrg32k3a = NULL;
 hcrngLfsr113Stream *streamsLfsr113 = NULL;
 hcrngPhilox432Stream *streamsPhilox432 = NULL;
+hcrngXorwowStream *streamsXorwow = NULL;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
