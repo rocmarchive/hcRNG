@@ -123,27 +123,29 @@ uint32_t temper(uint32_t* temper_tbl, uint32_t V, uint32_t T) [[cpu]][[hc]]
 // in one workgroup
 inline static
 unsigned int hcrng(
-    const uint32_t* av_param_tbl,
-    const uint32_t* av_temper_tbl,
-    const uint32_t* av_sh1_tbl,
-    const uint32_t* av_sh2_tbl,
-    uint32_t* av_offset,
-    const uint32_t* av_index,
-    const uint32_t* av_pos_tbl,
-    const uint32_t* av_mask,
-    const uint32_t* av_d_status,
-    uint32_t groupId, uint32_t localThreadId) [[hc]]
-{
+    hcrngStateMtgp32 *state,
+    uint32_t localThreadId) [[hc]]
+{  
+
+  const uint32_t* av_param_tbl = (state[0].k->param_tbl); 
+  const uint32_t* av_temper_tbl = (state[0].k->temper_tbl); 
+  const uint32_t* av_sh1_tbl = (state[0].k->sh1_tbl); 
+  const uint32_t* av_sh2_tbl = (state[0].k->sh2_tbl); 
+  uint32_t* av_offset = (state[0].k->offset); 
+  const uint32_t* av_index = (state[0].k->index); 
+  const uint32_t* av_pos_tbl = (state[0].k->pos_tbl); 
+  const uint32_t* av_mask = (state[0].k->mask); 
+  const uint32_t* av_d_status = (state[0].k->d_status); 
+   
   unsigned int t = localThreadId;
   unsigned int d = BLOCK_SIZE * 1 * 1;
-  //assert( d <= 255);
-  uint32_t* pParam_tbl = const_cast<uint32_t*>(&av_param_tbl[groupId * MTGP32_TS + 0 ]);
-  uint32_t* pTemper_tbl = const_cast<uint32_t*>(&av_temper_tbl[groupId * MTGP32_TS + 0 ]);
-  uint32_t* d_status = const_cast<uint32_t*>(&av_d_status[groupId * MTGP32_STATE_SIZE + 0 ]);
-  uint32_t offset = av_offset[groupId];
-  uint32_t sh1 = av_sh1_tbl[groupId];
-  uint32_t sh2 = av_sh2_tbl[groupId];
-  int index = av_index[groupId];
+  uint32_t* pParam_tbl = const_cast<uint32_t*>(&av_param_tbl[0]);
+  uint32_t* pTemper_tbl = const_cast<uint32_t*>(&av_temper_tbl[0]);
+  uint32_t* d_status = const_cast<uint32_t*>(&av_d_status[0]);
+  uint32_t offset = av_offset[0];
+  uint32_t sh1 = av_sh1_tbl[0];
+  uint32_t sh2 = av_sh2_tbl[0];
+  int index = av_index[0];
   int pos = av_pos_tbl[index];
   unsigned int r;
   unsigned int o;
@@ -154,7 +156,7 @@ unsigned int hcrng(
   d_status[(t + offset + MTGP32_N) & MTGP32_STATE_MASK] = r;
   o = temper(pTemper_tbl, r, d_status[(t + offset + pos -1) & MTGP32_STATE_MASK]);
   if (t == 0) {
-    av_offset[groupId] = (av_offset[groupId] + d) & MTGP32_STATE_MASK;
+    av_offset[0] = (av_offset[0] + d) & MTGP32_STATE_MASK;
   }
   return o;
 }
@@ -167,28 +169,11 @@ float _hcrng_uniform(unsigned int x) [[cpu]][[hc]]
 
 
 inline float hcrng_uniform(
-    const uint32_t* av_param_tbl,
-    const uint32_t* av_temper_tbl,
-    const uint32_t* av_sh1_tbl,
-    const uint32_t* av_sh2_tbl,
-    const uint32_t* av_offset,
-    const uint32_t* av_index,
-    const uint32_t* av_pos_tbl,
-    const uint32_t* av_mask,
-    const uint32_t* av_d_status,
-    uint32_t groupId, uint32_t localThreadId) [[hc]]
+    hcrngStateMtgp32 *state,
+    uint32_t localThreadId) [[hc]]
 {
   unsigned int x = hcrng(
-      av_param_tbl,
-      av_temper_tbl,
-      av_sh1_tbl,
-      av_sh2_tbl,
-      const_cast<uint32_t*>(av_offset),
-      av_index,
-      av_pos_tbl,
-      av_mask,
-      av_d_status,
-      groupId, localThreadId);
+      state, localThreadId);
   return _hcrng_uniform(x);
 }
 
@@ -277,58 +262,23 @@ float _hcrng_normal_icdf(unsigned int x) [[cpu]][[hc]]
 
 inline static
 float hcrng_normal(
-    const uint32_t* av_param_tbl,
-    const uint32_t* av_temper_tbl,
-    const uint32_t* av_sh1_tbl,
-    const uint32_t* av_sh2_tbl,
-    const uint32_t* av_offset,
-    const uint32_t* av_index,
-    const uint32_t* av_pos_tbl,
-    const uint32_t* av_mask,
-    const uint32_t* av_d_status,
-    uint32_t groupId, uint32_t localThreadId) [[hc]]
+    hcrngStateMtgp32 *state,
+    uint32_t localThreadId) [[hc]]
 {
   unsigned int x = hcrng(
-      av_param_tbl,
-      av_temper_tbl,
-      av_sh1_tbl,
-      av_sh2_tbl,
-      const_cast<uint32_t*>(av_offset),
-      av_index,
-      av_pos_tbl,
-      av_mask,
-      av_d_status,
-      groupId, localThreadId);
+      state, localThreadId);
   return _hcrng_normal_icdf(x);
 }
 
 inline static
 double hcrng_log_normal(
-    const uint32_t* av_param_tbl,
-    const uint32_t* av_temper_tbl,
-    const uint32_t* av_sh1_tbl,
-    const uint32_t* av_sh2_tbl,
-    const uint32_t* av_offset,
-    const uint32_t* av_index,
-    const uint32_t* av_pos_tbl,
-    const uint32_t* av_mask,
-    const uint32_t* av_d_status,
-    uint32_t groupId,
+    hcrngStateMtgp32 *state,
     uint32_t localThreadId,
     double mean,
     double stddev) [[hc]]
 {
   unsigned int x = hcrng(
-      av_param_tbl,
-      av_temper_tbl,
-      av_sh1_tbl,
-      av_sh2_tbl,
-      const_cast<uint32_t*>(av_offset),
-      av_index,
-      av_pos_tbl,
-      av_mask,
-      av_d_status,
-      groupId, localThreadId);
+      state, localThreadId);
   return hc::precise_math::exp(mean + ((double)stddev * _hcrng_normal_icdf(x)));
 }
 
@@ -337,7 +287,7 @@ template<typename T>
 inline static
 void user_log_normal_kernel(
     hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *&s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     double mean,
     double stddev,
@@ -349,33 +299,15 @@ void user_log_normal_kernel(
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
 
   hc::parallel_for_each(
-      accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
+      accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     uint32_t threadId = tidx.global[0];
     uint32_t localThreadId = tidx.local[0];
     uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
-    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
-    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
-    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
-    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
-    const uint32_t* av_offset = (s[groupId].k->offset); 
-    const uint32_t* av_index = (s[groupId].k->index); 
-    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
-    const uint32_t* av_mask = (s[groupId].k->mask); 
-    const uint32_t* av_d_status = (s[groupId].k->d_status); 
-    for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
+   for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       double x = hcrng_log_normal(
-          av_param_tbl,
-          av_temper_tbl,
-          av_sh1_tbl,
-          av_sh2_tbl,
-          av_offset,
-          av_index,
-          av_pos_tbl,
-          av_mask,
-          av_d_status,
-          groupId,
+          s,
           localThreadId,
           mean,
           stddev);
@@ -390,7 +322,7 @@ void user_log_normal_kernel(
 template <typename UnaryFunction, typename T>
 inline void user_uniform_kernel(
     hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *&s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     uint32_t size,
     UnaryFunction f)
@@ -400,34 +332,16 @@ inline void user_uniform_kernel(
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
   hc::parallel_for_each(
-      accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
+      accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
     int localThreadId = tidx.local[0];
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
-    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
-    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
-    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
-    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
-    const uint32_t* av_offset = (s[groupId].k->offset); 
-    const uint32_t* av_index = (s[groupId].k->index); 
-    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
-    const uint32_t* av_mask = (s[groupId].k->mask); 
-    const uint32_t* av_d_status = (s[groupId].k->d_status); 
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       float x = hcrng_uniform(
-          av_param_tbl,
-          av_temper_tbl,
-          av_sh1_tbl,
-          av_sh2_tbl,
-          av_offset,
-          av_index,
-          av_pos_tbl,
-          av_mask,
-          av_d_status,
-          groupId, localThreadId);
+          s, localThreadId);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
@@ -440,7 +354,7 @@ inline void user_uniform_kernel(
 template <typename UnaryFunction, typename T>
 inline void user_normal_kernel(
     hc::accelerator_view accl_view,
-    hcrngStateMtgp32 *&s,
+    hcrngStateMtgp32 *s,
     T* &av_result,
     uint32_t size,
     UnaryFunction f)
@@ -450,34 +364,16 @@ inline void user_normal_kernel(
   hc::extent<1> ext(blocks*BLOCK_SIZE);
   hc::tiled_extent<1> t_ext = ext.tile(BLOCK_SIZE);
   hc::parallel_for_each(
-      accl_view, t_ext, [=] (const hc::tiled_index<1>& tidx) [[hc]] {
+      accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     uint32_t threadId = tidx.global[0];
     uint32_t localThreadId = tidx.local[0];
     uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
-    const uint32_t* av_param_tbl = (s[groupId].k->param_tbl); 
-    const uint32_t* av_temper_tbl = (s[groupId].k->temper_tbl); 
-    const uint32_t* av_sh1_tbl = (s[groupId].k->sh1_tbl); 
-    const uint32_t* av_sh2_tbl = (s[groupId].k->sh2_tbl); 
-    const uint32_t* av_offset = (s[groupId].k->offset); 
-    const uint32_t* av_index = (s[groupId].k->index); 
-    const uint32_t* av_pos_tbl = (s[groupId].k->pos_tbl); 
-    const uint32_t* av_mask = (s[groupId].k->mask); 
-    const uint32_t* av_d_status = (s[groupId].k->d_status); 
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       float x = hcrng_normal(
-          av_param_tbl,
-          av_temper_tbl,
-          av_sh1_tbl,
-          av_sh2_tbl,
-          av_offset,
-          av_index,
-          av_pos_tbl,
-          av_mask,
-          av_d_status,
-          groupId, localThreadId);
+          s, localThreadId);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
