@@ -8,8 +8,8 @@
 #define Xorwow_M1 4294967087            
 #define Xorwow_M2 4294944443             
 
-#define Xorwow_NORM_double 2.328306549295727688e-10
-#define Xorwow_NORM_float  2.3283064e-10
+#define XORWOW_NORM_double 2.328306549295727688e-10
+#define XORWOW_NORM_float  2.3283064e-10
 
 #include <hc_math.hpp>
 
@@ -34,7 +34,7 @@ static unsigned int hcrngXorwowNextState(hcrngXorwowStreamState* currentState) [
 // preprocessors.
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
-	unsigned int hcrngXorwowRandomU01_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
+	unsigned int hcrngXorwowRandomUnsignedInteger_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
 	    return hcrngXorwowNextState(&stream->current); \
 	} \
 	\
@@ -46,19 +46,19 @@ static unsigned int hcrngXorwowNextState(hcrngXorwowStreamState* currentState) [
             generate =! generate;\
             if (!generate) return z1 * sigma +mu;\
             fptype u1, u2;\
-            u1 = hcrngXorwowRandomU01_##fptype(stream1);\
-            u2 = hcrngXorwowRandomU01_##fptype(stream2);\
+            u1 = hcrngXorwowRandomUnsignedInteger_##fptype(stream1) * XORWOW_NORM_##fptype;\
+            u2 = hcrngXorwowRandomUnsignedInteger_##fptype(stream2) * XORWOW_NORM_##fptype;\
             z0 = sqrt(-2.0 * log((float)u1)) * cos(two_pi * (float)u2);\
             z1 = sqrt(-2.0 * log((float)u1)) * sin(two_pi * (float)u2);\
 	    return z0 * sigma + mu; \
 	} \
 	\
         int hcrngXorwowRandomInteger_##fptype(hcrngXorwowStream* stream,  int i, int j) [[hc, cpu]] { \
-	    return i + (int)((j - i + 1) * hcrngXorwowRandomU01_##fptype(stream)); \
+	    return i + (int)((j - i + 1) * hcrngXorwowRandomUnsignedInteger_##fptype(stream)); \
 	} \
 	\
-        unsigned int hcrngXorwowRandomUnsignedInteger_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
-            return hcrngXorwowRandomU01_##fptype(stream); \
+        fptype hcrngXorwowRandomU01_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
+            return hcrngXorwowRandomUnsignedInteger_##fptype(stream) * XORWOW_NORM_##fptype; \
         }
 
 // On the host, implement everything.

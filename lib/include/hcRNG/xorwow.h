@@ -120,8 +120,8 @@ static hcrngXorwowStreamCreator defaultStreamCreator_Xorwow = {
 	/*! @copybrief hcrngRandomU01()
 	*  @see hcrngRandomU01()
 	*/
-	HCRNGAPI unsigned int hcrngXorwowRandomU01_float (hcrngXorwowStream* stream);
-	HCRNGAPI unsigned int hcrngXorwowRandomU01_double(hcrngXorwowStream* stream);
+	HCRNGAPI float hcrngXorwowRandomU01_float (hcrngXorwowStream* stream);
+	HCRNGAPI double hcrngXorwowRandomU01_double(hcrngXorwowStream* stream);
         
         // Normal distribution
         

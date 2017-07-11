@@ -173,3 +173,27 @@ hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray(hc::accelerator_view acc
         }).wait();
         return status;
 }
+
+hcrngStatus hcrngXorwowDeviceRandomU01Array_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
+        size_t numberCount, float *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = HCRNG_SUCCESS;
+        long size = ((streamCount/streams_per_thread) + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+        hc::extent<1> grdExt(size);
+        hc::tiled_extent<1> t_ext(grdExt, BLOCK_SIZE);
+        hc::parallel_for_each(accl_view, t_ext, [ = ] (hc::tiled_index<1> tidx) [[hc, cpu]] {
+           int gid = tidx.global[0];
+           if(gid < streamCount/streams_per_thread) {
+           for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
+              for (int j = 0; j < streams_per_thread; j++)
+               if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngXorwowRandomU01(&streams[streams_per_thread * gid + j]);
+              }
+           }
+        }).wait();
+        return status;
+}

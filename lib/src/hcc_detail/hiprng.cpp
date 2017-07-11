@@ -239,6 +239,9 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
   else if(rngtyp == 3){
      GenerateUniform(Philox432)
   }
+  else if(rngtyp == 4){
+     GenerateUniform(Xorwow)
+  }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
 }
 #undef GenerateUniform
