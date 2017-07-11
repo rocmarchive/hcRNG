@@ -192,6 +192,11 @@ hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
         *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
+#define Generate_xorwow(gt)\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
+        *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
+return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                                               unsigned int* outputPtr,
                                                   size_t num) {
@@ -208,7 +213,7 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
     Generate(Philox432)
   }
   else if(rngtyp == 4){
-    Generate(Xorwow)
+    Generate_xorwow(Xorwow)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }

@@ -138,62 +138,10 @@ static hcrngXorwowStreamCreator defaultStreamCreator_Xorwow = {
 	HCRNGAPI  int hcrngXorwowRandomInteger_double(hcrngXorwowStream* stream, int i, int j);
         
 
-        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger(hcrngXorwowStream* stream, unsigned int i, unsigned int j);
-        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger_float (hcrngXorwowStream* stream, unsigned int i, unsigned int j);
-        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger_double(hcrngXorwowStream* stream, unsigned int i, unsigned int j);
+        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger(hcrngXorwowStream* stream);
+        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger_float (hcrngXorwowStream* stream);
+        HCRNGAPI unsigned int hcrngXorwowRandomUnsignedInteger_double(hcrngXorwowStream* stream);
 
-
-	/*! @copybrief hcrngRandomU01Array()
-	*  @see hcrngRandomU01Array()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowRandomU01Array(hcrngXorwowStream* stream, size_t count, _HCRNG_FPTYPE* buffer);
-	HCRNGAPI hcrngStatus hcrngXorwowRandomU01Array_float (hcrngXorwowStream* stream, size_t count, float * buffer);
-	HCRNGAPI hcrngStatus hcrngXorwowRandomU01Array_double(hcrngXorwowStream* stream, size_t count, double* buffer);
-
-	/*! @copybrief hcrngRandomIntegerArray()
-	*  @see hcrngRandomIntegerArray()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowRandomIntegerArray(hcrngXorwowStream* stream, int i, int j, size_t count, int* buffer);
-	HCRNGAPI hcrngStatus hcrngXorwowRandomIntegerArray_float (hcrngXorwowStream* stream, int i, int j, size_t count, int* buffer);
-	HCRNGAPI hcrngStatus hcrngXorwowRandomIntegerArray_double(hcrngXorwowStream* stream, int i, int j, size_t count, int* buffer);
-
-
-        HCRNGAPI hcrngStatus hcrngXorwowRandomUnsignedIntegerArray(hcrngXorwowStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
-        HCRNGAPI hcrngStatus hcrngXorwowRandomUnsignedIntegerArray_float (hcrngXorwowStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
-        HCRNGAPI hcrngStatus hcrngXorwowRandomUnsignedIntegerArray_double(hcrngXorwowStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer);
-	/*! @copybrief hcrngRewindStreams()
-	*  @see hcrngRewindStreams()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowRewindStreams(size_t count, hcrngXorwowStream* streams);
-
-	/*! @copybrief hcrngRewindSubstreams()
-	*  @see hcrngRewindSubstreams()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowRewindSubstreams(size_t count, hcrngXorwowStream* streams);
-
-	/*! @copybrief hcrngForwardToNextSubstreams()
-	*  @see hcrngForwardToNextSubstreams()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowForwardToNextSubstreams(size_t count, hcrngXorwowStream* streams);
-
-	/*! @copybrief hcrngMakeSubstreams()
-	 *  @see hcrngMakeSubstreams()
-	 */
-	HCRNGAPI hcrngXorwowStream* hcrngXorwowMakeSubstreams(hcrngXorwowStream* stream, size_t count, size_t* bufSize, hcrngStatus* err);
-
-	/*! @copybrief hcrngMakeOverSubstreams()
-	 *  @see hcrngMakeOverSubstreams()
-	 */
-	HCRNGAPI hcrngStatus hcrngXorwowMakeOverSubstreams(hcrngXorwowStream* stream, size_t count, hcrngXorwowStream* substreams);
-
-	/*! @copybrief hcrngAdvanceStreams()
-	*  @see hcrngAdvanceStreams()
-	*/
-	HCRNGAPI hcrngStatus hcrngXorwowAdvanceStreams(size_t count, hcrngXorwowStream* streams, int e, int c);
-
-	/*! @copybrief hcrngDeviceRandomU01Array()
-	*  @see hcrngDeviceRandomU01Array()
-	*/
 #ifdef HCRNG_SINGLE_PRECISION
 #define hcrngXorwowDeviceRandomU01Array(...) hcrngXorwowDeviceRandomU01Array_(__VA_ARGS__, HC_TRUE)
 #else
@@ -218,16 +166,10 @@ static hcrngXorwowStreamCreator defaultStreamCreator_Xorwow = {
 	*/
 	HCRNGAPI hcrngStatus hcrngXorwowWriteStreamInfo(const hcrngXorwowStream* stream, FILE *file);
 
-        HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-                size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-
-        HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-                size_t numberCount, int a, int b, int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-
         HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-                size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+                size_t numberCount, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
         HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-                size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
+                size_t numberCount, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 #endif // XORWOW_H

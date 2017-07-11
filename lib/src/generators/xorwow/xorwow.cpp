@@ -151,7 +151,7 @@ hcrngXorwowStream* hcrngXorwowCreateStreams(hcrngXorwowStreamCreator* creator, s
 }
 
 hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
+        size_t numberCount, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
 {
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
@@ -167,7 +167,7 @@ hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_single(hc::accelerator_v
            for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
               for (int j = 0; j < streams_per_thread; j++)
                if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
-                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngXorwowRandomUnsignedInteger(&streams[streams_per_thread * gid + j], a, b);
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngXorwowRandomUnsignedInteger(&streams[streams_per_thread * gid + j]);
               }
            }
         }).wait();
@@ -175,7 +175,7 @@ hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_single(hc::accelerator_v
 }
 
 hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-        size_t numberCount, unsigned int a, unsigned int b, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
+        size_t numberCount, unsigned int *outBuffer, int streamlength, size_t streams_per_thread)
 {
         if (streamCount < 1)
                 return HCRNG_INVALID_VALUE;
@@ -191,7 +191,7 @@ hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_double(hc::accelerator_v
            for(int i =0; i < (numberCount-1)/streamCount+1; i++) {
               for (int j = 0; j < streams_per_thread; j++)
                if ((streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j) < numberCount)
-                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngXorwowRandomUnsignedInteger(&streams[streams_per_thread * gid + j], a, b);
+                outBuffer[streams_per_thread * (i * (streamCount/streams_per_thread) + gid) + j] = hcrngXorwowRandomUnsignedInteger(&streams[streams_per_thread * gid + j]);
               }
            }
         }).wait();

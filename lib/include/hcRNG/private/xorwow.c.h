@@ -57,7 +57,7 @@ static unsigned int hcrngXorwowNextState(hcrngXorwowStreamState* currentState) [
 	    return i + (int)((j - i + 1) * hcrngXorwowRandomU01_##fptype(stream)); \
 	} \
 	\
-        unsigned int hcrngXorwowRandomUnsignedInteger_##fptype(hcrngXorwowStream* stream, unsigned int i, unsigned int j) [[hc, cpu]] { \
+        unsigned int hcrngXorwowRandomUnsignedInteger_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
             return hcrngXorwowRandomU01_##fptype(stream); \
         }
 
