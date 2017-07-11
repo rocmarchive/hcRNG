@@ -88,6 +88,7 @@ hcrngStatus hcrngXorwowDestroyStreams(hcrngXorwowStream* streams)
 void XorwowAdvanceStream(hcrngXorwowStreamState* s)
 {
     unsigned long t;
+    s->v[0] += s->d;
     t = (s->v[0] ^ (s->v[0] >> 2));
     s->v[0] = s->v[1];
     s->v[1] = s->v[2];

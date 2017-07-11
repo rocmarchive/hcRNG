@@ -7,7 +7,7 @@
 
 TEST(hiprng_common, hip_xorwowGenerate ){
 
-  size_t n = 20000;
+  size_t n = 100;
   hiprngGenerator_t gen;
   bool ispassed = 1;
   unsigned int *hostData1, *devData1,*hostData2, *devData2, *hostData3, *devData3;
@@ -60,7 +60,6 @@ TEST(hiprng_common, hip_xorwowGenerate ){
 
   // Compare outputs
   for(int i =0; i < n; i++) {
-std::cout << i << " " << hostData1[i] << std::endl;
     if (hostData1[i] != hostData2[i]) {
       ispassed = 0;
       break;

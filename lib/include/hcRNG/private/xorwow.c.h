@@ -35,7 +35,7 @@ static unsigned int hcrngXorwowNextState(hcrngXorwowStreamState* currentState) [
 #define IMPLEMENT_GENERATE_FOR_TYPE(fptype) \
 	\
 	unsigned int hcrngXorwowRandomU01_##fptype(hcrngXorwowStream* stream) [[hc, cpu]] { \
-	    return hcrngXorwowNextState(&stream->current) /** Xorwow_NORM_##fptype*/; \
+	    return hcrngXorwowNextState(&stream->current); \
 	} \
 	\
         fptype hcrngXorwowRandomN_##fptype(hcrngXorwowStream* stream1, hcrngXorwowStream* stream2, fptype mu, fptype sigma) [[hc, cpu]] { \
@@ -58,23 +58,7 @@ static unsigned int hcrngXorwowNextState(hcrngXorwowStreamState* currentState) [
 	} \
 	\
         unsigned int hcrngXorwowRandomUnsignedInteger_##fptype(hcrngXorwowStream* stream, unsigned int i, unsigned int j) [[hc, cpu]] { \
-            return /*i + (unsigned int)((j - i + 1) */ hcrngXorwowRandomU01_##fptype(stream); \
-        } \
-	hcrngStatus hcrngXorwowRandomU01Array_##fptype(hcrngXorwowStream* stream, size_t count, fptype* buffer) [[hc, cpu]] { \
-		for (size_t i = 0; i < count; i++)  \
-			buffer[i] = hcrngXorwowRandomU01_##fptype(stream); \
-		return HCRNG_SUCCESS; \
-	} \
-	\
-	hcrngStatus hcrngXorwowRandomIntegerArray_##fptype(hcrngXorwowStream* stream, int i, int j, size_t count, int* buffer) [[hc, cpu]] { \
-		for (size_t k = 0; k < count; k++) \
-			buffer[k] = hcrngXorwowRandomInteger_##fptype(stream, i, j); \
-		return HCRNG_SUCCESS; \
-	}\
-       hcrngStatus hcrngXorwowRandomUnsignedIntegerArray_##fptype(hcrngXorwowStream* stream, unsigned int i, unsigned int j, size_t count, unsigned int* buffer) [[hc, cpu]] { \
-                for (size_t k = 0; k < count; k++) \
-                  buffer[k] = hcrngXorwowRandomUnsignedInteger_##fptype(stream, i, j); \
-                return HCRNG_SUCCESS; \
+            return hcrngXorwowRandomU01_##fptype(stream); \
         }
 
 // On the host, implement everything.
