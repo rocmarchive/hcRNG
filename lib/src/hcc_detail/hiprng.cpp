@@ -193,7 +193,7 @@ hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 #define Generate_xorwow(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
+hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray(\
         *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 

@@ -166,10 +166,7 @@ static hcrngXorwowStreamCreator defaultStreamCreator_Xorwow = {
 	*/
 	HCRNGAPI hcrngStatus hcrngXorwowWriteStreamInfo(const hcrngXorwowStream* stream, FILE *file);
 
-        HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
-                size_t numberCount, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
-
-        HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray_double(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
+        HCRNGAPI hcrngStatus hcrngXorwowDeviceRandomUnsignedIntegerArray(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
                 size_t numberCount, unsigned int *outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 #endif // XORWOW_H
