@@ -6,6 +6,7 @@
 // FIXME: Better to inline every amp-restricted functions and make it static
 #include "hcRNG/private/mtgp32-fast.h"
 #include "hc.hpp"
+#include "hc_defines.h"
 
 #define MTGP32_MEXP 11213
 #define MTGP32_N 351
@@ -123,8 +124,7 @@ uint32_t temper(uint32_t* temper_tbl, uint32_t V, uint32_t T) [[cpu]][[hc]]
 // in one workgroup
 inline static
 unsigned int hcrng(
-    hcrngStateMtgp32 *state,
-    uint32_t localThreadId) [[hc]]
+    hcrngStateMtgp32 *state) [[hc]]
 {  
 
   const uint32_t* av_param_tbl = (state[0].k->param_tbl); 
@@ -137,7 +137,7 @@ unsigned int hcrng(
   const uint32_t* av_mask = (state[0].k->mask); 
   const uint32_t* av_d_status = (state[0].k->d_status); 
    
-  unsigned int t = localThreadId;
+  unsigned int t = hc_get_workitem_id(0);
   unsigned int d = BLOCK_SIZE * 1 * 1;
   uint32_t* pParam_tbl = const_cast<uint32_t*>(&av_param_tbl[0]);
   uint32_t* pTemper_tbl = const_cast<uint32_t*>(&av_temper_tbl[0]);
@@ -169,11 +169,10 @@ float _hcrng_uniform(unsigned int x) [[cpu]][[hc]]
 
 
 inline float hcrng_uniform(
-    hcrngStateMtgp32 *state,
-    uint32_t localThreadId) [[hc]]
+    hcrngStateMtgp32 *state) [[hc]]
 {
   unsigned int x = hcrng(
-      state, localThreadId);
+      state);
   return _hcrng_uniform(x);
 }
 
@@ -262,23 +261,21 @@ float _hcrng_normal_icdf(unsigned int x) [[cpu]][[hc]]
 
 inline static
 float hcrng_normal(
-    hcrngStateMtgp32 *state,
-    uint32_t localThreadId) [[hc]]
+    hcrngStateMtgp32 *state) [[hc]]
 {
   unsigned int x = hcrng(
-      state, localThreadId);
+      state);
   return _hcrng_normal_icdf(x);
 }
 
 inline static
 double hcrng_log_normal(
     hcrngStateMtgp32 *state,
-    uint32_t localThreadId,
     double mean,
     double stddev) [[hc]]
 {
   unsigned int x = hcrng(
-      state, localThreadId);
+      state);
   return hc::precise_math::exp(mean + ((double)stddev * _hcrng_normal_icdf(x)));
 }
 
@@ -308,7 +305,6 @@ void user_log_normal_kernel(
    for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       double x = hcrng_log_normal(
           s,
-          localThreadId,
           mean,
           stddev);
       if (i < size) {
@@ -341,7 +337,7 @@ inline void user_uniform_kernel(
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
       float x = hcrng_uniform(
-          s, localThreadId);
+          s);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
@@ -372,8 +368,7 @@ inline void user_normal_kernel(
       return;
 
     for (int i = threadId; i < rounded_size; i += BLOCK_SIZE * MAX_NUM_BLOCKS) {
-      float x = hcrng_normal(
-          s, localThreadId);
+      float x = hcrng_normal(s);
       if (i < size) {
         double y = f(x);
         av_result[i] = y;
