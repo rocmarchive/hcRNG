@@ -62,7 +62,6 @@ TEST(hiprng_uniform, hip_xorwowSingle_uniform ) {
 
   // Compare outputs
   for(int i =0; i < n; i++) {
-std::cout << i << " " << hostData1[i] << std::endl;
     if (hostData1[i] != hostData2[i]) {
       ispassed = 0;
       break;
