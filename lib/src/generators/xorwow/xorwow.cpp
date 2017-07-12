@@ -197,3 +197,19 @@ hcrngStatus hcrngXorwowDeviceRandomU01Array_single(hc::accelerator_view accl_vie
         }).wait();
         return status;
 }
+
+hcrngStatus hcrngXorwowDeviceRandomNArray_single(hc::accelerator_view accl_view, size_t streamCount, hcrngXorwowStream *streams,
+        size_t numberCount, float mu, float sigma, float *outBuffer, int streamlength, size_t streams_per_thread)
+{
+        if (streamCount < 1)
+                return HCRNG_INVALID_VALUE;
+        if (numberCount < 1)
+                return HCRNG_INVALID_VALUE;
+        hcrngStatus status = hcrngXorwowDeviceRandomU01Array_single(accl_view, streamCount, streams,numberCount, outBuffer, streamlength, streams_per_thread);
+        if (status == HCRNG_SUCCESS){
+            status = box_muller_transform_single(accl_view, mu, sigma, outBuffer, numberCount);
+            return status;
+        }
+
+        return status;
+}

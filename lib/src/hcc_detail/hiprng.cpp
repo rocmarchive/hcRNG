@@ -289,6 +289,9 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
   else if(rngtyp == 3){
      GenerateNormal(Philox432)
   }
+  else if (rngtyp == 4){
+     GenerateNormal(Xorwow)
+  }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
 }
 #undef GenerateNormal
