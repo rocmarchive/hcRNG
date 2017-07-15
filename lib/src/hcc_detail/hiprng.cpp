@@ -1,5 +1,27 @@
-#include "hiprng.h"
-#include <hcRNG/hcRNG.h>
+/*
+Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+#include "include/hiprng.h"
+#include "include/hcRNG/hcRNG.h"
 
 #define STREAM_COUNT 16384
 
@@ -28,128 +50,136 @@ hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus) {
   }
 }
 
-hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
-  
-  hc::accelerator_view *pAcclView;
+hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator,
+                               hipStream_t stream) {
+  hc::accelerator_view* pAcclView;
   hipError_t err = hipHccGetAcceleratorView(stream, &pAcclView);
-  if (err != hipSuccess)
-  {
+  if (err != hipSuccess) {
     return HIPRNG_INVALID_VALUE;
-  }  
-  
-  if(rngtyp == 0) {
-    return hipHCRNGStatusToHIPStatus(hcrngMrg31k3pSetAcclView((hcrngMrg31k3pStreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
   }
-  else if(rngtyp == 1) {
-    return hipHCRNGStatusToHIPStatus(hcrngMrg32k3aSetAcclView((hcrngMrg32k3aStreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
-  }
-  else if(rngtyp == 2) {
-    return hipHCRNGStatusToHIPStatus(hcrngLfsr113SetAcclView((hcrngLfsr113StreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
-  }
-  else if(rngtyp == 3) {
-    return hipHCRNGStatusToHIPStatus(hcrngPhilox432SetAcclView((hcrngPhilox432StreamCreator*)generator, *pAcclView, static_cast<void*>(stream)));
+
+  if (rngtyp == 0) {
+    return hipHCRNGStatusToHIPStatus(
+        hcrngMrg31k3pSetAcclView((hcrngMrg31k3pStreamCreator*)generator,
+                                 *pAcclView, static_cast<void*>(stream)));
+  } else if (rngtyp == 1) {
+    return hipHCRNGStatusToHIPStatus(
+        hcrngMrg32k3aSetAcclView((hcrngMrg32k3aStreamCreator*)generator,
+                                 *pAcclView, static_cast<void*>(stream)));
+  } else if (rngtyp == 2) {
+    return hipHCRNGStatusToHIPStatus(
+        hcrngLfsr113SetAcclView((hcrngLfsr113StreamCreator*)generator,
+                                *pAcclView, static_cast<void*>(stream)));
+  } else if (rngtyp == 3) {
+    return hipHCRNGStatusToHIPStatus(
+        hcrngPhilox432SetAcclView((hcrngPhilox432StreamCreator*)generator,
+                                  *pAcclView, static_cast<void*>(stream)));
   }
 
   return hipHCRNGStatusToHIPStatus(HCRNG_INVALID_RNG_TYPE);
 }
 
-hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
+hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator,
+                                        unsigned long long offset) {
   return hipHCRNGStatusToHIPStatus(HCRNG_FUNCTION_NOT_IMPLEMENTED);
-}  
-
-#define create_generator(gt) \
-   hcrng##gt##StreamCreator streamCreator;\
-   *generator = (hcrng##gt##StreamCreator*)malloc(sizeof(hcrng##gt##StreamCreator));\
-   streamCreator = defaultStreamCreator_##gt;\
-   streamCreator.currentAcclView = accl_view;\
-   *(hcrng##gt##StreamCreator*)*generator = streamCreator;
-
-#define stream_alloc(gt) \
-  streams##gt = (hcrng##gt##Stream*)malloc(STREAM_COUNT * sizeof(hcrng##gt##Stream)); \
-  hipMalloc((void **)&streams_buffer##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream));
-
-hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
-                                                   hiprngRngType_t rng_type) {
-  hipError_t err;
-  hc::accelerator_view *accl_view;
-  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
-
-  if(rng_type == 0) {
-   create_generator(Mrg31k3p);
-   rngtyp = 0;
-   stream_alloc(Mrg31k3p)
-  }
-  else if(rng_type == 1) {
-   create_generator(Mrg32k3a);
-   rngtyp = 1;
-   stream_alloc(Mrg32k3a)
-  }
-  else if(rng_type == 2) {
-   create_generator(Lfsr113);
-   rngtyp = 2;
-   stream_alloc(Lfsr113)
-  }
- else if(rng_type == 3) {
-   create_generator(Philox432);
-   rngtyp = 3;
-   stream_alloc(Philox432)
- }
-  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);  
 }
 
-#define SetSeed(gt) \
-  if(temp##gt != 0) {\
-    hcrng##gt##StreamState baseState;\
-  for (size_t i = 0; i < 3; ++i)\
-    baseState.g1[i] =  temp##gt;\
-  for (size_t i = 0; i < 3; ++i)\
-    baseState.g2[i] =  temp##gt;\
-  err = hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, &baseState);\
-  }\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+#define create_generator(gt)                                               \
+  hcrng##gt##StreamCreator streamCreator;                                  \
+  *generator =                                                             \
+      (hcrng##gt##StreamCreator*)malloc(sizeof(hcrng##gt##StreamCreator)); \
+  streamCreator = defaultStreamCreator_##gt;                               \
+  streamCreator.currentAcclView = accl_view;                               \
+  *(hcrng##gt##StreamCreator*)*generator = streamCreator;
 
-#define SetSeedLfsr113(gt) \
-  if(tempLfsr113 != 0) {\
-    hcrngLfsr113StreamState baseState;\
-  for (size_t i = 0; i < 4; ++i)\
-    baseState.g[i] =  tempLfsr113;\
-  err = hcrngLfsr113SetBaseCreatorState((hcrngLfsr113StreamCreator*)generator, &baseState);\
-  }\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+#define stream_alloc(gt)                                                    \
+  streams##gt =                                                             \
+      (hcrng##gt##Stream*)malloc(STREAM_COUNT * sizeof(hcrng##gt##Stream)); \
+  hipMalloc((void**)&streams_buffer##gt,                                    \
+            STREAM_COUNT * sizeof(hcrng##gt##Stream));
 
-#define SetSeedPhilox432(gt) \
-  if(tempPhilox432 != 0) {\
-    hcrngPhilox432StreamState baseState;\
-    baseState.ctr.H.msb = tempPhilox432;\
-    baseState.ctr.H.lsb = tempPhilox432;\
-    baseState.ctr.L.msb = tempPhilox432;\
-    baseState.ctr.L.lsb = tempPhilox432;\
-    baseState.deckIndex = 0;\
-    err =  hcrngPhilox432SetBaseCreatorState((hcrngPhilox432StreamCreator*)generator, &baseState);\
-  }\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
+                                     hiprngRngType_t rng_type) {
+  hipError_t err;
+  hc::accelerator_view* accl_view;
+  err = hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
 
-hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
-    hiprngGenerator_t generator, unsigned long long seed) {
+  if (rng_type == 0) {
+    create_generator(Mrg31k3p);
+    rngtyp = 0;
+    stream_alloc(Mrg31k3p)
+  } else if (rng_type == 1) {
+    create_generator(Mrg32k3a);
+    rngtyp = 1;
+    stream_alloc(Mrg32k3a)
+  } else if (rng_type == 2) {
+    create_generator(Lfsr113);
+    rngtyp = 2;
+    stream_alloc(Lfsr113)
+  } else if (rng_type == 3) {
+    create_generator(Philox432);
+    rngtyp = 3;
+    stream_alloc(Philox432)
+  }
+  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
+}
+
+#define SetSeed(gt)                                                            \
+  if (temp##gt != 0) {                                                         \
+    hcrng##gt##StreamState baseState;                                          \
+    for (size_t i = 0; i < 3; ++i) baseState.g1[i] = temp##gt;                 \
+    for (size_t i = 0; i < 3; ++i) baseState.g2[i] = temp##gt;                 \
+    err = hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, \
+                                         &baseState);                          \
+  }                                                                            \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,           \
+                               STREAM_COUNT, streams##gt);                     \
+  hipMemcpy(streams_buffer##gt, streams##gt,                                   \
+            STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);
+
+#define SetSeedLfsr113(gt)                                           \
+  if (tempLfsr113 != 0) {                                            \
+    hcrngLfsr113StreamState baseState;                               \
+    for (size_t i = 0; i < 4; ++i) baseState.g[i] = tempLfsr113;     \
+    err = hcrngLfsr113SetBaseCreatorState(                           \
+        (hcrngLfsr113StreamCreator*)generator, &baseState);          \
+  }                                                                  \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, \
+                               STREAM_COUNT, streams##gt);           \
+  hipMemcpy(streams_buffer##gt, streams##gt,                         \
+            STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);
+
+#define SetSeedPhilox432(gt)                                         \
+  if (tempPhilox432 != 0) {                                          \
+    hcrngPhilox432StreamState baseState;                             \
+    baseState.ctr.H.msb = tempPhilox432;                             \
+    baseState.ctr.H.lsb = tempPhilox432;                             \
+    baseState.ctr.L.msb = tempPhilox432;                             \
+    baseState.ctr.L.lsb = tempPhilox432;                             \
+    baseState.deckIndex = 0;                                         \
+    err = hcrngPhilox432SetBaseCreatorState(                         \
+        (hcrngPhilox432StreamCreator*)generator, &baseState);        \
+  }                                                                  \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, \
+                               STREAM_COUNT, streams##gt);           \
+  hipMemcpy(streams_buffer##gt, streams##gt,                         \
+            STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);
+
+hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
+                                                  unsigned long long seed) {
   hcrngStatus err;
-  if(rngtyp == 0){
-     unsigned long tempMrg31k3p = seed;
-     SetSeed(Mrg31k3p)
-  }
-  else if(rngtyp == 1){
-     unsigned int tempMrg32k3a = seed;
-     SetSeed(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
-     unsigned int tempLfsr113 = seed;
-     SetSeedLfsr113(Lfsr113)
-  }
-  else if(rngtyp == 3){
-     unsigned int tempPhilox432 = seed;
-     SetSeedPhilox432(Philox432)
+  if (rngtyp == 0) {
+    unsigned long tempMrg31k3p = seed;
+    SetSeed(Mrg31k3p)
+  } else if (rngtyp == 1) {
+    unsigned int tempMrg32k3a = seed;
+    SetSeed(Mrg32k3a)
+  } else if (rngtyp == 2) {
+    unsigned int tempLfsr113 = seed;
+    SetSeedLfsr113(Lfsr113)
+  } else if (rngtyp == 3) {
+    unsigned int tempPhilox432 = seed;
+    SetSeedPhilox432(Philox432)
   }
   return hipHCRNGStatusToHIPStatus(err);
 }
@@ -157,147 +187,134 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
 #undef SetSeedLfsr113
 #undef SetSeedPhilox432
 
-#define Generate(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray_single(\
-        *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr);\
-return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+#define Generate(gt)                                                        \
+  hcrngStatus hcStatus##gt =                                                \
+      hcrng##gt##DeviceRandomUnsignedIntegerArray_single(                   \
+          *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),       \
+          STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr); \
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
-                                              unsigned int* outputPtr,
-                                                  size_t num) {
-  if(rngtyp == 0){
+                              unsigned int* outputPtr, size_t num) {
+  if (rngtyp == 0) {
     Generate(Mrg31k3p)
-  }
-  else if(rngtyp == 1){
+  } else if (rngtyp == 1) {
     Generate(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
+  } else if (rngtyp == 2) {
     Generate(Lfsr113)
-  }
-  else if(rngtyp == 3){
+  } else if (rngtyp == 3) {
     Generate(Philox432)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef Generate
 
-#define GenerateUniform(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(\
-       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
-return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+#define GenerateUniform(gt)                                          \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single( \
+      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),    \
+      STREAM_COUNT, streams_buffer##gt, num, outputPtr);             \
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num) {
-  if(rngtyp == 0){
+                                     float* outputPtr, size_t num) {
+  if (rngtyp == 0) {
     GenerateUniform(Mrg31k3p)
+  } else if (rngtyp == 1) {
+    GenerateUniform(Mrg32k3a)
+  } else if (rngtyp == 2) {
+    GenerateUniform(Lfsr113)
+  } else if (rngtyp == 3) {
+    GenerateUniform(Philox432)
   }
-  else if(rngtyp == 1){
-     GenerateUniform(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
-     GenerateUniform(Lfsr113)
-  }
-  else if(rngtyp == 3){
-     GenerateUniform(Philox432)
-  }
-  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
+  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef GenerateUniform
 
-#define GenerateUniformDouble(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(\
-       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
-return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+#define GenerateUniformDouble(gt)                                    \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double( \
+      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),    \
+      STREAM_COUNT, streams_buffer##gt, num, outputPtr);             \
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
-hiprngStatus_t hiprngGenerateUniformDouble(
-    hiprngGenerator_t generator, double* outputPtr, size_t num) {
-  if(rngtyp == 0){
+hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
+                                           double* outputPtr, size_t num) {
+  if (rngtyp == 0) {
     GenerateUniformDouble(Mrg31k3p)
+  } else if (rngtyp == 1) {
+    GenerateUniformDouble(Mrg32k3a)
+  } else if (rngtyp == 2) {
+    GenerateUniformDouble(Lfsr113)
+  } else if (rngtyp == 3) {
+    GenerateUniformDouble(Philox432)
   }
-  else if(rngtyp == 1){
-     GenerateUniformDouble(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
-     GenerateUniformDouble(Lfsr113)
-  }
-  else if(rngtyp == 3){
-     GenerateUniformDouble(Philox432)
-  }
-  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
+  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef GenerateUniformDouble
 
-#define GenerateNormal(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(\
-       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
-return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+#define GenerateNormal(gt)                                             \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(     \
+      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),      \
+      STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num, float mean, float stddev) {
-  if(rngtyp == 0){
+                                    float* outputPtr, size_t num, float mean,
+                                    float stddev) {
+  if (rngtyp == 0) {
     GenerateNormal(Mrg31k3p)
+  } else if (rngtyp == 1) {
+    GenerateNormal(Mrg32k3a)
+  } else if (rngtyp == 2) {
+    GenerateNormal(Lfsr113)
+  } else if (rngtyp == 3) {
+    GenerateNormal(Philox432)
   }
-  else if(rngtyp == 1){
-     GenerateNormal(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
-     GenerateNormal(Lfsr113)
-  }
-  else if(rngtyp == 3){
-     GenerateNormal(Philox432)
-  }
-  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
+  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef GenerateNormal
 
-#define GenerateNormalDouble(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(\
-       *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr);\
-return hipHCRNGStatusToHIPStatus(hcStatus##gt);
+#define GenerateNormalDouble(gt)                                       \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(     \
+      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),      \
+      STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
+  return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
-hiprngStatus_t hiprngGenerateNormalDouble(
-    hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev) {
-  if(rngtyp == 0){
+hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
+                                          double* outputPtr, size_t num,
+                                          double mean, double stddev) {
+  if (rngtyp == 0) {
     GenerateNormalDouble(Mrg31k3p)
+  } else if (rngtyp == 1) {
+    GenerateNormalDouble(Mrg32k3a)
+  } else if (rngtyp == 2) {
+    GenerateNormalDouble(Lfsr113)
+  } else if (rngtyp == 3) {
+    GenerateNormalDouble(Philox432)
   }
-  else if(rngtyp == 1){
-     GenerateNormalDouble(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
-     GenerateNormalDouble(Lfsr113)
-  }
-  else if(rngtyp == 3){
-     GenerateNormalDouble(Philox432)
-  }
-  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS); 
+  return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef GenerateNormalDouble
 
-#define Destroy(gt)\
-if (streams##gt != NULL){\
-  free(streams##gt);\
-  streams##gt = NULL;\
-}\
-if (streams_buffer##gt != NULL){\
-  hipFree(streams_buffer##gt);\
-  streams_buffer##gt = NULL;\
-}\
-return hipHCRNGStatusToHIPStatus(hcrng##gt##DestroyStreamCreator((hcrng##gt##StreamCreator*)generator));
+#define Destroy(gt)                 \
+  if (streams##gt != NULL) {        \
+    free(streams##gt);              \
+    streams##gt = NULL;             \
+  }                                 \
+  if (streams_buffer##gt != NULL) { \
+    hipFree(streams_buffer##gt);    \
+    streams_buffer##gt = NULL;      \
+  }                                 \
+  return hipHCRNGStatusToHIPStatus( \
+      hcrng##gt##DestroyStreamCreator((hcrng##gt##StreamCreator*)generator));
 
-hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){
-  
-  if(rngtyp == 0){
+hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator) {
+  if (rngtyp == 0) {
     Destroy(Mrg31k3p)
-  }
-  else if(rngtyp == 1){
+  } else if (rngtyp == 1) {
     Destroy(Mrg32k3a)
-  }
-  else if(rngtyp == 2){
+  } else if (rngtyp == 2) {
     Destroy(Lfsr113)
-  }
-  else if(rngtyp == 3){
+  } else if (rngtyp == 3) {
     Destroy(Philox432)
   }
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);

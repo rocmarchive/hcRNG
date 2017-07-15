@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __clangfeatures_dot_hpp
 
 #ifndef R123_USE_X86INTRIN_H
-#if defined(__x86_64__)||defined(__i386__)
+#if defined(__x86_64__) || defined(__i386__)
 #define R123_USE_X86INTRIN_H 1
 #else
 #define R123_USE_X86INTRIN_H 0
@@ -41,7 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef R123_USE_CXX11_UNRESTRICTED_UNIONS
-#define R123_USE_CXX11_UNRESTRICTED_UNIONS __has_feature(cxx_unrestricted_unions)
+#define R123_USE_CXX11_UNRESTRICTED_UNIONS \
+  __has_feature(cxx_unrestricted_unions)
 #endif
 
 #ifndef R123_USE_CXX11_STATIC_ASSERT
@@ -53,14 +54,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef R123_USE_CXX11_EXPLICIT_CONVERSIONS
-#define R123_USE_CXX11_EXPLICIT_CONVERSIONS __has_feature(cxx_explicit_conversions)
+#define R123_USE_CXX11_EXPLICIT_CONVERSIONS \
+  __has_feature(cxx_explicit_conversions)
 #endif
 
 // With clang-3.0, the apparently simpler:
 //  #define R123_USE_CXX11_RANDOM __has_include(<random>)
 // dumps core.
 #ifndef R123_USE_CXX11_RANDOM
-#if __cplusplus>=201103L && __has_include(<random>)
+#if __cplusplus >= 201103L && __has_include(<random>)
 #define R123_USE_CXX11_RANDOM 1
 #else
 #define R123_USE_CXX11_RANDOM 0
@@ -68,7 +70,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifndef R123_USE_CXX11_TYPE_TRAITS
-#if __cplusplus>=201103L && __has_include(<type_traits>)
+#if __cplusplus >= 201103L && __has_include(<type_traits>)
 #define R123_USE_CXX11_TYPE_TRAITS 1
 #else
 #define R123_USE_CXX11_TYPE_TRAITS 0

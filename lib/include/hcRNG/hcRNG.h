@@ -1,4 +1,26 @@
 /*
+Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+/*
 *
 *  FILENAME : hcRNG.h
 *  This file is the top level header file which includes the HcRNGlibrary class
@@ -14,18 +36,17 @@
  */
 
 #ifdef HCRNG_SINGLE_PRECISION
-  #define _HCRNG_FPTYPE float
+#define _HCRNG_FPTYPE float
 #else
-  #define _HCRNG_FPTYPE double
+#define _HCRNG_FPTYPE double
 #endif
-#define _HCRNG_TAG_FPTYPE(name)           _HCRNG_TAG_FPTYPE_(name,_HCRNG_FPTYPE)
-#define _HCRNG_TAG_FPTYPE_(name,fptype)   _HCRNG_TAG_FPTYPE__(name,fptype)
-#define _HCRNG_TAG_FPTYPE__(name,fptype)  name##_##fptype
+#define _HCRNG_TAG_FPTYPE(name) _HCRNG_TAG_FPTYPE_(name, _HCRNG_FPTYPE)
+#define _HCRNG_TAG_FPTYPE_(name, fptype) _HCRNG_TAG_FPTYPE__(name, fptype)
+#define _HCRNG_TAG_FPTYPE__(name, fptype) name##_##fptype
 /** \endinternal
  */
 
 #define HCRNGAPI
-
 
 /*! @brief Error codes
  *
@@ -39,15 +60,14 @@
  *  and hcBLAS, where the homologous types are name hcfftStatus and
  *  hcblasStatus, respectively.
  */
-typedef enum hcrngStatus_ : short
-{
-    HCRNG_SUCCESS                  = 0,
-    HCRNG_OUT_OF_RESOURCES         = -1,
-    HCRNG_INVALID_VALUE            = -2,
-    HCRNG_INVALID_RNG_TYPE         = -3,
-    HCRNG_INVALID_STREAM_CREATOR   = -4,
-    HCRNG_INVALID_SEED             = -5,
-    HCRNG_FUNCTION_NOT_IMPLEMENTED = -6
+typedef enum hcrngStatus_ : short {
+  HCRNG_SUCCESS = 0,
+  HCRNG_OUT_OF_RESOURCES = -1,
+  HCRNG_INVALID_VALUE = -2,
+  HCRNG_INVALID_RNG_TYPE = -3,
+  HCRNG_INVALID_STREAM_CREATOR = -4,
+  HCRNG_INVALID_SEED = -5,
+  HCRNG_FUNCTION_NOT_IMPLEMENTED = -6
 } hcrngStatus;
 
 static int rngtyp;
@@ -74,7 +94,8 @@ HCRNGAPI const char* hcrngGetLibraryRoot();
  *  the optional message \c msg.
  *
  *  @param[in]  err     Error code.
- *  @param[in]  msg     Additional error message (format string).  Can be `NULL`.
+ *  @param[in]  msg     Additional error message (format string).  Can be
+ * `NULL`.
  *  @param[in]  ...     Additional arguments for the format string.
  *  @return     The value of err (for convenience).
  */

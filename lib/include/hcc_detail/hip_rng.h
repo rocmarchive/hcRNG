@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 #pragma once
 
-#include <hip/hip_hcc.h>
-#include <hip/hip_runtime_api.h>
 #include "../hcRNG/hcRNG.h"
+#include "../hcRNG/lfsr113.h"
 #include "../hcRNG/mrg31k3p.h"
 #include "../hcRNG/mrg32k3a.h"
-#include "../hcRNG/lfsr113.h"
 #include "../hcRNG/philox432.h"
+#include <hip/hip_hcc.h>
+#include <hip/hip_runtime_api.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,31 +48,31 @@ hcrngPhilox432Stream *streamsPhilox432 = NULL;
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
 hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream);
-      
-hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset);
 
-hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
-                                                   hiprngRngType_t rng_type);
+hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator,
+                                        unsigned long long offset);
 
-hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
-    hiprngGenerator_t generator, unsigned long long seed);
+hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t *generator,
+                                     hiprngRngType_t rng_type);
+
+hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
+                                                  unsigned long long seed);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
-                                              unsigned int* outputPtr,
-                                                  size_t num);
+                              unsigned int *outputPtr, size_t num);
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num);
+                                     float *outputPtr, size_t num);
 
-hiprngStatus_t hiprngGenerateUniformDouble(
-    hiprngGenerator_t generator, double* outputPtr, size_t num);
+hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
+                                           double *outputPtr, size_t num);
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num, float mean, float stddev) ;
-hiprngStatus_t hiprngGenerateNormalDouble(
-    hiprngGenerator_t generator, double* outputPtr, size_t num, double mean, double stddev);
+                                    float *outputPtr, size_t num, float mean,
+                                    float stddev);
+hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
+                                          double *outputPtr, size_t num,
+                                          double mean, double stddev);
 
 hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator);
 

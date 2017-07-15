@@ -23,28 +23,38 @@ THE SOFTWARE.
 //! HIP = Heterogeneous-compute Interface for Portability
 //!
 //! Define a extremely thin runtime layer that allows source code to be compiled
-//unmodified
+// unmodified
 //! through either AMD HCC or NVCC.   Key features tend to be in the spirit
 //! and terminology of CUDA, but with a portable path to other accelerators as
-//well.
+// well.
 //!
 //!  This is the master include file for hiprng, wrapping around hcrng and
-//curand "version 1"
+// curand "version 1"
 //
+
+#ifndef LIB_INCLUDE_HIPRNG_H
+#define LIB_INCLUDE_HIPRNG_H
 
 #pragma once
 
-enum hiprngStatus_t {                     
-  HIPRNG_STATUS_SUCCESS = 0,               //the operation completed successfully.
-  HIPRNG_STATUS_ALLOCATION_FAILED = -1,    //resource allocation failed.
-  HIPRNG_INVALID_VALUE = -2,               //unsupported numerical value was passed to function. (hcRNG only)
-  HIPRNG_STATUS_TYPE_ERROR = -3,           //unsupported rng type specified.
-  HIPRNG_INVALID_STREAM_CREATOR = -4,      //Stream creator is invalid.  (hcRNG only)
-  HIPRNG_INVALID_SEED = -5,                //Seed value is greater than particular generators’ predefined values. (hcRNG only)
-  HIPRNG_FUNCTION_NOT_IMPLEMENTED = -9,    //an internal hcRNG function not implemented.
+enum hiprngStatus_t {
+  HIPRNG_STATUS_SUCCESS = 0,  // the operation completed successfully.
+  HIPRNG_STATUS_ALLOCATION_FAILED = -1,  // resource allocation failed.
+  HIPRNG_INVALID_VALUE =
+      -2,  // unsupported numerical value was passed to function. (hcRNG only)
+  HIPRNG_STATUS_TYPE_ERROR = -3,  // unsupported rng type specified.
+  HIPRNG_INVALID_STREAM_CREATOR =
+      -4,                    // Stream creator is invalid.  (hcRNG only)
+  HIPRNG_INVALID_SEED = -5,  // Seed value is greater than particular
+                             // generators’ predefined values. (hcRNG only)
+  HIPRNG_FUNCTION_NOT_IMPLEMENTED =
+      -9,  // an internal hcRNG function not implemented.
   HIPRNG_STATUS_INTERNAL_ERROR = -6,
-  HIPRNG_STATUS_INITIALIZATION_FAILED = -7,//if there was a problem setting up the GPU (cuRAND only)
-  HIPRNG_STATUS_VERSION_MISMATCH = -8,     //if the header file version does not match the dynamically linked library version (cuRAND only)
+  HIPRNG_STATUS_INITIALIZATION_FAILED =
+      -7,  // if there was a problem setting up the GPU (cuRAND only)
+  HIPRNG_STATUS_VERSION_MISMATCH = -8,  // if the header file version does not
+                                        // match the dynamically linked library
+                                        // version (cuRAND only)
   HIPRNG_STATUS_NOT_INITIALIZED = 101,
   HIPRNG_STATUS_OUT_OF_RANGE = 104,
   HIPRNG_STATUS_LENGTH_NOT_MULTIPLE = 105,
@@ -58,7 +68,7 @@ enum hiprngRngType_t {
   HIPRNG_RNG_PSEUDO_MRG32K3A,
   HIPRNG_RNG_PSEUDO_LFSR113,
   HIPRNG_RNG_PSEUDO_PHILOX432,
-  HIPRNG_RNG_PSEUDO_DEFAULT=0
+  HIPRNG_RNG_PSEUDO_DEFAULT = 0
 };
 // Some standard header files, these are included by hc.hpp and so want to make
 // them avail on both
@@ -74,3 +84,4 @@ enum hiprngRngType_t {
 #error("Must define exactly one of __HIP_PLATFORM_HCC__ or __HIP_PLATFORM_NVCC__");
 #endif
 
+#endif  // LIB_INCLUDE_HIPRNG_H

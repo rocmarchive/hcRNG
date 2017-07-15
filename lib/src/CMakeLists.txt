@@ -36,7 +36,7 @@ IF(${PLATFORM} MATCHES "hcc")
   
   STRING(STRIP "${HCC_CXXFLAGS}" HCC_CXXFLAGS)
   STRING(STRIP "${HCC_LDFLAGS}" HCC_LDFLAGS)
-  SET(HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../include")
+  SET(HCC_CXXFLAGS "${HCC_CXXFLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../")
   SET(HCC_LDFLAGS "${HCC_LDFLAGS}")
   
   IF(${HIP_SUPPORT} MATCHES "on") 
@@ -88,7 +88,7 @@ ELSEIF(${PLATFORM} MATCHES "nvcc")
 
   SET(HIPRNGSRCS ${CMAKE_CURRENT_SOURCE_DIR}/nvcc_detail/hiprng.cpp)
 
-  SET(CXXFLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/../include -I${HIP_PATH}/include -I/usr/local/cuda/include -D__HIP_PLATFORM_NVCC__=")
+  SET(CXXFLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/../ -I${HIP_PATH}/include -I/usr/local/cuda/include -D__HIP_PLATFORM_NVCC__=")
   SET(LDFLAGS "-L/usr/local/cuda/lib64 -L/usr/local/cuda/lib")
 
   FOREACH(src_file ${HIPRNGSRCS})

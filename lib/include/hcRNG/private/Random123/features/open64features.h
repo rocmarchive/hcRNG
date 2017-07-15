@@ -32,7 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __open64features_dot_hpp
 #define __open64features_dot_hpp
 
-/* The gcc features are mostly right.  We just override a few and then include gccfeatures.h */
+/* The gcc features are mostly right.  We just override a few and then include
+ * gccfeatures.h */
 
 /* Open64 4.2.3 and 4.2.4 accept the __uint128_t code without complaint
    but produce incorrect code for 64-bit philox.  The MULHILO64_ASM

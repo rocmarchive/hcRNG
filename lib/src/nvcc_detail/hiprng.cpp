@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include <hiprng.h>
+#include "include/hiprng.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,79 +39,75 @@ hiprngStatus_t hipCURANDStatusToHIPStatus(curandStatus_t cuStatus) {
     case CURAND_STATUS_VERSION_MISMATCH:
       return HIPRNG_STATUS_VERSION_MISMATCH;
     case CURAND_STATUS_INTERNAL_ERROR:
-      return  HIPRNG_STATUS_INTERNAL_ERROR;
-    default: 
+      return HIPRNG_STATUS_INTERNAL_ERROR;
+    default:
       throw "Unimplemented status";
   }
 }
 
-curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType){
-   switch(hipType) 
-   {
+curandRngType_t hipHIPRngTypeToCuRngType(hiprngRngType_t hipType) {
+  switch (hipType) {
     case HIPRNG_RNG_PSEUDO_MRG31K3P:
-        throw "Not supported";
+      throw "Not supported";
     case HIPRNG_RNG_PSEUDO_MRG32K3A:
-        return CURAND_RNG_PSEUDO_MRG32K3A;
+      return CURAND_RNG_PSEUDO_MRG32K3A;
     case HIPRNG_RNG_PSEUDO_LFSR113:
-        throw "Not supported";
+      throw "Not supported";
     case HIPRNG_RNG_PSEUDO_PHILOX432:
-        return CURAND_RNG_PSEUDO_PHILOX4_32_10;
+      return CURAND_RNG_PSEUDO_PHILOX4_32_10;
     default:
-        throw "Unimplemented Type";
+      throw "Unimplemented Type";
   }
 }
 
- hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
-                                                   hiprngRngType_t rng_type) {
-  return hipCURANDStatusToHIPStatus(curandCreateGenerator(generator, hipHIPRngTypeToCuRngType(rng_type)));
+hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
+                                     hiprngRngType_t rng_type) {
+  return hipCURANDStatusToHIPStatus(
+      curandCreateGenerator(generator, hipHIPRngTypeToCuRngType(rng_type)));
 }
 
- hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(
-    hiprngGenerator_t generator, unsigned long long seed) {
+hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
+                                                  unsigned long long seed) {
   return hipCURANDStatusToHIPStatus(
       curandSetPseudoRandomGeneratorSeed(generator, seed));
 }
- hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator, hipStream_t stream){
-  return hipCURANDStatusToHIPStatus(
-      curandSetStream(generator, stream));
+hiprngStatus_t hiprngSetStream(hiprngGenerator_t generator,
+                               hipStream_t stream) {
+  return hipCURANDStatusToHIPStatus(curandSetStream(generator, stream));
 }
- hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator, unsigned long long offset){
- return hipCURANDStatusToHIPStatus(
+hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator,
+                                        unsigned long long offset) {
+  return hipCURANDStatusToHIPStatus(
       curandSetGeneratorOffset(generator, offset));
 }
- hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
-                                                   unsigned int* outputPtr,
-                                                   size_t num) {
-  return hipCURANDStatusToHIPStatus(
-      curandGenerate(generator, outputPtr, num));
+hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
+                              unsigned int* outputPtr, size_t num) {
+  return hipCURANDStatusToHIPStatus(curandGenerate(generator, outputPtr, num));
 }
- hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num) {
+hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
+                                     float* outputPtr, size_t num) {
   return hipCURANDStatusToHIPStatus(
       curandGenerateUniform(generator, outputPtr, num));
 }
- hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
-                                                   double* outputPtr,
-                                                   size_t num) {
+hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
+                                           double* outputPtr, size_t num) {
   return hipCURANDStatusToHIPStatus(
       curandGenerateUniformDouble(generator, outputPtr, num));
 }
- hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
-                                                   float* outputPtr,
-                                                   size_t num, float mean, float stddev) {
+hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
+                                    float* outputPtr, size_t num, float mean,
+                                    float stddev) {
   return hipCURANDStatusToHIPStatus(
       curandGenerateNormal(generator, outputPtr, num, mean, stddev));
 }
- hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
-                                                   double* outputPtr,
-                                                   size_t num, double mean, double stddev) {
+hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
+                                          double* outputPtr, size_t num,
+                                          double mean, double stddev) {
   return hipCURANDStatusToHIPStatus(
       curandGenerateNormalDouble(generator, outputPtr, num, mean, stddev));
 }
- hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator){ 
-  return hipCURANDStatusToHIPStatus(
-      curandDestroyGenerator(generator));
+hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator) {
+  return hipCURANDStatusToHIPStatus(curandDestroyGenerator(generator));
 }
 #ifdef __cplusplus
 }
