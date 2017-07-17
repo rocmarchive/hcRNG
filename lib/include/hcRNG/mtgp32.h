@@ -155,9 +155,16 @@ unsigned int hcrng(
            av_mask[0]);
   d_status[(t + offset + MTGP32_N) & MTGP32_STATE_MASK] = r;
   o = temper(pTemper_tbl, r, d_status[(t + offset + pos -1) & MTGP32_STATE_MASK]);
+
+  // Thread Synchronization
+  hc_barrier(CLK_LOCAL_MEM_FENCE);
+
   if (t == 0) {
     av_offset[0] = (av_offset[0] + d) & MTGP32_STATE_MASK;
   }
+
+  // Thread Synchronization
+  hc_barrier(CLK_LOCAL_MEM_FENCE);
   return o;
 }
 
