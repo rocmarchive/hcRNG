@@ -137,8 +137,8 @@ unsigned int hcrng(
   const uint32_t* av_mask = (state[0].k->mask); 
   const uint32_t* av_d_status = (state[0].k->d_status); 
    
-  unsigned int t = hc_get_workitem_id(0);
-  unsigned int d = BLOCK_SIZE * 1 * 1;
+  unsigned int t = (hc_get_group_size(2) * hc_get_group_size(1) * hc_get_workitem_id(2)) + (hc_get_group_size(0) * hc_get_workitem_id(1)) + hc_get_workitem_id(0);
+  unsigned int d = hc_get_group_size(2) * hc_get_group_size(1) * hc_get_group_size(0) ;
   uint32_t* pParam_tbl = const_cast<uint32_t*>(&av_param_tbl[0]);
   uint32_t* pTemper_tbl = const_cast<uint32_t*>(&av_temper_tbl[0]);
   uint32_t* d_status = const_cast<uint32_t*>(&av_d_status[0]);
