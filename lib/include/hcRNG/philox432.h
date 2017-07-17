@@ -117,7 +117,7 @@ static hcrngPhilox432StreamCreator defaultStreamCreator_Philox432 = {
     BASE_CREATOR_STATE, BASE_CREATOR_STATE, BASE_CREATOR_JUMP_DISTANCE};
 
 HCRNGAPI hcrngStatus hcrngPhilox432SetAcclView(
-    hcrngPhilox432StreamCreator* creator, hc::accelerator_view accl_view,
+    hcrngPhilox432StreamCreator* creator, hc::accelerator_view &accl_view,
     void* stream = nullptr);
 
 HCRNGAPI hcrngStatus
@@ -328,42 +328,42 @@ HCRNGAPI hcrngStatus hcrngPhilox432AdvanceStreams(size_t count,
  *  @brief Helper function for hcrngPhilox432DeviceRandomU01Array()
  */
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, float* outBuffer,
     int streamlength = 0, size_t streams_per_thread = 1);
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, double* outBuffer,
     int streamlength = 0, size_t streams_per_thread = 1);
 
 // Normal distribution
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, float mu, float sigma,
     float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomNArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, double mu, double sigma,
     double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength = 0,
     size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength = 0,
     size_t streams_per_thread = 1);

@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "include/hcRNG/private/philox432.c.h"
 
 hcrngStatus hcrngPhilox432SetAcclView(hcrngPhilox432StreamCreator* creator,
-                                      hc::accelerator_view accl_view,
+                                      hc::accelerator_view &accl_view,
                                       void* stream) {
   creator->currentAcclView = &accl_view;
   creator->currentStream = stream;
@@ -426,7 +426,7 @@ hcrngStatus hcrngPhilox432AdvanceStreams(size_t count,
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, float* outBuffer,
     int streamlength, size_t streams_per_thread) {
 #define HCRNG_SINGLE_PRECISION
@@ -468,7 +468,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_single(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomNArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, float mu, float sigma,
     float* outBuffer, int streamlength, size_t streams_per_thread) {
 #define HCRNG_SINGLE_PRECISION
@@ -488,7 +488,7 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_single(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, double* outBuffer,
     int streamlength, size_t streams_per_thread) {
   // Check params
@@ -528,7 +528,7 @@ hcrngStatus hcrngPhilox432DeviceRandomU01Array_double(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomNArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, double mu, double sigma,
     double* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -545,7 +545,7 @@ hcrngStatus hcrngPhilox432DeviceRandomNArray_double(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -576,7 +576,7 @@ hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_single(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -607,7 +607,7 @@ hcrngStatus hcrngPhilox432DeviceRandomIntegerArray_double(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength,
     size_t streams_per_thread) {
@@ -639,7 +639,7 @@ hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_single(
 }
 
 hcrngStatus hcrngPhilox432DeviceRandomUnsignedIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngPhilox432Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength,
     size_t streams_per_thread) {

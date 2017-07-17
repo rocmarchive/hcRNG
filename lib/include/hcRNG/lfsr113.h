@@ -99,7 +99,7 @@ static hcrngLfsr113StreamCreator defaultStreamCreator_Lfsr113 = {
     {BASE_CREATOR_STATE_LFSR113}, {BASE_CREATOR_STATE_LFSR113}};
 
 HCRNGAPI hcrngStatus hcrngLfsr113SetAcclView(hcrngLfsr113StreamCreator* creator,
-                                             hc::accelerator_view accl_view,
+                                             hc::accelerator_view &accl_view,
                                              void* stream = nullptr);
 
 HCRNGAPI hcrngStatus hcrngLfsr113GetAcclView(hcrngLfsr113StreamCreator* creator,
@@ -309,11 +309,11 @@ HCRNGAPI hcrngStatus hcrngLfsr113AdvanceStreams(size_t count,
  *  @brief Helper function for hcrngLfsr113DeviceRandomU01Array()
  */
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, float* outBuffer,
     int streamlength = 0, size_t streams_per_thread = 1);
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, double* outBuffer,
     int streamlength = 0, size_t streams_per_thread = 1);
 /** \endinternal
@@ -321,32 +321,32 @@ HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomU01Array_double(
 
 // Normal distribution
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, float mu, float sigma,
     float* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomNArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, double mu, double sigma,
     double* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength = 0, size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomUnsignedIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength = 0,
     size_t streams_per_thread = 1);
 
 HCRNGAPI hcrngStatus hcrngLfsr113DeviceRandomUnsignedIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngLfsr113Stream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength = 0,
     size_t streams_per_thread = 1);
