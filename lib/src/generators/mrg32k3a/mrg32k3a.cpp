@@ -49,7 +49,7 @@ static unsigned long invA2[3][3] = {
     {0, 360363334, 4225571728}, {1, 0, 0}, {0, 1, 0}};
 
 hcrngStatus hcrngMrg32k3aSetAcclView(hcrngMrg32k3aStreamCreator* creator,
-                                     hc::accelerator_view accl_view,
+                                     hc::accelerator_view &accl_view,
                                      void* stream) {
   creator->currentAcclView = &accl_view;
   creator->currentStream = stream;
@@ -371,7 +371,7 @@ hcrngStatus hcrngMrg32k3aWriteStreamInfo(const hcrngMrg32k3aStream* stream,
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, float* outBuffer,
     int streamlength, size_t streams_per_thread) {
 #define HCRNG_SINGLE_PRECISION
@@ -413,7 +413,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_single(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, float mu, float sigma,
     float* outBuffer, int streamlength, size_t streams_per_thread) {
 #define HCRNG_SINGLE_PRECISION
@@ -432,7 +432,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomNArray_single(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, double* outBuffer,
     int streamlength, size_t streams_per_thread) {
   // Check params
@@ -471,7 +471,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomU01Array_double(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, double mu, double sigma,
     double* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -488,7 +488,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomNArray_double(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -519,7 +519,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomIntegerArray_single(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, int a, int b,
     int* outBuffer, int streamlength, size_t streams_per_thread) {
   if (streamCount < 1) return HCRNG_INVALID_VALUE;
@@ -550,7 +550,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomIntegerArray_double(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomUnsignedIntegerArray_single(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength,
     size_t streams_per_thread) {
@@ -582,7 +582,7 @@ hcrngStatus hcrngMrg32k3aDeviceRandomUnsignedIntegerArray_single(
 }
 
 hcrngStatus hcrngMrg32k3aDeviceRandomUnsignedIntegerArray_double(
-    hc::accelerator_view accl_view, size_t streamCount,
+    hc::accelerator_view &accl_view, size_t streamCount,
     hcrngMrg32k3aStream* streams, size_t numberCount, unsigned int a,
     unsigned int b, unsigned int* outBuffer, int streamlength,
     size_t streams_per_thread) {
