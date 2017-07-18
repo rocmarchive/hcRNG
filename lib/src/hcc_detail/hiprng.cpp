@@ -326,3 +326,6 @@ hiprngStatus_t hiprngDestroyGenerator(hiprngGenerator_t generator) {
 }
 #endif
 
+
+
+

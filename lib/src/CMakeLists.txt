@@ -60,7 +60,7 @@ IF(${PLATFORM} MATCHES "hcc")
   INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../include/" DESTINATION include)
   
   IF(${HIP_SUPPORT} MATCHES "on") 
-    SET(HIPRNGSRCS ${RNGSRC} ${CMAKE_CURRENT_SOURCE_DIR}/hcc_detail/hiprng.cpp)
+    SET(HIPRNGSRCS ${RNGSRC} ${CMAKE_CURRENT_SOURCE_DIR}/hcc_detail/hiprng.cpp ${CMAKE_CURRENT_SOURCE_DIR}/hcc_detail/hip_rng_kernel.cpp)
 
     # Setting header dependencies for hiprng library generation
     FOREACH(src_file ${HIPRNGSRCS})
