@@ -20,15 +20,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hcRNG/mrg32k3a.h"
-#include "include/hcRNG/box_muller_transform.h"
+#include "hcRNG/mrg32k3a.h"
+#include "hcRNG/box_muller_transform.h"
 #define BLOCK_SIZE 256
 #define MODULAR_NUMBER_TYPE unsigned long
 #define MODULAR_FIXED_SIZE 3
-#include "include/hcRNG/private/modular.c.h"
+#include "hcRNG/private/modular.c.h"
 
 // code that is common to host and device
-#include "include/hcRNG/private/mrg32k3a.c.h"
+#include "hcRNG/private/mrg32k3a.c.h"
 /*! @brief Matrices to advance to the next state
 */
 static unsigned long Mrg32k3a_A1p0[3][3] = {

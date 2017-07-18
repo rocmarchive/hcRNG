@@ -20,8 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hiprng.h"
-#include "include/hcRNG/hcRNG.h"
+#include "hiprng.h"
+#include "hcRNG/hcRNG.h"
+#include "hip/hip_hcc.h"
 
 #define STREAM_COUNT 16384
 

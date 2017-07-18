@@ -24,7 +24,7 @@ THE SOFTWARE.
 * @brief Implementation of functions defined in hcRNG.h
 */
 
-#include "include/hcRNG/hcRNG.h"
+#include "hcRNG/hcRNG.h"
 #include <stdio.h>
 #include <stdlib.h>
 #define CASE_ERR_(code, msg) \

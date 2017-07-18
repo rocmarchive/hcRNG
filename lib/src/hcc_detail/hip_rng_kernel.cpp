@@ -1,5 +1,6 @@
 #include "hcc_detail/hip_rng_kernel.h"
 #include <hcRNG/mtgp32.h>
+#include <hip/hip_hcc.h>
 
 // DEVICE APIS 
 // *****************************************************************************************************************

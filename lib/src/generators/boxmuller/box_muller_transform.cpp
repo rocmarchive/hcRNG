@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hcRNG/box_muller_transform.h"
-#include "include/hcRNG/hcRNG.h"
+#include "hcRNG/box_muller_transform.h"
+#include "hcRNG/hcRNG.h"
 #include <hc.hpp>
 
 #define BLOCK_SIZE 256

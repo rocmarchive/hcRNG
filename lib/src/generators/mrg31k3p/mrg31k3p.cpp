@@ -20,16 +20,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hcRNG/mrg31k3p.h"
-#include "include/hcRNG/box_muller_transform.h"
+#include <hcRNG/mrg31k3p.h>
+#include <hcRNG/box_muller_transform.h>
 #define BLOCK_SIZE 256
 #define MODULAR_NUMBER_TYPE unsigned int
 #define MODULAR_FIXED_SIZE 3
 
-#include "include/hcRNG/private/modular.c.h"
+#include "hcRNG/private/modular.c.h"
 
 // code that is common to host and device
-#include "include/hcRNG/private/mrg31k3p.c.h"
+#include "hcRNG/private/mrg31k3p.c.h"
 
 /*! @brief Matrices to advance to the next state
  */

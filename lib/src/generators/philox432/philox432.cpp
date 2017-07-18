@@ -20,11 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hcRNG/philox432.h"
-#include "include/hcRNG/box_muller_transform.h"
+#include "hcRNG/philox432.h"
+#include "hcRNG/box_muller_transform.h"
 #define BLOCK_SIZE 256
 // code that is common to host and device
-#include "include/hcRNG/private/philox432.c.h"
+#include "hcRNG/private/philox432.c.h"
 
 hcrngStatus hcrngPhilox432SetAcclView(hcrngPhilox432StreamCreator* creator,
                                       hc::accelerator_view &accl_view,

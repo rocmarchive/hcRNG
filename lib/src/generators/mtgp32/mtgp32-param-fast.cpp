@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "hcRNG/private/mtgp32-fast.h"
+#include <hcRNG/private/mtgp32-fast.h>
 
 mtgp32_params_fast_t mtgp32_params_fast_11213[] = {
   {

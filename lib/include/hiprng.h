@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 #ifndef LIB_INCLUDE_HIPRNG_H
 #define LIB_INCLUDE_HIPRNG_H
-
+#include <hip/hip_runtime_api.h>
 #pragma once
 
 enum hiprngStatus_t {

@@ -20,12 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "include/hcRNG/box_muller_transform.h"
-#include "include/hcRNG/lfsr113.h"
+#include "hcRNG/box_muller_transform.h"
+#include "hcRNG/lfsr113.h"
 
 #define BLOCK_SIZE 256
 // code that is common to host and device
-#include "include/hcRNG/private/lfsr113.c.h"
+#include "hcRNG/private/lfsr113.c.h"
 
 hcrngStatus hcrngLfsr113SetAcclView(hcrngLfsr113StreamCreator* creator,
                                     hc::accelerator_view &accl_view,
