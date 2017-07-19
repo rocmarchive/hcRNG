@@ -305,7 +305,6 @@ void user_log_normal_kernel(
   hc::parallel_for_each(
       accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     uint32_t threadId = tidx.global[0];
-    uint32_t localThreadId = tidx.local[0];
     uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
@@ -337,7 +336,6 @@ inline void user_uniform_kernel(
   hc::parallel_for_each(
       accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     int threadId = tidx.global[0];
-    int localThreadId = tidx.local[0];
     int groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
@@ -369,7 +367,6 @@ inline void user_normal_kernel(
   hc::parallel_for_each(
       accl_view, t_ext, [=] (hc::tiled_index<1>& tidx) [[hc]] {
     uint32_t threadId = tidx.global[0];
-    uint32_t localThreadId = tidx.local[0];
     uint32_t groupId = tidx.tile[0];
     if (groupId >= USER_GROUP_NUM)
       return;
