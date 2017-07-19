@@ -93,8 +93,8 @@ hiprngStatus_t hiprngSetGeneratorOffset(hiprngGenerator_t generator,
   streamCreator.currentAcclView = accl_view;                               \
   *(hcrng##gt##StreamCreator*)*generator = streamCreator;
 
-#define stream_alloc(gt)                                                    \
-  hipHostMalloc((void**)&streams_buffer##gt,                                    \
+#define stream_alloc(gt)                                                   \
+  hipHostMalloc((void**)&streams_buffer##gt,                               \
             STREAM_COUNT * sizeof(hcrng##gt##Stream));
 
 hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
@@ -124,6 +124,15 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
 }
 
 #define SetSeed(gt)                                                            \
+  hcrng##gt##StreamCreator* gen = (hcrng##gt##StreamCreator*)generator;        \
+  bool reuse = 1;                                                              \
+  for (size_t i = 0; i < 3; i++)                                               \
+  if (temp##gt == 0 || (temp##gt != gen->initialState.g1[i] ||                 \
+      temp##gt != gen->initialState.g2[i])) {                                  \
+    reuse = 0;                                                                 \
+    break;                                                                     \
+  }                                                                            \
+  if (!reuse) {                                                                \
   if (temp##gt != 0) {                                                         \
     hcrng##gt##StreamState baseState;                                          \
     for (size_t i = 0; i < 3; ++i) baseState.g1[i] = temp##gt;                 \
@@ -132,31 +141,51 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
                                          &baseState);                          \
   }                                                                            \
   hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,           \
-                               STREAM_COUNT, streams_buffer##gt);                     \
+                               STREAM_COUNT, streams_buffer##gt);              \
+  }
 
-#define SetSeedLfsr113(gt)                                           \
-  if (tempLfsr113 != 0) {                                            \
-    hcrngLfsr113StreamState baseState;                               \
-    for (size_t i = 0; i < 4; ++i) baseState.g[i] = tempLfsr113;     \
-    err = hcrngLfsr113SetBaseCreatorState(                           \
-        (hcrngLfsr113StreamCreator*)generator, &baseState);          \
-  }                                                                  \
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, \
-                               STREAM_COUNT, streams_buffer##gt);           \
+#define SetSeedLfsr113(gt)                                                     \
+  hcrng##gt##StreamCreator* gen = (hcrng##gt##StreamCreator*)generator;        \
+  bool reuse = 1;                                                              \
+  for (size_t i = 0; i < 4; i++)                                               \
+  if (temp##gt == 0 || temp##gt != gen->initialState.g[i]) {                   \
+    reuse = 0;                                                                 \
+    break;                                                                     \
+  }                                                                            \
+  if (!reuse) {                                                                \
+  if (temp##gt != 0) {                                                         \
+    hcrng##gt##StreamState baseState;                                          \
+    for (size_t i = 0; i < 4; ++i) baseState.g[i] = temp##gt;                  \
+    err = hcrng##gt##SetBaseCreatorState(                                      \
+        (hcrng##gt##StreamCreator*)generator, &baseState);                     \
+  }                                                                            \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,           \
+                               STREAM_COUNT, streams_buffer##gt);              \
+  }
 
-#define SetSeedPhilox432(gt)                                         \
-  if (tempPhilox432 != 0) {                                          \
-    hcrngPhilox432StreamState baseState;                             \
-    baseState.ctr.H.msb = tempPhilox432;                             \
-    baseState.ctr.H.lsb = tempPhilox432;                             \
-    baseState.ctr.L.msb = tempPhilox432;                             \
-    baseState.ctr.L.lsb = tempPhilox432;                             \
-    baseState.deckIndex = 0;                                         \
-    err = hcrngPhilox432SetBaseCreatorState(                         \
-        (hcrngPhilox432StreamCreator*)generator, &baseState);        \
-  }                                                                  \
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, \
-                               STREAM_COUNT, streams_buffer##gt);           \
+#define SetSeedPhilox432(gt)                                                   \
+  hcrng##gt##StreamCreator* gen = (hcrng##gt##StreamCreator*)generator;        \
+  bool reuse =1;                                                               \
+  if (temp##gt == 0 ||                                                         \
+      (temp##gt != gen->initialState.ctr.H.msb ||                              \
+      temp##gt != gen->initialState.ctr.H.lsb ||                               \
+      temp##gt != gen->initialState.ctr.L.msb ||                               \
+      temp##gt != gen->initialState.ctr.L.lsb))                                \
+    reuse = 0;                                                                 \
+  if (!reuse) {                                                                \
+  if (temp##gt != 0) {                                                         \
+    hcrng##gt##StreamState baseState;                                          \
+    baseState.ctr.H.msb = temp##gt;                                            \
+    baseState.ctr.H.lsb = temp##gt;                                            \
+    baseState.ctr.L.msb = temp##gt;                                            \
+    baseState.ctr.L.lsb = temp##gt;                                            \
+    baseState.deckIndex = 0;                                                   \
+    err = hcrng##gt##SetBaseCreatorState(                                      \
+        (hcrng##gt##StreamCreator*)generator, &baseState);                     \
+  }                                                                            \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,           \
+                               STREAM_COUNT, streams_buffer##gt);              \
+  }
 
 hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
                                                   unsigned long long seed) {
@@ -180,15 +209,27 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
 #undef SetSeedLfsr113
 #undef SetSeedPhilox432
 
-#define Generate(gt)                                                        \
-  hcrngStatus hcStatus##gt =                                                \
-      hcrng##gt##DeviceRandomUnsignedIntegerArray_single(                   \
-          *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),       \
-          STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr); \
+#define stream_create(gt)                                                               \
+  generator = &defaultStreamCreator_##gt;                                               \
+  hipHostMalloc((void**)&streams_buffer##gt,                                            \
+            STREAM_COUNT * sizeof(hcrng##gt##Stream));                                  \
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,                    \
+                               STREAM_COUNT, streams_buffer##gt);
+
+#define Generate(gt)                                                                    \
+  if (generator == NULL || streams_buffer##gt == NULL) {                                \
+    stream_create(gt)                                                                   \
+  }                                                                                     \
+  hcrngStatus hcStatus##gt =                                                            \
+      hcrng##gt##DeviceRandomUnsignedIntegerArray_single(                               \
+          *accl_view, STREAM_COUNT, streams_buffer##gt, num, 1, 4294967294, outputPtr); \
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
                               unsigned int* outputPtr, size_t num) {
+  hcrngStatus err;
+  hc::accelerator_view* accl_view;
+  hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
   if (rngtyp == 0) {
     Generate(Mrg31k3p)
   } else if (rngtyp == 1) {
@@ -202,14 +243,19 @@ hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
 }
 #undef Generate
 
-#define GenerateUniform(gt)                                          \
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single( \
-      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),    \
-      STREAM_COUNT, streams_buffer##gt, num, outputPtr);             \
+#define GenerateUniform(gt)                                                 \
+  if (generator == NULL || streams_buffer##gt == NULL) {                    \
+    stream_create(gt)                                                       \
+  }                                                                         \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_single(        \
+      *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);        \
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
                                      float* outputPtr, size_t num) {
+  hcrngStatus err;
+  hc::accelerator_view* accl_view;
+  hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
   if (rngtyp == 0) {
     GenerateUniform(Mrg31k3p)
   } else if (rngtyp == 1) {
@@ -223,14 +269,19 @@ hiprngStatus_t hiprngGenerateUniform(hiprngGenerator_t generator,
 }
 #undef GenerateUniform
 
-#define GenerateUniformDouble(gt)                                    \
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double( \
-      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),    \
-      STREAM_COUNT, streams_buffer##gt, num, outputPtr);             \
+#define GenerateUniformDouble(gt)                                           \
+  if (generator == NULL || streams_buffer##gt == NULL) {                    \
+    stream_create(gt)                                                       \
+  }                                                                         \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomU01Array_double(        \
+      *accl_view, STREAM_COUNT, streams_buffer##gt, num, outputPtr);        \
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
                                            double* outputPtr, size_t num) {
+  hcrngStatus err;
+  hc::accelerator_view* accl_view;
+  hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
   if (rngtyp == 0) {
     GenerateUniformDouble(Mrg31k3p)
   } else if (rngtyp == 1) {
@@ -244,15 +295,20 @@ hiprngStatus_t hiprngGenerateUniformDouble(hiprngGenerator_t generator,
 }
 #undef GenerateUniformDouble
 
-#define GenerateNormal(gt)                                             \
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(     \
-      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),      \
-      STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
+#define GenerateNormal(gt)                                                         \
+  if (generator == NULL || streams_buffer##gt == NULL) {                           \
+    stream_create(gt)                                                              \
+  }                                                                                \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_single(                 \
+      *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
                                     float* outputPtr, size_t num, float mean,
                                     float stddev) {
+  hcrngStatus err;
+  hc::accelerator_view* accl_view;
+  hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
   if (rngtyp == 0) {
     GenerateNormal(Mrg31k3p)
   } else if (rngtyp == 1) {
@@ -266,15 +322,20 @@ hiprngStatus_t hiprngGenerateNormal(hiprngGenerator_t generator,
 }
 #undef GenerateNormal
 
-#define GenerateNormalDouble(gt)                                       \
-  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(     \
-      *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),      \
-      STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
+#define GenerateNormalDouble(gt)                                                   \
+  if (generator == NULL || streams_buffer##gt == NULL) {                           \
+    stream_create(gt)                                                              \
+  }                                                                                \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomNArray_double(                 \
+      *accl_view, STREAM_COUNT, streams_buffer##gt, num, mean, stddev, outputPtr); \
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
                                           double* outputPtr, size_t num,
                                           double mean, double stddev) {
+  hcrngStatus err;
+  hc::accelerator_view* accl_view;
+  hipHccGetAcceleratorView(hipStreamDefault, &accl_view);
   if (rngtyp == 0) {
     GenerateNormalDouble(Mrg31k3p)
   } else if (rngtyp == 1) {
@@ -287,6 +348,7 @@ hiprngStatus_t hiprngGenerateNormalDouble(hiprngGenerator_t generator,
   return hipHCRNGStatusToHIPStatus(HCRNG_SUCCESS);
 }
 #undef GenerateNormalDouble
+#undef stream_create
 
 #define Destroy(gt)                 \
   if (streams_buffer##gt != NULL) { \
