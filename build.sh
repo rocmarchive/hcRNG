@@ -59,7 +59,7 @@ cat <<-HELP
 =============================================================================================================================
 This script is invoked to build hcRNG library and test sources. Please provide the following arguments:
 
-  ${green}--test${reset}     Test to enable the library testing (on/off) 
+  ${green}--test${reset}     Test to enable the library testing (on/basic/off) 
   ${green}--debug${reset}    Compile with debug info (-g)
   ${green}--verbose${reset}  Run make with VERBOSE=1
   ${green}--install${reset}  Install the shared library and include the header files under /opt/rocm/hcrng  Requires sudo perms.
@@ -135,7 +135,7 @@ if [ "$platform" = "hcc" ]; then
   if ( [ -z $testing ] ) || ( [ "$testing" = "off" ] ); then
     echo "${green}hcRNG Build Completed!${reset}"
   # Test=ON (Build and test the library)
-  elif ( [ "$testing" = "on" ] ); then
+  elif ( [ "$testing" = "on" ] ) || ( [ "$testing" = "basic" ] ); then
     set +e
     # MAKE BUILD DIR
     mkdir -p $current_work_dir/build/test
