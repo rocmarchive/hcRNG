@@ -60,15 +60,15 @@ typedef mtgp32_kernel_params mtgp32_kernel_params_t;
 
 typedef void *hiprngGenerator_t;
 
-hcrngMrg31k3pStream *streams_bufferMrg31k3p = NULL;
-hcrngMrg32k3aStream *streams_bufferMrg32k3a = NULL;
-hcrngLfsr113Stream *streams_bufferLfsr113 = NULL;
-hcrngPhilox432Stream *streams_bufferPhilox432 = NULL;
+extern hcrngMrg31k3pStream *streams_bufferMrg31k3p;
+extern hcrngMrg32k3aStream *streams_bufferMrg32k3a;
+extern hcrngLfsr113Stream *streams_bufferLfsr113;
+extern hcrngPhilox432Stream *streams_bufferPhilox432;
 
-hcrngMrg31k3pStream *streamsMrg31k3p = NULL;
-hcrngMrg32k3aStream *streamsMrg32k3a = NULL;
-hcrngLfsr113Stream *streamsLfsr113 = NULL;
-hcrngPhilox432Stream *streamsPhilox432 = NULL;
+extern hcrngMrg31k3pStream *streamsMrg31k3p;
+extern hcrngMrg32k3aStream *streamsMrg32k3a;
+extern hcrngLfsr113Stream *streamsLfsr113;
+extern hcrngPhilox432Stream *streamsPhilox432;
 
 hiprngStatus_t hipHCRNGStatusToHIPStatus(hcrngStatus hcStatus);
 
