@@ -5,8 +5,8 @@
 
 // FIXME: Better to inline every amp-restricted functions and make it static
 #include "hcRNG/private/mtgp32-fast.h"
-#include "hc.hpp"
-#include "hc_defines.h"
+#include <hc.hpp>
+#include <hc_defines.h>
 
 #define MTGP32_MEXP 11213
 #define MTGP32_N 351
