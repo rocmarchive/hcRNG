@@ -123,8 +123,8 @@ cd $build_dir
 if [ "$platform" = "hcc" ]; then
   # Cmake and make libhcRNG: Install hcRNG
   cmake -DCMAKE_C_COMPILER=$cmake_c_compiler -DCMAKE_CXX_COMPILER=$cmake_cxx_compiler -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX=/opt/rocm/hcrng $current_work_dir
-  make package $verbose
-  make $verbose
+  make -j package $verbose
+  make -j $verbose
  
   if [ "$install" = "1" ]; then
     sudo make install
