@@ -5,8 +5,6 @@
 
 // FIXME: Better to inline every amp-restricted functions and make it static
 #include "hcRNG/private/mtgp32-fast.h"
-#include <hc.hpp>
-#include <hc_defines.h>
 
 #define MTGP32_MEXP 11213
 #define MTGP32_N 351
@@ -51,6 +49,11 @@ typedef struct hcrngStateMtgp32 {
   uint32_t pIdx;
   mtgp32_kernel_params* k;  // points to all kernel parameters
 } hcrngStateMtgp32;
+
+
+#ifdef __HCC__
+#include <hc.hpp>
+#include <hc_defines.h>
 
 void hcrngStateMtgp32_init(
     hc::accelerator_view accl_view, hcrngStateMtgp32* s);
@@ -382,5 +385,6 @@ inline void user_normal_kernel(
 }
 
 
+#endif // HCC
 
 #endif // MTGP32_H_
