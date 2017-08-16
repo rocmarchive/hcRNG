@@ -5,11 +5,50 @@
 
 #include "hcRNG/private/mtgp32-fast.h"
 #include "hcRNG.h"
-// Opaque structure declarations
+#define MTGP32_MEXP 11213
+#define MTGP32_N 351
+#define MTGP32_FLOOR_2P 256
+#define MTGP32_CEIL_2P 512
+#define MTGP32_TN MTGP32_FLOOR_2P // TBL_NUMBER, do not exceed 256, i.e. WAVEFRONT_SIZE
+#define MTGP32_LS (MTGP32_TN * 3)
+#define MTGP32_TS 16              // TBL_SIZE
+#define HcRAND_GROUP_NUM 200     // < MTGP32_TN, user specifies USER_GROUP_NUM
+#define MTGP32_STATE_SIZE 1024    // The effective state number is =351
+#define MTGP32_STATE_MASK 1023
+#define USER_GROUP_NUM 64         // < HcRAND_GROUP_NUM
 
-typedef struct mtgp32_kernel_params mtgp32_kernel_params_t;
+#ifndef DIVUP
+#define DIVUP(x, y) (((x) + (y) - 1) / (y))
+#endif
+#define BLOCK_SIZE 256
+#define MAX_NUM_BLOCKS 64
 
-typedef struct hcrngStateMtgp32 hcrngStateMtgp32_t;
+
+// mtgp32_kernel_params
+typedef struct mtgp32_kernel_params {
+  uint32_t offset[USER_GROUP_NUM]; // size: USER_GROUP_NUM
+  uint32_t index[USER_GROUP_NUM];  // size: USER_GROUP_NUM
+  uint32_t d_status[USER_GROUP_NUM * MTGP32_STATE_SIZE]; // extent<2>(USER_GROUP_NUM, MTGP32_STATE_SIZE)
+  // mtgp32 kernel params
+  uint32_t mexp_tbl[HcRAND_GROUP_NUM];                      // size: 1. Redundant
+  uint32_t param_tbl[HcRAND_GROUP_NUM * MTGP32_TN];         // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN];        // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t single_temper_tbl[HcRAND_GROUP_NUM * MTGP32_TN]; // extent<2>(HcRAND_GROUP_NUM, MTGP32_TN)
+  uint32_t pos_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh1_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t sh2_tbl[MTGP32_TN];  // size: MTGP32_TN
+  uint32_t mask[1];             // size: 1
+} mtgp32_kernel_params_t;
+
+
+// Structure of hcrngStateMtgp32
+typedef struct hcrngStateMtgp32 {
+  uint32_t s[MTGP32_STATE_SIZE];
+  uint32_t offset;
+  uint32_t pIdx;
+  mtgp32_kernel_params* k;  // points to all kernel parameters
+} hcrngStateMtgp32_t;
+
 
 typedef hcrngStatus_ hcrngStatus_t;
 
@@ -51,5 +90,4 @@ __device__ double hcrng_uniform_double ( hcrngStateMtgp32_t* state);
 
 #endif // MTGP32_H_
 
-#endif // HCC
 
