@@ -51,5 +51,4 @@ __device__ double hcrng_uniform_double ( hcrngStateMtgp32_t* state);
 
 #endif // MTGP32_H_
 
-#endif // HCC
 
