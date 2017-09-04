@@ -3,6 +3,8 @@
 set -e
 
 do_ldconfig() {
+    ln -sfn /opt/rocm/hcrng/lib/libhiprng.so /opt/rocm/lib/libhiprng.so
+    ln -sfn /opt/rocm/hcrng/lib/libhiprng.so /opt/rocm/lib/libhcrng.so
     echo /opt/rocm/hcrng/lib > /etc/ld.so.conf.d/hcrng-rocm-dev.conf && ldconfig
 }
 
