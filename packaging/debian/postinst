@@ -1,15 +1,26 @@
 #/bin/bash
 
 set -e
+ROCM_PATH="/opt/rocm"
+INSTALL_PATH="${ROCM_PATH}/hcrng"
+LIBRARY_DIR="${INSTALL_PATH}/lib"
+COMMON_LIB="${ROCM_PATH}/lib"
+SYMLINK_DIR="${ROCM_PATH}/hiprng"
+
+do_symlink() {
+    ln -sfn ${LIBRARY_DIR}/libhiprng.so ${COMMON_LIB}/libhiprng.so
+    ln -sfn ${LIBRARY_DIR}/libhcrng.so ${COMMON_LIB}/libhcrng.so
+    ln -sfn  ${INSTALL_PATH} ${SYMLINK_DIR}
+}
 
 do_ldconfig() {
-    ln -sfn /opt/rocm/hcrng/lib/libhiprng.so /opt/rocm/lib/libhiprng.so
-    ln -sfn /opt/rocm/hcrng/lib/libhiprng.so /opt/rocm/lib/libhcrng.so
-    echo /opt/rocm/hcrng/lib > /etc/ld.so.conf.d/hcrng-rocm-dev.conf && ldconfig
+    echo ${LIBRARY_DIR} > /etc/ld.so.conf.d/hcrng-rocm-dev.conf && ldconfig
+    echo ${COMMON_LIB} >> /etc/ld.so.conf.d/hcrng-rocm-dev.conf && ldconfig
 }
 
 case "$1" in
    configure)
+       do_symlink
        do_ldconfig
    ;;
    abort-upgrade|abort-remove|abort-deconfigure)

@@ -1,6 +1,6 @@
 # bash script to uninstall the library
-
-sh clean.sh --deepclean
-echo "Uninstallation of hcRNG done"
+sudo dpkg -r hcrng
+sh clean.sh 
+echo "Uninstallation of hcFFT done"
 
 
