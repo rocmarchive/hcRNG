@@ -1,5 +1,4 @@
 #include "hcRNG/mtgp32.h"
-#include "hcRNG/private/mtgp32-impl.h"
 #include <hc.hpp>
 #include <hc_math.hpp>
 #include "hc_am.hpp"
@@ -218,54 +217,3 @@ int mtgp32_init_seed_kernel(
 
   return 0;
 }
-
-
-//  Set up initial states for the mtgp32 generator. 
-__host__ hcrngStatus_t hcrngMakeMTGP32KernelState (hc::accelerator_view accl_view, hcrngStateMtgp32_t* s, mtgp32_params_fast_t params[], mtgp32_kernel_params_t* k, int  n, unsigned long long seed ) {
-  assert(s);
-  assert(k);
-    // Invoke the init_seed kernel
-  int ret = mtgp32_init_seed_kernel(accl_view, s, k, n, seed);
-  if (ret != 0) return HCRNG_OUT_OF_RESOURCES;
-  return HCRNG_SUCCESS;
-
-}
-
-//     Set up constant parameters for the mtgp32 generator. 
-__host__ hcrngStatus_t hcrngMakeMTGP32Constants (hc::accelerator_view accl_view, const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p ) {
-  assert(p);
-  // Invoke the init params kernel
-  int ret = mtgp32_init_params_kernel(accl_view, params, p);
-  if (ret != 0) return HCRNG_OUT_OF_RESOURCES;
-  return HCRNG_SUCCESS;
-}
-
-//  Return a log-normally distributed float from an MTGP32 generator. 
-__device__ float hcrng_log_normal ( hcrngStateMtgp32_t* state, float  mean, float  stddev) {
-  return hcrng_log_normal_func(state, mean, stddev);
-}
-
-//  Return a log-normally distributed double from an MTGP32 generator. 
-__device__ double hcrng_log_normal_double ( hcrngStateMtgp32_t* state, double  mean, double  stddev ) {
-  return hcrng_log_normal_func(state, mean, stddev);
-}
-
-//   Return a normally distributed float from a MTGP32 generator. 
-__device__ float hcrng_normal ( hcrngStateMtgp32_t* state ) {
-  return hcrng_normal_func(state);
-}
-//  Return a normally distributed double from an MTGP32 generator. 
-__device__ double hcrng_normal_double ( hcrngStateMtgp32_t* state) {
-  return hcrng_normal_func(state);
-}
-
-
-//   Return a uniformly distributed float from a MTGP32 generator. 
-__device__ float hcrng_uniform ( hcrngStateMtgp32_t* state ) {
-  return hcrng_uniform_func(state);
-}
-//  Return a uniformly distributed double from an MTGP32 generator. 
-__device__ double hcrng_uniform_double ( hcrngStateMtgp32_t* state) {
-  return hcrng_uniform_func(state);
-}
-

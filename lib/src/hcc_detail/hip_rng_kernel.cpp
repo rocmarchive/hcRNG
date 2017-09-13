@@ -1,6 +1,5 @@
 #include "hcc_detail/hip_rng_kernel.h"
 #include <hcRNG/mtgp32.h>
-#include <hcRNG/private/mtgp32-impl.h>
 #include <hip/hip_hcc.h>
 
 // DEVICE APIS 
@@ -18,7 +17,6 @@
 
 __host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p ) {
   // TODO: Currently getting default accl_view from current device ID. Got to use the streamId set by user using hiprngSetStream
-  assert(p);
   int device_id;
   hipError_t err = hipGetDevice(&device_id); 
   if (err != hipSuccess) return HIPRNG_STATUS_ALLOCATION_FAILED;
@@ -28,7 +26,7 @@ __host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t p
   hc::accelerator_view current_default_accl_view = current_accl.get_default_view();
 
   // Invoke the init params kernel
-  int ret = hcrngMakeMTGP32Constants(current_default_accl_view, params, p); 
+  int ret = mtgp32_init_params_kernel(current_default_accl_view, params, p); 
   if (ret != 0) return HIPRNG_STATUS_INITIALIZATION_FAILED;
   return HIPRNG_STATUS_SUCCESS;
 }
@@ -40,8 +38,6 @@ __host__ hiprngStatus_t hiprngMakeMTGP32KernelState(hiprngStateMtgp32_t *s,
                                             int n,
                                             unsigned long long seed) {
   // TODO: Currently getting default accl_view from current device ID. Got to use the streamId set by user using hiprngSetStream
-  assert(s);
-  assert(k);
   int device_id;
   hipError_t err = hipGetDevice(&device_id); 
   if (err != hipSuccess) return HIPRNG_STATUS_ALLOCATION_FAILED;
@@ -50,7 +46,8 @@ __host__ hiprngStatus_t hiprngMakeMTGP32KernelState(hiprngStateMtgp32_t *s,
   if (err != hipSuccess) return HIPRNG_STATUS_ALLOCATION_FAILED;
   hc::accelerator_view current_default_accl_view = current_accl.get_default_view();
 
-  int ret = hcrngMakeMTGP32KernelState(current_default_accl_view, s, params, k, n, seed); 
+  // Invoke the init_seed kernel
+  int ret = mtgp32_init_seed_kernel(current_default_accl_view, s, k, n, seed); 
   if (ret != 0) return HIPRNG_STATUS_INITIALIZATION_FAILED;
   return HIPRNG_STATUS_SUCCESS;
 }
