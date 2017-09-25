@@ -197,8 +197,10 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
 
 
 #define SetSeedXorwow(gt) \
-  if(tempXorwow != 0) {\
-    hcrngXorwowStreamState baseState;\
+  hcrng##gt##StreamCreator* gen = (hcrng##gt##StreamCreator*)generator;        \
+  bool reuse =1;                                                               \
+  if(temp##gt != 0) {\
+    hcrng##gt##StreamState baseState;                                          \
     unsigned int s0 = ((unsigned int)seed) ^ 0xaad26b49UL;\
     unsigned int s1 = (unsigned int)(seed >> 32) ^ 0xf7dcefddUL;\
     unsigned int t0 = 1099087573UL * s0;\
@@ -209,10 +211,10 @@ hiprngStatus_t hiprngCreateGenerator(hiprngGenerator_t* generator,
     baseState.v[2] = 521288629UL + t1;\
     baseState.v[3] = 88675123UL ^ t1;\
     baseState.v[4] = 5783321UL + t0;\
-    err =  hcrngXorwowSetBaseCreatorState((hcrngXorwowStreamCreator*)generator, &baseState);\
+    err =  hcrng##gt##SetBaseCreatorState((hcrng##gt##StreamCreator*)generator, &baseState);\
   }\
-  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator, STREAM_COUNT, streams##gt); \
-  hipMemcpy(streams_buffer##gt, streams##gt, STREAM_COUNT * sizeof(hcrng##gt##Stream), hipMemcpyHostToDevice);\
+  hcrng##gt##CreateOverStreams((hcrng##gt##StreamCreator*)generator,           \
+                               STREAM_COUNT, streams_buffer##gt);              \
 
 hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
                                                   unsigned long long seed) {
