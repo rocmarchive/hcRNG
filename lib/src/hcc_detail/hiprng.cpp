@@ -258,8 +258,12 @@ hiprngStatus_t hiprngSetPseudoRandomGeneratorSeed(hiprngGenerator_t generator,
   return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 #define Generate_xorwow(gt)\
-hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray(\
-        *(((hcrng##gt##StreamCreator*)generator)->currentAcclView), STREAM_COUNT, streams_buffer##gt, num, outputPtr);\
+  if (generator == NULL || streams_buffer##gt == NULL) {                                \
+    stream_create(gt)                                                                   \
+  }                                                                                     \
+  hcrngStatus hcStatus##gt = hcrng##gt##DeviceRandomUnsignedIntegerArray(               \
+        *(((hcrng##gt##StreamCreator*)generator)->currentAcclView),                     \
+        STREAM_COUNT, streams_buffer##gt, num, outputPtr);                              \
 return hipHCRNGStatusToHIPStatus(hcStatus##gt);
 
 hiprngStatus_t hiprngGenerate(hiprngGenerator_t generator,
