@@ -46,17 +46,6 @@ __host__ hiprngStatus_t hiprngMakeMTGP32KernelState (hiprngStateMtgp32_t* s, mtg
 //     Set up constant parameters for the mtgp32 generator. 
 __host__ hiprngStatus_t hiprngMakeMTGP32Constants ( const mtgp32_params_fast_t params[], mtgp32_kernel_params_t* p );
 
-
-//  Return a log-normally distributed float from an MTGP32 generator. 
-__device__ float hiprng_log_normal ( hiprngStateMtgp32_t* state, float  mean, float  stddev) {
-    return hcrng_log_normal(reinterpret_cast<hcrngStateMtgp32*>(state), mean, stddev);
-}
-
-//  Return a log-normally distributed double from an MTGP32 generator. 
-__device__ double hiprng_log_normal_double ( hiprngStateMtgp32_t* state, double  mean, double  stddev ) {
-    return hcrng_log_normal(reinterpret_cast<hcrngStateMtgp32*>(state), mean, stddev);
-}
-
 //  Return a log-normally distributed float from an MTGP32 generator.
 __device__ float hiprng_log_normal ( hiprngStateMtgp32_t* state, float  mean, float  stddev);
 
