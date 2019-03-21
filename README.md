@@ -1,3 +1,6 @@
+# hCRNG - Deprecated Software
+The hcRNG package is deprecated software. Please us the [rocRAND](https://github.com/ROCmSoftwarePlatform/rocRAND) instead.
+
 ## A. Introduction: ##
 
 The hcRNG library is an implementation of uniform random number generators targetting the AMD heterogenous hardware via HCC compiler runtime. The computational resources of underlying AMD heterogenous compute gets exposed and exploited through the HCC C++ frontend. Refer [here](https://github.com/RadeonOpenCompute/hcc) for more details on HCC compiler.
