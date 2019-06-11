@@ -52,7 +52,40 @@ __host__ hiprngStatus_t hiprngMakeMTGP32KernelState(hiprngStateMtgp32_t *s,
   return HIPRNG_STATUS_SUCCESS;
 }
 
+//  Return a log-normally distributed float from an MTGP32 generator.
+__device__ float hiprng_log_normal ( hiprngStateMtgp32_t* state, float  mean, float  stddev) {
+    return hcrng_log_normal(reinterpret_cast<hcrngStateMtgp32*>(state), mean, stddev);
+}
 
+//  Return a log-normally distributed double from an MTGP32 generator.
+__device__ double hiprng_log_normal_double ( hiprngStateMtgp32_t* state, double  mean, double  stddev ) {
+    return hcrng_log_normal(reinterpret_cast<hcrngStateMtgp32*>(state), mean, stddev);
+}
+
+//   Return a normally distributed float from a MTGP32 generator.
+__device__ float hiprng_normal ( hiprngStateMtgp32_t* state ) {
+    return hcrng_normal(reinterpret_cast<hcrngStateMtgp32*>(state));
+}
+
+//  Return a normally distributed double from an MTGP32 generator.
+__device__ double hiprng_normal_double ( hiprngStateMtgp32_t* state) {
+    return hcrng_normal(reinterpret_cast<hcrngStateMtgp32*>(state));
+}
+
+//   Return a uniformly distributed float from a MTGP32 generator.
+__device__ float hiprng_uniform ( hiprngStateMtgp32_t* state ) {
+    return hcrng_uniform(reinterpret_cast<hcrngStateMtgp32*>(state));
+}
+
+//  Return a uniformly distributed double from an MTGP32 generator.
+__device__ double hiprng_uniform_double ( hiprngStateMtgp32_t* state) {
+    return hcrng_uniform(reinterpret_cast<hcrngStateMtgp32*>(state));
+}
+
+//  Return a uniformly distributed double from an MTGP32 generator.
+__device__ unsigned int hiprng ( hiprngStateMtgp32_t* state) {
+    return hcrng(reinterpret_cast<hcrngStateMtgp32*>(state));
+}
 
 
 
